@@ -1,0 +1,16 @@
+Nous démarrons un jeu de rôle dans l'univers Donjon de Naheulbeuk. Il y a 3 joueurs dont voici leurs descriptions partielles sous forme d'un JSON:
+[{"name":"Clara","type":"voleur","traits":""},{"name":"Roger","type":"Mage","traits":""},{"name":"LeNain","type":"nain","traits":"LeNain semble \u00eatre vraiment son nom"}]
+
+        Génère leurs fiches personnages avec des compétances équilibrées (score de 0 à 20 en Courage,Intelligence,charisme,Adresse,Force). leurs signes particuliers, la liste de leur équipement et une description du personnageRéponds sous forme d'un JSON structuré comme ceci:
+            [
+                {"nom" : "Roger",
+                 "type": "Barbare",
+                 "courage" : 12,
+                 "intelligence": 6,
+                 "charisme" : 7,
+                 "adresse": 13,
+                 "force": 4,
+                 "équipement": "Lorem Ipsum...",
+                 "Description": "Lorem Ipsum..."
+                }
+            ]

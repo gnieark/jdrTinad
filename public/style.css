@@ -1,0 +1,96 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+/* Style global */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    color: #333;
+    line-height: 1.6;
+    padding: 20px;
+}
+
+h2 {
+    color: #2c3e50;
+    margin-bottom: 20px;
+}
+
+/* Style du formulaire */
+#initform {
+    background-color: #fff;
+    border-radius: 8px;
+    padding: 20px;
+    max-width: 600px;
+    margin: 0 auto;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+}
+
+label {
+    font-weight: bold;
+    margin-bottom: 8px;
+    display: block;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin: 10px 0 20px 0;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 16px;
+}
+
+input[type="radio"] {
+    margin-right: 8px;
+}
+
+.radiogroup {
+    list-style-type: none;
+    padding: 0;
+}
+
+.radiogroup li {
+    margin: 10px 0;
+}
+
+button {
+    background-color: #3498db;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #2980b9;
+}
+
+/* Affichage du champ de type libre uniquement si nécessaire */
+.hidden {
+    display: none;
+}
+
+#pothertype {
+    margin-top: 10px;
+}
+
+/* Zone de message d'aide */
+.label-hint {
+    color: #7f8c8d;
+    font-size: 14px;
+}
+
+/* Apparence du champ input de type texte pour les traits */
+#customcaractere {
+    font-style: italic;
+}
+
+/* Pour les éléments de navigation (au cas où il y en aurait plus tard) */
+nav {
+    margin-bottom: 20px;
+}
