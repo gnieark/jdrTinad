@@ -35,4 +35,4 @@ jobs:
 
       - name: Run PHPUnit
         run: |
-          phpunit classes/users/tests/UsersGroupsTest.php
+          phpunit classes/users/tests/UsersGroupsTest.php --bootstrap classes/users/autoloadUsers.php
