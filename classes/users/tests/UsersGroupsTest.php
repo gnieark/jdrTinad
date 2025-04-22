@@ -2,16 +2,23 @@
 
 use PHPUnit\Framework\TestCase;
 
+register_shutdown_function(function () {
+    @unlink("test.db");
+});
+
 class UsersGroupsTest extends TestCase {
 
     protected PDO $pdo;
 
     protected function setUp(): void {
-        //$this->pdo = new PDO('sqlite::memory:');
-        $this->pdo= new PDO('sqlite:' . "test.db");
-        $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-        UserGroupManager::createTables($this->pdo);
+        if (!isset($this->pdo)){
+            //$this->pdo = new PDO('sqlite::memory:');
+            $this->pdo= new PDO('sqlite:test.db');
+            $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+            UserGroupManager::createTables($this->pdo);
+        }
     }
+
     public function testCreateTables():void{
         $tables = [User::get_table_name(), Group::get_table_name(), UserGroupManager::get_table_name()];
         foreach ($tables as $table) {
@@ -87,7 +94,7 @@ class UsersGroupsTest extends TestCase {
         }
     }
 
-    public function testAuthentificate(): void{
+    public function testAuthentificate():void{
         $user = new User();
         $this->assertFalse($user -> authentificate($this->pdo, "Nimp", "KTiyt")-> is_authentified());
         $this->assertFalse($user -> authentificate($this->pdo, "jsnow", "KTiyt")-> is_authentified());
