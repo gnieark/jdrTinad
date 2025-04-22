@@ -4,7 +4,7 @@ class User {
     private $groups = array();
     private string $display_name;
     private string $login;
-    private bool $is_connected = false;
+    private bool $authentified = false;
     private int $id;
 
     static public function get_table_name(): string {
@@ -12,6 +12,10 @@ class User {
     }
     public function __construct(){
 
+    }
+
+    public function is_authentified() :bool{
+        return $this->authentified;
     }
     public function get_id():int{ return $this->id;}
     public function set_id(int $id):User { $this->id = $id; return $this;}
@@ -24,6 +28,7 @@ class User {
 
     public function add_group(Group $group ):User{
         $this->groups[] = $group;
+        return $this;
     }
 
     public function get_groups():array {
@@ -38,13 +43,83 @@ class User {
         $sql = "UPDATE `". $this->get_table_name() ."`
                 SET `password` = :hashedpassword
                 WHERE id= :id;";
-        $db->prepare($sql);
-        $db->execute(
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
             array(
                 ":id"               =>  $this->id,
                 ":hashedpassword"   =>  password_hash($clearpassword, PASSWORD_DEFAULT)
             )
         );
+    }
+
+    private function load_groups(PDO $db){
+        $this->groups = array();
+        $sql = 
+        " SELECT 
+            `". Group::get_table_name() ."`.id,
+            `". Group::get_table_name() ."`.name
+         FROM 
+            `". Group::get_table_name() ."`,
+            `". UserGroupManager::get_table_name() ."`
+         WHERE `". Group::get_table_name() ."`.id = `". UserGroupManager::get_table_name() . "`.group_id
+         AND `" . UserGroupManager::get_table_name() . "`.user_id = :userId";
+
+         $sth = $db->prepare($sql);
+         $sth->bindParam(':userId', $this->id, PDO::PARAM_INT);   
+         $sth->execute();
+         while($r = $sth->fetch(PDO::FETCH_ASSOC)){
+            $this->add_group( new Group( $r["id"], $r["name"])  );
+         }
+         return $this;
+
+    }
+    private function load_from_db(PDO $db): User{
+        if( !isset($this->id) ){
+            throw new Exception('id must be instancied before');
+            die();
+        }
+
+        $sql = "SELECT 
+                        `login`         as user_login,
+                        `display_name`  as user_display_name
+                FROM ". self::TABLE . " 
+                WHERE `id` = :id ;";
+
+        $sth = $db->prepare($sql);
+        $sth->bindParam(':id', $this->id, PDO::PARAM_INT);
+        $sth->execute();
+        if($r = $sth->fetch(PDO::FETCH_ASSOC)){
+            $this->set_login( $r["user_login"] )
+                 ->set_display_name( $r["user_display_name"])
+                 ->load_groups($db);
+            return $this;
+        }else{
+            throw new Exception('id not found on database');
+            die();
+        }
+
+    } 
+    public function authentificate(PDO $db, string $login, string $clearpassword):User{
+        $sql = "SELECT id, password FROM `". self::TABLE ."` WHERE login=:login;";
+        $sth = $db->prepare($sql);
+        $sth->execute( array(":login"  => $login) );
+        if( $r = $sth->fetch() ){  
+
+            if(password_verify( $clearpassword, $r["password"]) ){
+                
+                $this->set_id( $r["id"] );
+                $this->load_from_db($db);
+                $this->authentified = true;
+                return $this;
+            }
+
+        }
+        $this->authentified = false;
+        $this->set_id(-1)
+             ->set_login("")
+             ->set_display_name("");
+        $this->groups = array();
+        return $this;
     }
 
 

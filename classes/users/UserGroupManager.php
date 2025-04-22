@@ -67,13 +67,14 @@ class UserGroupManager {
     static public function createUser (PDO $db, string $display_name, string $login, string $clearpassword, array $groupsIds = []):User
     {
         //clean groupsIds
-      
+        
         foreach($groupsIds as $groupId){
             if(!is_int($groupId)){
                 throw new Exception("groupsIds param must contains only ints");
             }
         }
-        $sql = "INSERT INTO `" . User::get_table_name() . "` (login, passord,display_name) VALUES
+        
+        $sql = "INSERT INTO `" . User::get_table_name() . "` (login, password,display_name) VALUES
         (
             :login,
             :password,
@@ -92,35 +93,28 @@ class UserGroupManager {
              ->set_login( $login )
              ->set_display_name( $display_name );
 
-        if(!empty($groupsIds)){   
-            //load groups
-            $sql = "SELECT id,name 
-                    FROM `" . Group::get_table_name()."` 
-                    WHERE id IN (" . implode(",",$groupsIds) .");";
-
-            $st = $db->prepare($sql);
-            $st->execute();
-            while( $r = $st->fetch(PDO::FETCH_ASSOC) ){
-                $newGroup = new Group();
-                $newGroup->set_id( $r["id"])->set_name($r["name"]);
-                $user->add_group($newGroup);
-            }
-
-            $sqlRel = "INSERT INTO `" . self::USERSGROUPSRELTABLE . "` (user_id,group_id)
-                        VALUES(:userid, :groupid)";
-            $st2 = $db->prepare($sqlRel);
-
-            foreach( $groupsIds as $groupId ){
-                $st2->execute(
-                    array(
-                        ":userid"   => $user->get_id(),
-                        ":groupid"  => $groupId
-                    )
-                );
-            }
+        foreach($groupsIds as $groupId){
+            $user = self::addUserToGroup( $db, $user, self::get_group_by_id( $db, $groupId) );
         }
+        return $user;
 
     }
+    static public function addUserToGroup(PDO $db, User $user, Group $group):User{
+        $user->add_group($group);
+        $sqlRel = "INSERT INTO `" . self::USERSGROUPSRELTABLE . "` (user_id,group_id)
+        VALUES(:userid, :groupid)";
+        $sth = $db->prepare($sqlRel);
+        $sth->execute(
+            array(
+                ":userid"   => $user->get_id(),
+                ":groupid"  => $group->get_id()
+            )
+        );
+        return $user;
+    }
+
+
+
     static public function createGroup(PDO $db, string $name): Group{
         $sql = "INSERT INTO `" . Group::get_table_name() . "` (name) VALUES (:name);";
         $sth = $db->prepare($sql);
@@ -162,8 +156,43 @@ class UserGroupManager {
         return false;
     }
 
-    static public function get_users(PDO $db, string $customCond = ""):array{
+    static public function get_users(PDO $db, string $customCond = "", bool $associativebyId = false):array{
+        $users = array();
+        $sql = "SELECT 
+                    `users`.`id` as user_id,
+                    `users`.`login`  as user_login,
+                    `users`.`display_name`  as user_display_name,
+                    `" . Group::get_table_name() . "`.`id` as group_id,
+                    `" . Group::get_table_name() . "`.`name` as group_name 
+                FROM `" . User::get_table_name() . "` as users
+                LEFT JOIN `" . self::get_table_name() . "` as reltable ON reltable.user_id = users.id
+                LEFT JOIN `" . Group::get_table_name() . "` ON `" . Group::get_table_name() . "`.id = reltable.group_id";
+        
+        if(!empty($customCond)){
+            $sql .= " WHERE " . $customCond;
+        }
+        $sql .=";";
+        $sth = $db->prepare($sql);
+        $sth->execute();
+    
+        while($r = $sth->fetch(PDO::FETCH_ASSOC) ){
+           if(!isset( $users[ $r["user_id"]  ] ) ){
+            $users[ $r["user_id"] ] = new user();
+            $users[ $r["user_id"] ] -> set_id( $r["user_id"] )
+                                    -> set_login( $r["user_login"] )
+                                    -> set_display_name( $r["user_display_name"] );
 
+           }
+           //group
+           if( isset( $r["group_id"] )){
+                $users[ $r["user_id"] ] -> add_group( new Group($r["group_id"], $r["group_name"]) ); 
+           }
+        }
+        if( $associativebyId ){
+            return $users;
+        }
+        return array_values($users);
+    
     }
 
 }

@@ -7,8 +7,8 @@ class UsersGroupsTest extends TestCase {
     protected PDO $pdo;
 
     protected function setUp(): void {
-        $this->pdo = new PDO('sqlite::memory:');
-        //$this->pdo= new PDO('sqlite:' . "test.db");
+        //$this->pdo = new PDO('sqlite::memory:');
+        $this->pdo= new PDO('sqlite:' . "test.db");
         $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
         UserGroupManager::createTables($this->pdo);
     }
@@ -48,12 +48,16 @@ class UsersGroupsTest extends TestCase {
         }
     }
     public function testCreateUsers(): void{
-        $groups = shuffle(UserGroupManager::get_groups($this->pdo));
-
+        $groups = UserGroupManager::get_groups($this->pdo);
+        $groupsIds = array();
+        foreach($groups as $group){
+            $groupsIds[] = $group->get_id();
+        }
+       
         $usersToCreate = array(
             array(
                 "display_name"      => "John Snow",
-                "login"             => "jsonw",
+                "login"             => "jsnow",
                 "clearPassword"     => "KJGutyiutèi",
                 "groupsIds"         => array()
             ),
@@ -61,16 +65,34 @@ class UsersGroupsTest extends TestCase {
                 "display_name"      => "Ygritte",
                 "login"             => "ygritte",
                 "clearPassword"     => "Ksqdfyuuyiutèi",
-                "groupsIds"         => array( $groups[0]->get_id(), $groups[1]->get_id())
+                "groupsIds"         => $groupsIds
             )
 
         );
 
         foreach($usersToCreate as $userToCreate){
-            UserGroupManager::createUser($this->pdo, $userToCreate["display_name"], $userToCreate["login"], $userToCreate["clearPassword"], $usersToCreate["groupsIds"]);
+            UserGroupManager::createUser($this->pdo, $userToCreate["display_name"], $userToCreate["login"], $userToCreate["clearPassword"], $userToCreate["groupsIds"]);
         }
+        $users = UserGroupManager::get_users($this->pdo);
+        $this->assertCount(2,$users);
 
+        foreach( $users as $user ){
+            if($user->get_display_name() == "Ygritte"){
+                $this->assertCount( count($groupsIds), $user->get_groups() );
+            }
+            if($user->get_display_name() == "John Snow"){
+                $this->assertCount( 0, $user->get_groups() );
+            }
 
+        }
+    }
+
+    public function testAuthentificate(): void{
+        $user = new User();
+        $this->assertFalse($user -> authentificate($this->pdo, "Nimp", "KTiyt")-> is_authentified());
+        $this->assertFalse($user -> authentificate($this->pdo, "jsnow", "KTiyt")-> is_authentified());
+        $this->assertFalse($user -> authentificate($this->pdo, "jsnow!", "KJGutyiutèi")-> is_authentified());
+        $this->assertTrue($user -> authentificate($this->pdo, "jsnow", "KJGutyiutèi") -> is_authentified());
     }
 
 
