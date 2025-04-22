@@ -9,15 +9,14 @@ register_shutdown_function(function () {
 class UsersGroupsTest extends TestCase {
 
     protected PDO $pdo;
-    protected $first = true;
+
 
     protected function setUp(): void {
-        if ($this->first){
+        if (!isset($this->pdo)){
             //$this->pdo = new PDO('sqlite::memory:');
             $this->pdo= new PDO('sqlite:test.db');
             $this->pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
             UserGroupManager::createTables($this->pdo);
-            $this->first = false;
         }
     }
 
