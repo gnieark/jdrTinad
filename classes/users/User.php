@@ -73,6 +73,16 @@ class User {
          return $this;
 
     }
+    public function is_in_group(string $groupname):bool{
+        foreach($this->groups as $group){
+            if( $group->get_name() == $groupname ){
+                return true;
+            }
+
+        }
+        return false;
+
+    }
     private function load_from_db(PDO $db): User{
         if( !isset($this->id) ){
             throw new Exception('id must be instancied before');

@@ -102,6 +102,20 @@ class UsersGroupsTest extends TestCase {
         $this->assertFalse($user -> authentificate($this->pdo, "jsnow!", "KJGutyiutèi")-> is_authentified());
         $this->assertTrue($user -> authentificate($this->pdo, "jsnow", "KJGutyiutèi") -> is_authentified());
     }
+    public function testIsInGroup():void {
+        $users = UserGroupManager::get_users($this->pdo);
+        foreach($users as $user){
+            if($user->get_login() == "ygritte"){
+                $this->assertTrue(  $user->is_in_group("plop")  );
+                $this->assertFalse(  $user->is_in_group("Nawak")  );
+            }
+            if($user->get_login() == "jsnow"){
+                $this->assertFalse(  $user->is_in_group("plop")  );
+            }
+        }
+        
+
+    }
 
 
 }
