@@ -1,0 +1,38 @@
+name: PHPUnit Tests
+
+on:
+  push:
+    branches:
+      - master
+      - refactor
+  pull_request:
+    branches:
+      - master
+      - refactor
+
+jjobs:
+  test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        php-version: [7.4, 8.1,8.2,8.4]
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up PHP ${{ matrix.php-version }}
+        uses: shivammathur/setup-php@v2
+        with:
+          php-version: ${{ matrix.php-version }}
+          extensions: pdo, sqlite3
+
+      - name: Download PHPUnit
+        run: |
+          curl -Ls https://phar.phpunit.de/phpunit-9.phar -o phpunit
+          chmod +x phpunit
+          sudo mv phpunit /usr/local/bin/phpunit
+
+      - name: Run PHPUnit
+        run: |
+          phpunit classes/users/tests/UsersGroupsTest.php
