@@ -1,7 +1,14 @@
 <?php
+
 //autoload classes
 spl_autoload_register(function ($class_name) {
-    $classFolders = array(  "../classes/");
+    $classFolders = array(  "../classes/", 
+                            "../classes/menus/",
+                            "../classes/users/",
+                            "../classes/routes/",
+                            "../classes/lists/",
+                            "../classes/scheduler/"
+                        );
     foreach($classFolders as $folder)
     {
         if(file_exists( $folder . $class_name . '.php')){
@@ -11,9 +18,24 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
+//db con
+$databasePath = "../db/db.sql";
+try {
+    if (!is_dir(dirname($databasePath))) {
+        mkdir(dirname($databasePath), 0755, true);
+    }
+    $db = new PDO('sqlite:' . $databasePath);
+    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-$tpl = new TplBlock();
-$tpl->addVars(array(
-    'js'    => file_get_contents("../js/main.js")
-));
-echo $tpl->applyTplFile( "../templates/main.html" );
+
+} catch (PDOException $e) {
+    die("Erreur de connexion à la base SQLite : " . $e->getMessage());
+}
+
+//create or update base if needed
+$checkDbStructure = new CheckDbStructure($db);
+$checkDbStructure->doNeededStructureUpdates();
+
+
+
+
