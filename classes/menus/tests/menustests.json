@@ -1,0 +1,28 @@
+{
+    "Annuaire" : {
+        "name": "Annuaire",
+        "default_level_needed": "guest",
+        "display_on_nav": false,
+        "CRUDclass": "TestMenusClass1",
+        "default_one_if_get_empty" : true,
+        "uriPattern": "'^/(d|edit|delete|upBranche|downBranche|research|\\?q=.*)?(/.*)?$'",
+        "link"  : "/"
+    },
+    "config": {
+        "name": "Configuration",
+        "default_level_needed": "user",
+        "groups_allowed": [ 1,2 ],
+        "display_on_nav": true,
+        "CRUDclass": "TestMenusClass2",
+        "uriPattern": "'^/config(/.*)?$'",
+        "link" : "/config"
+    },
+    "404":{
+        "name":"404",
+        "default_level_needed": "guest",
+        "display_on_nav": false,
+        "CRUDclass": "TestMenusClass3",
+        "default_one":true,
+        "uriPattern": "'^/404.html$'"
+    }
+}

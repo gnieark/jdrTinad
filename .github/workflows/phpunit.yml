@@ -36,3 +36,4 @@ jobs:
       - name: Run PHPUnit
         run: |
           phpunit classes/users/tests/UsersGroupsTest.php --bootstrap classes/users/autoloadUsers.php
+          phpunit classes/menus/tests/MenusTest.php --bootstrap classes/menus/autoloadMenus.php
