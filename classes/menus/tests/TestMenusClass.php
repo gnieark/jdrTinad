@@ -27,3 +27,8 @@ class TestMenusClass3 extends TestMenusClass{
 
 
 }
+
+class TestMenusClassUnconsistend{
+
+
+}
