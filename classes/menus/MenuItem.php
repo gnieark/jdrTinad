@@ -30,10 +30,7 @@ class MenuItem
 
     public function is_user_allowed(User $user)
     {
-
-        if( $user->is_admin() )
-            return true;
-        if ($this->levelNeeded == 'user' && $user->is_connected())
+        if ($this->levelNeeded == 'user' && $user->is_authentified())
         {
             if(empty($this->groups_allowed)){
                 return true;
