@@ -1,8 +1,8 @@
 {
     "Main" : {
-        "name": "Main",
+        "name": "Accueil",
         "default_level_needed": "guest",
-        "display_on_nav": false,
+        "display_on_nav": true,
         "CRUDclass": "MainPage",
         "default_one_if_get_empty" : true,
         "uriPattern": "'^/$'",
@@ -17,11 +17,12 @@
         "uriPattern": "'^/404.html$'"
     },
     "auth":{
-        "name":"Auth",
+        "name":"Accès maître du jeu",
         "default_level_needed": "guest",
         "display_on_nav": false,
         "CRUDclass": "Auth",
         "default_one":false,
+        "link":"/auth",
         "uriPattern": "'^/auth$'"
     }
 }

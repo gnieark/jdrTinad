@@ -68,13 +68,13 @@ $currentMenu = $mManager->get_current_menu();
 
 switch( $_SERVER['REQUEST_METHOD'] ){
     case "POST":
-        $messages = $currentMenu->apply_post($db,$currentUser);
+        $messages = $currentMenu->apply_post($currentUser);
         break;
     case "DELETE":
-        $messages = $currentMenu->apply_delete($db,$currentUser);
+        $messages = $currentMenu->apply_delete($currentUser);
         break;
     case "PATCH":
-        $messages = $currentMenu->apply_patch($db,$currentUser);
+        $messages = $currentMenu->apply_patch($currentUser);
         break;
     default:
         $messages = "";
@@ -83,7 +83,7 @@ switch( $_SERVER['REQUEST_METHOD'] ){
 if(!$currentMenu->display_on_page())
 {
     // only send the content
-    $currentMenu->send_content($db,$currentUser);
+    $currentMenu->send_content($currentUser);
     die();
 }
 
@@ -99,4 +99,17 @@ $tpl->addVars(
     )
 );
 
+$navMenus = $mManager->get_user_menu_list($currentUser,true);
+foreach($navMenus as $navItem){
+    $tplNav = new TplBlock("navmenus");
+    $tplNav ->addVars(
+        array(
+            "url"  => $navItem->get_link(),
+            "caption"  => htmlentities($navItem->get_name()),
+            "current"  => ($navItem == $currentMenu)? 'aria-current="page"' : ''
+        )
+    );
+    $tpl->addSubBlock($tplNav);
+
+}
 echo $tpl->applyTplFile("../templates/main.html");

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <title>IA JDR</title>
+    <script type="text/javascript">
+        {{js}}
+    </script>
+    <link href="/style.css" rel="stylesheet" />
+</head>
+<body>
+<nav>
+
+</nav>
+<section id="initform">
+    <article>
+    <h2>Ajouter un personnage</h2>
+    <p>
+        <label for="addpersoninputname"/>
+            Nom:
+            <span class="label-hint">
+
+            </span>
+        </label>
+        <input type="text" name="personname" id="addpersoninputname">
+        <p>Type</p>
+        <ul class="radiogroup">
+            <li><input type="radio" name="type" value="voleur">Voleur</li>
+            <li><input type="radio" name="type" value="Mage">Mage</li>
+            <li><input type="radio" name="type" value="barbare">barbare</li>
+            <li><input type="radio" name="type" value="elfe">elfe</li>
+            <li><input type="radio" name="type" value="nain">nain</li>
+            <li><input type="radio" name="type" value="con">con</li>
+            <li><input type="radio" name="type" value="other">Autre (précisez):</li>
+        </ul>
+        <p class="hidden" id="pothertype">
+            <label for="inputtextothertype">
+                Type libre:
+            </label>
+            <input type="text" name="typetext" id="inputtextothertype"/>
+        </p>
+        <p>
+            <label for="customcaractere">
+                Traits de caractères imposés:
+            </label>
+            <input type="text" name="traits" id="customcaractere"/>
+        </p>
+        <p><button id="addperso">Ajouter le personnage</button></p>
+       
+        
+    </p>
+    </article>
+    <article id="personnagesInit">
+
+    </article>
+    <p><button id="initgame" onclick="initGame();">J'ai assez de personnages, initialiser la partie</button></p>
+</section>
+<section id="playGame">
+    <article id="playersCards">
+
+    </article>
+</section>
+</body>
+</html>
