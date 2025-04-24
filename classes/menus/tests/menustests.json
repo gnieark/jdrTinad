@@ -11,7 +11,7 @@
     "config": {
         "name": "Configuration",
         "default_level_needed": "user",
-        "groups_allowed": [ 1,2 ],
+        "groups_allowed": [ "plip", "plop" ],
         "display_on_nav": true,
         "CRUDclass": "TestMenusClass2",
         "uriPattern": "'^/config(/.*)?$'",

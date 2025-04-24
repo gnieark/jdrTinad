@@ -8,10 +8,10 @@ class Menus_manager
 {
     private $menusList = array();
 
-    private $defaultMenu = ""; //A 404 menu is a good choice
-    private $defaultMenuIfGetEmpty = ""; //The main page!
+    private string $defaultMenu = ""; //A 404 menu is a good choice
+    private string $defaultMenuIfGetEmpty = ""; //The main page!
 
-    public function set_defaultMenu($menuName)
+    public function set_defaultMenu(string $menuName): Menus_manager
     {
         
         foreach($this->menusList as $m)
@@ -26,7 +26,7 @@ class Menus_manager
         
     }
 
-    public function set_defaultMenuIfGetEmpty($menuName)
+    public function set_defaultMenuIfGetEmpty(string $menuName):Menus_manager
     {
         foreach($this->menusList as $m)
         {
@@ -39,7 +39,7 @@ class Menus_manager
         throw new \UnexpectedValueException("Given default Menu does not exists");
     }
 
-    public function add_menus_items_from_structured_array($array)
+    public function add_menus_items_from_structured_array(array $array):Menus_manager
     {
       
         foreach($array as $shortName => $menuArr){
@@ -68,13 +68,13 @@ class Menus_manager
 
     }
 
-    public function add_menus_items_from_json_file($file)
+    public function add_menus_items_from_json_file(string $file): Menus_manager
     {
         $arr = json_decode(file_get_contents($file),true);
         return $this->add_menus_items_from_structured_array($arr);
     }
 
-    public function add_menu_item(MenuItem $menuItem, $default_one = false, $default_one_on_empty_get = false){
+    public function add_menu_item(MenuItem $menuItem, bool $default_one = false, bool $default_one_on_empty_get = false):Menus_manager{
         $this->$menusList[] = $menuItem;
         if( $default_one ){
             $this->defaultMenu = $menuItem->shortName;
@@ -88,7 +88,7 @@ class Menus_manager
     /*
     * Retourne la liste des menus autorisés à l'utilisateur courant.
     */
-    public function get_user_menu_list(User $user, Bool $onlyDisplayablesItems = true)
+    public function get_user_menu_list(User $user, Bool $onlyDisplayablesItems = true):array
     {
         $list = array();
         foreach( $this->menusList as $menuItem){
@@ -100,7 +100,7 @@ class Menus_manager
         return $list; 
     }
 
-    public  function load_menu_item_by_shortname(STRING $shortName)
+    public  function load_menu_item_by_shortname(STRING $shortName):?MenuItem
     {
         foreach( $this->menusList as $menuItem){
             if($menuItem->shortName == $shortName){
@@ -110,7 +110,7 @@ class Menus_manager
         return false;
     }
 
-    public function get_current_menu()
+    public function get_current_menu():MenuItem
     {
         foreach($this->menusList as $m){
             if($m->is_the_current_menu_item()){

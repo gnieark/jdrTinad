@@ -10,25 +10,25 @@ class MenuItem
     public $scrudClass = NULL;
     public $displayOnNav = false;
 
-    public function is_the_current_menu_item()
+    public function is_the_current_menu_item() :bool
     {
        return (preg_match($this->uriPattern, $_SERVER["REQUEST_URI"]));
     }
     
-    public function get_uriPattern()
+    public function get_uriPattern() :string
     {
         return $this->uriPatttern;
     }
 
-    public function get_name()
+    public function get_name():string
     {
         return $this->name;
     }
 
-    public function set_link($link){$this->link = $link; return $this;}
-    public function get_link(){return $this->link;}
+    public function set_link(string $link): MenuItem{$this->link = $link; return $this;}
+    public function get_link():string {return $this->link;}
 
-    public function is_user_allowed(User $user)
+    public function is_user_allowed(User $user):bool
     {
         if ($this->levelNeeded == 'user' && $user->is_authentified())
         {
@@ -47,7 +47,7 @@ class MenuItem
         return false;
     }
 
-    private function test_scrudClass($className)
+    private function test_scrudClass(string $className):bool
     {
         $methodsNeeded = array(
                             'get_custom_js',
@@ -70,7 +70,7 @@ class MenuItem
         return true;
     }
 
-    public function __construct($name, $shortName, $levelNeeded,$scrudClass, $uriPattern , $link = null, $display_on_nav = false, $groups_allowed = array())
+    public function __construct(string $name, string $shortName, string $levelNeeded, string $scrudClass, string $uriPattern , string $link = null, bool $display_on_nav = false, array $groups_allowed = array())
     {
         $this->name = $name;
         $this->shortName = $shortName;
@@ -95,31 +95,31 @@ class MenuItem
         $this->groups_allowed = $groups_allowed;
     }
    
-    public function apply_post(PDO $db, User $user){
+    public function apply_post(PDO $db, User $user):string {
        return call_user_func_array( array( $this->scrudClass, 'apply_post'), array($db,$user));
     }
-    public function apply_delete(PDO $db, User $user){
+    public function apply_delete(PDO $db, User $user): string{
         return call_user_func_array( array( $this->scrudClass, 'apply_delete'), array($db,$user));
     }
-    public function apply_patch(PDO $db, User $user){
+    public function apply_patch(PDO $db, User $user): string {
         return call_user_func_array( array( $this->scrudClass, 'apply_patch'), array($db,$user));
     }
-    public function get_custom_js(PDO $db, User $user){
+    public function get_custom_js(PDO $db, User $user): string {
         return call_user_func_array( array( $this->scrudClass, 'get_custom_js'), array($db,$user));
     }
-    public function get_custom_css(PDO $db, User $user){
+    public function get_custom_css(PDO $db, User $user): string {
         return call_user_func_array( array( $this->scrudClass, 'get_custom_css'), array($db,$user));
     }
-    public function get_content_html(PDO $db, User $user){
+    public function get_content_html(PDO $db, User $user): string {
         return call_user_func_array( array( $this->scrudClass, 'get_content_html'), array($db,$user));
     }
-    public function display_on_page(){
+    public function display_on_page():string {
         return call_user_func_array( array( $this->scrudClass, 'display_on_page'),array());
     }
-    public function get_custom_after_body_tag(PDO $db, User $user){
+    public function get_custom_after_body_tag(PDO $db, User $user): string{
         return call_user_func_array( array( $this->scrudClass, 'get_custom_after_body_tag'), array($db,$user));
     }
-    public function send_content(PDO $db, User $user){
+    public function send_content(PDO $db, User $user): string {
         return call_user_func_array( array( $this->scrudClass, 'send_content'), array($db,$user));
     }   
 }

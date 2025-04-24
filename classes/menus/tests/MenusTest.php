@@ -9,6 +9,7 @@ class MenusTest extends TestCase {
 
     protected function setUp(): void {
         require_once(   dirname(__FILE__) .  "/TestMenusClass.php" );
+        include( dirname(__FILE__) .  "/../../users/autoloadUsers.php" );
     }
 
     public function testLoadMenusDefinitions():void{
@@ -58,6 +59,33 @@ class MenusTest extends TestCase {
                 )
             )
         );
+    }
+
+    public function testAclAllowedMenu():void{
+
+        //guest
+        $_SERVER["REQUEST_URI"] = "/";
+        $guestuser = new User();
+        $currentMenu = new MenuItem ("guestpage", "guestpage", "guest","TestMenusClass1", "'^/$'" , "/", true, array() ); 
+        
+        $this->assertTrue($currentMenu->is_user_allowed($guestuser));
+        //test again with an auth user
+        $pdo= new PDO('sqlite::memory:');
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        UserGroupManager::createTables($pdo);   
+        $authUser = UserGroupManager::createUser($pdo, "username", "userlogin", "userpass", array() );
+        $authUser->authentificate($pdo, "userlogin", "userpass");
+        $this->assertTrue($currentMenu->is_user_allowed($authUser));
+        $currentMenu = new MenuItem ("guestpage", "guestpage", "user","TestMenusClass1", "'^/$'" , "/", true, array() ); 
+        $this->assertFalse($currentMenu->is_user_allowed($guestuser));
+        $this->assertTrue( $currentMenu->is_user_allowed($authUser) );
+        $currentMenu = new MenuItem ("guestpage", "guestpage", "user","TestMenusClass1", "'^/$'" , "/", true, array("supergroupe") ); 
+        $this->assertFalse($currentMenu->is_user_allowed($guestuser));
+        $this->assertFalse( $currentMenu->is_user_allowed($authUser) );
+        $authUser->add_group(new group(44,"supergroupe") );
+        $this->assertFalse($currentMenu->is_user_allowed($guestuser));
+        $this->assertTrue( $currentMenu->is_user_allowed($authUser) );
+
     }
 
 
