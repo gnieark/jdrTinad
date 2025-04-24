@@ -95,31 +95,31 @@ class MenuItem
         $this->groups_allowed = $groups_allowed;
     }
    
-    public function apply_post(PDO $db, User $user):string {
-       return call_user_func_array( array( $this->scrudClass, 'apply_post'), array($db,$user));
+    public function apply_post(User $user):string {
+       return call_user_func_array( array( $this->scrudClass, 'apply_post'), array($user));
     }
-    public function apply_delete(PDO $db, User $user): string{
-        return call_user_func_array( array( $this->scrudClass, 'apply_delete'), array($db,$user));
+    public function apply_delete( User $user): string{
+        return call_user_func_array( array( $this->scrudClass, 'apply_delete'), array($user));
     }
-    public function apply_patch(PDO $db, User $user): string {
-        return call_user_func_array( array( $this->scrudClass, 'apply_patch'), array($db,$user));
+    public function apply_patch(User $user): string {
+        return call_user_func_array( array( $this->scrudClass, 'apply_patch'), array($user));
     }
-    public function get_custom_js(PDO $db, User $user): string {
-        return call_user_func_array( array( $this->scrudClass, 'get_custom_js'), array($db,$user));
+    public function get_custom_js(User $user): string {
+        return call_user_func_array( array( $this->scrudClass, 'get_custom_js'), array($user));
     }
-    public function get_custom_css(PDO $db, User $user): string {
-        return call_user_func_array( array( $this->scrudClass, 'get_custom_css'), array($db,$user));
+    public function get_custom_css(User $user): string {
+        return call_user_func_array( array( $this->scrudClass, 'get_custom_css'), array($user));
     }
-    public function get_content_html(PDO $db, User $user): string {
-        return call_user_func_array( array( $this->scrudClass, 'get_content_html'), array($db,$user));
+    public function get_content_html(User $user): string {
+        return call_user_func_array( array( $this->scrudClass, 'get_content_html'), array($user));
     }
-    public function display_on_page():string {
+    public function display_on_page():bool {
         return call_user_func_array( array( $this->scrudClass, 'display_on_page'),array());
     }
-    public function get_custom_after_body_tag(PDO $db, User $user): string{
-        return call_user_func_array( array( $this->scrudClass, 'get_custom_after_body_tag'), array($db,$user));
+    public function get_custom_after_body_tag(User $user): string{
+        return call_user_func_array( array( $this->scrudClass, 'get_custom_after_body_tag'), array($user));
     }
-    public function send_content(PDO $db, User $user): string {
-        return call_user_func_array( array( $this->scrudClass, 'send_content'), array($db,$user));
+    public function send_content(User $user): string {
+        return call_user_func_array( array( $this->scrudClass, 'send_content'), array($user));
     }   
 }

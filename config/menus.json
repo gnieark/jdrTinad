@@ -1,0 +1,27 @@
+{
+    "Main" : {
+        "name": "Main",
+        "default_level_needed": "guest",
+        "display_on_nav": false,
+        "CRUDclass": "MainPage",
+        "default_one_if_get_empty" : true,
+        "uriPattern": "'^/$'",
+        "link"  : "/"
+    },
+    "404":{
+        "name":"404",
+        "default_level_needed": "guest",
+        "display_on_nav": false,
+        "CRUDclass": "C404",
+        "default_one":true,
+        "uriPattern": "'^/404.html$'"
+    },
+    "auth":{
+        "name":"Auth",
+        "default_level_needed": "guest",
+        "display_on_nav": false,
+        "CRUDclass": "Auth",
+        "default_one":false,
+        "uriPattern": "'^/auth$'"
+    }
+}
