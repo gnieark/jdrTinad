@@ -1,0 +1,58 @@
+<h1>Gestion de la table de jeu</h1>
+
+<div class="accordion">
+
+  <div class="accordion-item">
+    <button class="accordion-title">Initialisation de la table</button>
+    <div class="accordion-content">
+      <form id="init-form" action="/board/init" method="POST">
+        <label for="game-name">Nom de la partie</label>
+        <input type="text" id="game-name" name="game_name" required>
+
+        <label for="game-prompt">Prompt de départ</label>
+        <textarea id="game-prompt" name="prompt" rows="4"></textarea>
+
+        <label>Personnaliser l'URL ?</label>
+        <div>
+          <input type="radio" id="url-no" name="custom_url" value="non" checked>
+          <label for="url-no">Non</label>
+          <input type="radio" id="url-yes" name="custom_url" value="oui">
+          <label for="url-yes">Oui</label>
+        </div>
+
+        <div id="custom-url-field" style="display: none;">
+          <label for="custom-url-input">URL personnalisée</label>
+          <input type="text" id="custom-url-input" name="custom_url_value">
+        </div>
+
+        <label for="allowed-types">Types de personnages autorisés</label>
+        <div class="checkbox-group">
+          <label><input type="checkbox" name="types[]" value="nain" checked> Nain</label>
+          <label><input type="checkbox" name="types[]" value="elfe" checked> Elfe</label>
+          <label><input type="checkbox" name="types[]" value="barbare" checked> Barbare</label>
+          <label><input type="checkbox" name="types[]" value="humain" checked> Humain</label>
+          <label><input type="checkbox" name="types[]" value="ogre" checked> Ogre</label>
+          <label><input type="checkbox" name="types[]" value="gobelin" checked> Gobelin</label>
+          <label><input type="checkbox" name="types[]" value="demi-elfe" checked> Demi-elfe</label>
+        </div>
+
+        <button type="submit">Initialiser</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="accordion-item">
+    <button class="accordion-title">Lien et QRCODE</button>
+    <div class="accordion-content">
+      <p>Contenu à venir...</p>
+    </div>
+  </div>
+
+  <div class="accordion-item">
+    <button class="accordion-title">Jouer</button>
+    <div class="accordion-content">
+      <p>Interface de jeu ici...</p>
+    </div>
+  </div>
+
+</div>

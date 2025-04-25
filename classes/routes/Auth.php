@@ -14,10 +14,11 @@ class Auth extends Route{
         $user->authentificate(Database::get_db(), $_POST["login"], $_POST["password"]);
 
         if($user->is_authentified()){
-            $_SESSION["user"] = serialize($currentUser);
+            $_SESSION["user"] = serialize($user);
             header('Location: /');
             die();
         }
         //else do nothing
+        return "";
     }
 }

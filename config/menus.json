@@ -24,5 +24,15 @@
         "default_one":false,
         "link":"/auth",
         "uriPattern": "'^/auth$'"
+    },
+    "Board":{
+        "name":"Table de jeu de rôle",
+        "default_level_needed": "user",
+        "groups_allowed": ["mj"],
+        "display_on_nav": true,
+        "CRUDclass": "BoardMJ",
+        "default_one":false,
+        "link":"/board",
+        "uriPattern": "'^/board(/.*|$)'"
     }
 }

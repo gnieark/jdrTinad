@@ -1,0 +1,81 @@
+h1 {
+    text-align: center;
+    margin: 2em 0 1em;
+  }
+  
+  .accordion {
+    max-width: 700px;
+    margin: auto;
+  }
+  
+  .accordion-item {
+    margin-bottom: 1em;
+    border: 1px solid #ccc;
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  
+  .accordion-title {
+    width: 100%;
+    text-align: left;
+    padding: 1em;
+    font-size: 1.1em;
+    background-color: #eee;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+  }
+  
+  .accordion-title:hover {
+    background-color: #ddd;
+  }
+  
+  .accordion-content {
+    display: none;
+    padding: 1em;
+    background-color: #fafafa;
+  }
+  
+  form {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  label {
+    margin-top: 1em;
+    font-weight: bold;
+  }
+  
+  input[type="text"],
+  textarea {
+    padding: 0.5em;
+    margin-top: 0.3em;
+    border-radius: 4px;
+    border: 1px solid #bbb;
+    font-size: 1em;
+  }
+  
+  .checkbox-group {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5em 1em;
+    margin-top: 0.5em;
+  }
+  
+  .checkbox-group label {
+    font-weight: normal;
+  }
+  
+  button[type="submit"] {
+    margin-top: 2em;
+    padding: 0.75em;
+    background-color: #333;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
+  button[type="submit"]:hover {
+    background-color: #555;
+  }

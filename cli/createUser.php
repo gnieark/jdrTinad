@@ -54,12 +54,4 @@ if (!empty($options['groups'])) {
     $groupsIds =array();
 }
 
-
-
-
-
 UserGroupManager::createUser(Database::get_db(), $display_name, $login, $password , $groupsIds );
-
-
-
-
