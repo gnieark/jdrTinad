@@ -17,22 +17,10 @@ spl_autoload_register(function ($class_name) {
     }
 });
 
-//db con
-$databasePath = "../db/db.sql";
-try {
-    if (!is_dir(dirname($databasePath))) {
-        mkdir(dirname($databasePath), 0755, true);
-    }
-    $db = new PDO('sqlite:' . $databasePath);
-    $db->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
 
-
-} catch (PDOException $e) {
-    die("Erreur de connexion à la base SQLite : " . $e->getMessage());
-}
 
 //create or update base if needed
-$checkDbStructure = new CheckDbStructure($db);
+$checkDbStructure = new CheckDbStructure( Database::get_db() );
 $checkDbStructure->doNeededStructureUpdates();
 
 
@@ -112,4 +100,21 @@ foreach($navMenus as $navItem){
     $tpl->addSubBlock($tplNav);
 
 }
+ if( $currentUser->is_authentified() ){
+    $tpllogoutlink = new TplBlock("logoutlink");
+    $tpllogoutlink->addVars(
+        array(
+            "title"   => "Déconnecter " .htmlentities($currentUser->get_display_name())
+            )
+    );
+    $tpl->addSubBlock($tpllogoutlink);
+ }else{
+    $tplauthlink = new TplBlock("authlink");
+    $tplauthlink -> addVars(
+        array(
+            "title"   => "Accès maître du jeu"
+            )
+    );
+    $tpl->addSubBlock($tplauthlink);
+ }
 echo $tpl->applyTplFile("../templates/main.html");

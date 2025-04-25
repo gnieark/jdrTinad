@@ -43,8 +43,14 @@
         <!-- END navmenus -->
     </div>
     <div class="nav-right">
-      <a href="/auth" target="_self">Accès maître du jeu</a>
+        <!-- BEGIN authlink -->
+        <a href="/auth" target="_self">{{authlink.title}}</a>
+        <!-- END authlink -->
+        <!-- BEGIN logoutlink -->
+        <a href="/logout" target="_self">{{logoutlink.title}}</a>
+        <!-- END logoutlink -->
     </div>
+
   </nav>
 
   <section id="main">

@@ -135,7 +135,9 @@ class UserGroupManager {
             $sql .= " WHERE " .  $customCond;
         }
         $sql .= ";";
+        //echo $sql."\n";
         $sth = $db->prepare($sql);
+
         $sth->execute();
         $arr = array();
         while( $r = $sth->fetch(PDO::FETCH_ASSOC) ){
