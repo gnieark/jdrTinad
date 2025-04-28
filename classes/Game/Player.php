@@ -14,28 +14,7 @@ class Player
     private string $specialFeatures;
     private string $description;
 
-    public function __construct(
-        string $name,
-        string $type,
-        int $courage,
-        int $intelligence,
-        int $charisma,
-        int $dexterity,
-        int $strength,
-        array $equipment,
-        string $specialFeatures,
-        string $description
-    ) {
-        $this->name = $name;
-        $this->type = $type;
-        $this->courage = $courage;
-        $this->intelligence = $intelligence;
-        $this->charisma = $charisma;
-        $this->dexterity = $dexterity;
-        $this->strength = $strength;
-        $this->equipment = $equipment;
-        $this->specialFeatures = $specialFeatures;
-        $this->description = $description;
+    public function __construct() {
     }
 
     public function getUid(): string
@@ -156,6 +135,11 @@ class Player
     public function setDescription(string $description): self
     {
         $this->description = $description;
+        return $this;
+    }
+    public function save ( string $file ):self
+    {
+        file_put_contents( $file, serialize($this) );
         return $this;
     }
 }

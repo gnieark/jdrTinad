@@ -3,8 +3,8 @@ Nom: {{playername}}
 Le type ou catégorie du personnage: {{playertype}}.
 Traits particuliers:{{traits}}.
 
-Génère sa fiche de personnage avec des compétances, leurs signes particuliers, la liste de leur équipement et une description du personnage.
-Les compétances  sont un score de 0 à 20 en Courage,Intelligence,charisme,Adresse et force.
+Génère sa fiche de personnage avec des compétances, ses signes particuliers, la liste de son équipement et une description du personnage.
+Les compétances  sont un score de 0 à 20 en courage, intelligence, charisme, adresse et force.
 Réponds sous forme d'un JSON structuré comme ceci:
 
 {"nom" : "Roger",
@@ -14,6 +14,6 @@ Réponds sous forme d'un JSON structuré comme ceci:
     "charisme" : 7,
     "adresse": 13,
     "force": 4,
-    "équipement": "Lorem Ipsum...",
-    "Description": "Lorem Ipsum..."
+    "equipement": "Lorem Ipsum...",
+    "description": "Lorem Ipsum..."
 }

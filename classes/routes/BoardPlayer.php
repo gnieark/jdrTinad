@@ -68,9 +68,11 @@ class BoardPlayer extends Route{
 
 
     static public function apply_post(User $user):string{
+
+
         if(preg_match ( "'^/(.+)/initpersonnage$'" , $_SERVER["REQUEST_URI"], $matches)){
             $urlPart = $matches[1];
-            //print_r($_POST); Array ( [name] => le nom [race] => humain [traits] => dsfjh lhk!: )
+            $board = Board::loadBoard($urlPart);
             $promptIa = new TplBlock();
             $promptIa->addVars(
                 array(
@@ -79,7 +81,7 @@ class BoardPlayer extends Route{
                     "traits"    => $_POST["traits"]
                 )
             );
-            //promptIA-creerpersonnage.txt
+            
             $apiKey = file_get_contents("../config/mistralapikey.txt");
             $url = 'https://api.mistral.ai/v1/chat/completions';
             
@@ -118,10 +120,22 @@ class BoardPlayer extends Route{
                 $responseArr = json_decode($response,true);
                 $onlyTheResponse = $responseArr["choices"][0]["message"]["content"];
 
-                $onlyTheResponseArr = json_decode($onlyTheResponse);
-                header('Content-Type: application/json');
-                echo json_encode($onlyTheResponseArr, true);
-    
+                $rep = json_decode($onlyTheResponse,true);
+
+                $player = new Player();
+                
+                $player ->setUid( SELF::get_uid_from_cookie() )
+                        ->setName( $rep["nom"] )
+                        ->setType( $rep["type"] )
+                        ->setCourage( $rep["courage"] )
+                        ->setIntelligence( $rep["intelligence"] )
+                        ->setCharisma( $rep["charisme"] )
+                        ->setDexterity( $rep["adresse"] )
+                        ->setStrength( $rep["force"] )
+                        ->setEquipment( $rep["equipement"] )
+                        ->setDescription( $rep["description"]);
+
+                $player->save( $board->get_save_real_path()."/player-" . self::get_uid_from_cookie() );     
             }
             
             curl_close($ch);
