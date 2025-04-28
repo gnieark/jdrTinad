@@ -1,8 +1,11 @@
-document.getElementById('character-form').addEventListener('submit', function (e) {
-    const name = document.getElementById('name').value.trim();
-    const race = document.getElementById('race').value;
-    if (!name || !race) {
-      alert('Merci de remplir au moins le nom et le type/race du personnage.');
-      e.preventDefault();
-    }
+document.addEventListener('DOMContentLoaded', function () {
+    // Accordéon
+    document.querySelectorAll('.accordion-title').forEach(button => {
+      button.addEventListener('click', () => {
+        const content = button.nextElementSibling;
+        const expanded = content.style.display === 'block';
+        document.querySelectorAll('.accordion-content').forEach(c => c.style.display = 'none');
+        content.style.display = expanded ? 'none' : 'block';
+      });
+    });
   });

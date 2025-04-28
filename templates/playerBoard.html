@@ -1,0 +1,62 @@
+<h1>Panneau Joueur</h1>
+
+<div class="accordion">
+
+  <!-- Accordéon : Fiche personnage -->
+  <div class="accordion-item">
+    <button class="accordion-title">Fiche personnage</button>
+    <div class="accordion-content">
+      <div class="character-sheet">
+        <p><strong>Nom :</strong> Jean-Kevin le Brave</p>
+        <p><strong>Type / Race :</strong> Humain / Guerrier</p>
+        <p><strong>Courage :</strong> 15/20</p>
+        <p><strong>Intelligence :</strong> 12/20</p>
+        <p><strong>Charisme :</strong> 10/20</p>
+        <p><strong>Dextérité :</strong> 14/20</p>
+        <p><strong>Force :</strong> 16/20</p>
+        <p><strong>Inventaire :</strong> 
+          <ul>
+            <li>Épée rouillée</li>
+            <li>Petit bouclier en bois</li>
+            <li>Potion de soin</li>
+          </ul>
+        </p>
+        <p><strong>Description et spécificités :</strong><br>
+          Un jeune guerrier en quête de gloire, connu pour ses décisions impulsives mais courageuses.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <!-- Accordéon : Déroulement du jeu -->
+  <div class="accordion-item">
+    <button class="accordion-title">Déroulement du jeu</button>
+    <div class="accordion-content">
+      <div class="game-dialogue">
+        <div class="mj-message"><strong>MJ :</strong> Vous arrivez devant un vieux pont de corde suspendu au-dessus d'un ravin.</div>
+        <div class="player-message"><strong>Jean-Kevin :</strong> Je regarde s’il a l’air solide avant de traverser.</div>
+        <div class="mj-message"><strong>MJ :</strong> Le pont craque sous votre poids, mais semble tenir. Que faites-vous ?</div>
+      </div>
+      <form id="player-response-form" action="/board/respond" method="POST">
+        <textarea name="player_response" rows="4" placeholder="Votre action..." required></textarea>
+        <button type="submit">Envoyer</button>
+      </form>
+    </div>
+  </div>
+
+  <!-- Accordéon : Chat entre joueurs -->
+  <div class="accordion-item">
+    <button class="accordion-title">Chat entre joueurs</button>
+    <div class="accordion-content">
+      <div class="chat-box" id="chat-box">
+        <div class="chat-message"><strong>ElfeDoué :</strong> Vous croyez qu'on doit traverser ?</div>
+        <div class="chat-message"><strong>OgreBourrin :</strong> Moi j'cours dessus !</div>
+      </div>
+      <form id="chat-form" action="/board/chat" method="POST">
+        <input type="text" name="chat_message" placeholder="Écrire un message..." required>
+        <button type="submit">Envoyer</button>
+      </form>
+    </div>
+  </div>
+
+</div>

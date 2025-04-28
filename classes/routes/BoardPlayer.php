@@ -6,7 +6,12 @@ class BoardPlayer extends Route{
         return file_get_contents ("../templates/playerBoard.css");
     }
     static public function get_custom_js():string{
-        return file_get_contents ("../templates/playerBoard.js");
+
+        if($_SERVER["REQUEST_URI"] == "/"){
+            return file_get_contents ("../templates/playerBoard_init.js");
+        }else{
+            return file_get_contents ("../templates/playerBoard.js");
+        }
     }
 
     static private function get_uid_from_cookie():string{
@@ -28,14 +33,19 @@ class BoardPlayer extends Route{
             return $_COOKIE["jdr_uid"];
         }
     }
+    static public function get_content_html_initialized_player(User $user, Board $board){
+        $tpl = new TplBlock();
 
+        return $tpl->applyTplFile("../templates/playerBoard.html");
+
+    }
     static public function get_content_html(User $user):string{
+
         if(preg_match ( "'^/(.+)$'" , $_SERVER["REQUEST_URI"], $matches)){
             $urlpart = $matches[1];
         }else{
             return C404::get_content_html($user);
         }
-
         if(!Board::boardFileExists($urlpart)){
             return C404::get_content_html($user);
         }
@@ -46,7 +56,8 @@ class BoardPlayer extends Route{
             //joueur non initialisé
             return self::get_content_html_new_player($user,$board );
         }
-        return "hey!";
+        
+        return self::get_content_html_initialized_player($user,$board );
     }
 
     static public function get_content_html_new_player(User $user, Board $board):string{
