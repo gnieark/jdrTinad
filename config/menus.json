@@ -34,5 +34,14 @@
         "default_one":false,
         "link":"/board",
         "uriPattern": "'^/board(/.*|$)'"
+    },
+    "PlayerBoard":{
+        "name":"Table de jeu de rôle joueur",
+        "default_level_needed": "guest",
+        "groups_allowed": [],
+        "display_on_nav": false,
+        "CRUDclass": "BoardPlayer",
+        "default_one":false,
+        "uriPattern": "'^(/.+)'"
     }
 }

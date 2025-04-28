@@ -84,6 +84,7 @@ $tpl->addVars(
         "customJS"  => $currentMenu->get_custom_js($currentUser),
         "customCSS" => $currentMenu->get_custom_css($currentUser),
         "content"   => $currentMenu->get_content_html($currentUser),
+        "customElemsOnHeader"   => $currentMenu->get_custom_elems_on_header($currentUser),
         "after_body_tag" => $currentMenu->get_custom_after_body_tag($currentUser)
     )
 );

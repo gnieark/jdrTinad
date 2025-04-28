@@ -35,5 +35,7 @@ class Route
     static public function send_content(User $user):string{
         return "";
     }
-
+    static public function get_custom_elems_on_header(User $user):string{
+        return "";
+    }
 }

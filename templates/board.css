@@ -79,3 +79,19 @@ h1 {
   button[type="submit"]:hover {
     background-color: #555;
   }
+  .qr-container {
+    text-align: center;
+    padding: 2em 0;
+  }
+  
+  .qr-container a {
+    display: block;
+    margin-bottom: 1em;
+    color: #333;
+    font-size: 1.1em;
+    word-break: break-all;
+  }
+  
+  .qr-code {
+    margin-top: 1em;
+  }

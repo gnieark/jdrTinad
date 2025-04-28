@@ -121,5 +121,9 @@ class MenuItem
     }
     public function send_content(User $user): string {
         return call_user_func_array( array( $this->scrudClass, 'send_content'), array($user));
-    }   
+    }
+    //
+    public function get_custom_elems_on_header(User $user): string {
+        return call_user_func_array( array( $this->scrudClass, 'get_custom_elems_on_header'), array($user));
+    }
 }

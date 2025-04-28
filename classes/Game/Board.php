@@ -52,16 +52,28 @@ class Board{
     }
 
     public function set_urlpart( string $part = ""): Board{
+
         if(empty($part)){
-            $this->urlpart = uniqid();
+            $newurlpart = uniqid();
         }else{
-            $this->urlpart = $part;
+            $newurlpart = $part;
         }
+
+        if(isset($this->urlpart)){
+            //move the folder
+            rename("../gamesdatas/" . $this->urlpart, "../gamesdatas/" . $newurlpart );
+        }else{
+            //create the folder
+            mkdir("../gamesdatas/" . $newurlpart, 0700);
+        }
+
+        $this->urlpart = $newurlpart;
+
         $this->testStep0To1();
-        return $this();
+        return $this;
     }
 
-    public function  geturlpart(): string{
+    public function  get_urlpart(): string{
         return $this->urlpart;
     }
 
@@ -71,12 +83,52 @@ class Board{
 
 
     public function newGameTurn(){
-
-
         
+
+
+    }
+    public function save(): Board
+    {
+        if (empty($this->urlpart)) {
+            throw new Exception("Cannot save: urlpart is not set.");
+        }
+    
+        // S'assurer que le dossier existe
+        $folderPath = "../gamesdatas/" . $this->urlpart;
+        if (!is_dir($folderPath)) {
+            mkdir($folderPath, 0700, true);
+        }
+    
+        // Sérialiser avec msgpack
+        $serialized = msgpack_pack($this);
+    
+        // Écrire dans le fichier
+        $path = $folderPath . "/board.bin";
+        file_put_contents($path, $serialized);
+    
+        return $this;
     }
 
+    public static function loadBoard(string $urlPart):Board{
+        $path = "../gamesdatas/" . $urlPart . "/board.bin";
 
+        if (!file_exists($path)) {
+            throw new Exception("Cannot load: file not found at $path.");
+        }
+    
+        $data = file_get_contents($path);
+        $unpacked = msgpack_unpack($data);
+    
+        if (!is_array($unpacked)) {
+            throw new Exception("Cannot load: corrupted data.");
+        }
+    
+        $board = new Board();
+        $board->__unserialize($unpacked);
+    
+        return $board;
+        
+    }
 
 
 
