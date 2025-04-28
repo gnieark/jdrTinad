@@ -76,7 +76,7 @@ class Board{
         return realpath("../gamesdatas/" . $this->urlpart);
     }
 
-    public function  get_urlpart(): string{
+    public function get_urlpart(): string{
         return $this->urlpart;
     }
 

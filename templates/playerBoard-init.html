@@ -1,18 +1,14 @@
 <h1>Création de personnage</h1>
-<form action="/choixpersonnage" method="POST" id="character-form">
+<form action="/{{gameurlpart}}/initpersonnage" method="POST" id="character-form">
   <label for="name">Nom du personnage</label>
   <input type="text" id="name" name="name" required>
 
   <label for="race">Type / Race</label>
   <select id="race" name="race" required>
     <option value="">-- Choisir --</option>
-    <option value="nain">Nain</option>
-    <option value="elfe">Elfe</option>
-    <option value="barbare">Barbare</option>
-    <option value="humain">Humain</option>
-    <option value="ogre">Ogre</option>
-    <option value="gobelin">Gobelin</option>
-    <option value="demi-elfe">Demi-elfe</option>
+    <!-- BEGIN allowedTypes -->
+    <option value="{{allowedTypes.value}}">{{allowedTypes.caption}}</option>
+    <!-- END allowedTypes -->
   </select>
 
   <label for="traits">Traits de caractère particuliers</label>

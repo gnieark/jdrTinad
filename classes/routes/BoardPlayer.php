@@ -44,17 +44,89 @@ class BoardPlayer extends Route{
 
         if(!file_exists($savePath ."/player-" . self::get_uid_from_cookie() )){
             //joueur non initialisé
-            return self::get_content_html_new_player($user);
+            return self::get_content_html_new_player($user,$board );
         }
         return "hey!";
     }
 
-    static public function get_content_html_new_player(User $user):string{
+    static public function get_content_html_new_player(User $user, Board $board):string{
         $tpl = new TplBlock();
+        foreach($board -> get_allowedCreatures() as $allowedCreature ){
+            $tplAllowedTypes = new TplBlock("allowedTypes");
+            $tplAllowedTypes->addVars(array(
+                "value"     => $allowedCreature,
+                "caption"   => $allowedCreature
+            ));
+            $tpl->addSubBlock($tplAllowedTypes);
+        }
 
-
+        $tpl->addVars(
+            array("gameurlpart" => $board->get_urlpart() )
+        );
         return $tpl->applyTplFile("../templates/playerBoard-init.html");
     }
 
 
+    static public function apply_post(User $user):string{
+        if(preg_match ( "'^/(.+)/initpersonnage$'" , $_SERVER["REQUEST_URI"], $matches)){
+            $urlPart = $matches[1];
+            //print_r($_POST); Array ( [name] => le nom [race] => humain [traits] => dsfjh lhk!: )
+            $promptIa = new TplBlock();
+            $promptIa->addVars(
+                array(
+                    "playername" => $_POST["name"],
+                    "playertype" => $_POST["race"],
+                    "traits"    => $_POST["traits"]
+                )
+            );
+            //promptIA-creerpersonnage.txt
+            $apiKey = file_get_contents("../config/mistralapikey.txt");
+            $url = 'https://api.mistral.ai/v1/chat/completions';
+            
+            $data = array(
+                'model' => 'mistral-large-latest',
+                'messages' => array(array(
+                        'role' => 'user',
+                        'content' => $promptIa->applyTplFile("../templates/promptIA-creerpersonnage.txt")
+                )),
+                'response_format' => array("type" => "json_object")
+            )
+            ;
+            
+            $options = [
+                CURLOPT_URL => $url,
+                CURLOPT_RETURNTRANSFER => true,
+                CURLOPT_POST => true,
+                CURLOPT_HTTPHEADER => [
+                    'Content-Type: application/json',
+                    'Accept: application/json',
+                    'Authorization: Bearer ' . $apiKey
+                ],
+                CURLOPT_POSTFIELDS => json_encode($data)
+            ];
+            
+            $ch = curl_init();
+            curl_setopt_array($ch, $options);
+            $response = curl_exec($ch);
+    
+            if (curl_errno($ch)) {
+    
+                echo 'Erreur cURL : ' . curl_error($ch);
+    
+            } else {
+    
+                $responseArr = json_decode($response,true);
+                $onlyTheResponse = $responseArr["choices"][0]["message"]["content"];
+
+                $onlyTheResponseArr = json_decode($onlyTheResponse);
+                header('Content-Type: application/json');
+                echo json_encode($onlyTheResponseArr, true);
+    
+            }
+            
+            curl_close($ch);
+            return "";
+
+        }
+    }
 }
