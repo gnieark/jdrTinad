@@ -72,6 +72,9 @@ class Board{
         $this->testStep0To1();
         return $this;
     }
+    public function get_save_real_path():string{
+        return realpath("../gamesdatas/" . $this->urlpart);
+    }
 
     public function  get_urlpart(): string{
         return $this->urlpart;
@@ -98,36 +101,26 @@ class Board{
         if (!is_dir($folderPath)) {
             mkdir($folderPath, 0700, true);
         }
-    
-        // Sérialiser avec msgpack
-        $serialized = msgpack_pack($this);
-    
+   
         // Écrire dans le fichier
-        $path = $folderPath . "/board.bin";
-        file_put_contents($path, $serialized);
+        $path = $folderPath . "/board.txt";
+        file_put_contents($path, serialize($this));
     
         return $this;
     }
-
+    public static function boardFileExists(string $urlPart):bool{
+        $path = "../gamesdatas/" . $urlPart . "/board.txt";
+        return file_exists($path);
+    }
     public static function loadBoard(string $urlPart):Board{
-        $path = "../gamesdatas/" . $urlPart . "/board.bin";
+        $path = "../gamesdatas/" . $urlPart . "/board.txt";
 
         if (!file_exists($path)) {
             throw new Exception("Cannot load: file not found at $path.");
         }
     
         $data = file_get_contents($path);
-        $unpacked = msgpack_unpack($data);
-    
-        if (!is_array($unpacked)) {
-            throw new Exception("Cannot load: corrupted data.");
-        }
-    
-        $board = new Board();
-        $board->__unserialize($unpacked);
-    
-        return $board;
-        
+        return unserialize($data);        
     }
 
 
