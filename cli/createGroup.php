@@ -9,6 +9,7 @@ spl_autoload_register(function ($class_name) {
                             "../classes/menus/",
                             "../classes/users/",
                             "../classes/routes/",
+                            "../classes/Game/",
 
                         );
     foreach($classFolders as $folder)
