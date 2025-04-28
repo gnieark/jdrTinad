@@ -142,4 +142,9 @@ class Player
         file_put_contents( $file, serialize($this) );
         return $this;
     }
+    public static function loadPlayer(string $file):Player{
+        $data = file_get_contents($file);
+        return unserialize($data); 
+
+    }
 }

@@ -159,3 +159,14 @@
   .chat-message {
     margin-bottom: 0.5em;
   }
+
+  textarea:disabled, input[type="text"]:disabled {
+    background-color: #eee;
+    color: #777;
+    cursor: not-allowed;
+  }
+  
+  button[type="submit"]:disabled {
+    background-color: #999;
+    cursor: not-allowed;
+  }

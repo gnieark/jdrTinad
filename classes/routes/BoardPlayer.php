@@ -12,6 +12,7 @@ class BoardPlayer extends Route{
         }else{
             return file_get_contents ("../templates/playerBoard.js");
         }
+
     }
 
     static private function get_uid_from_cookie():string{
@@ -33,12 +34,31 @@ class BoardPlayer extends Route{
             return $_COOKIE["jdr_uid"];
         }
     }
+
     static public function get_content_html_initialized_player(User $user, Board $board){
         $tpl = new TplBlock();
+        $player = Player::loadPlayer(  $board->get_save_real_path()."/player-" . self::get_uid_from_cookie()  );
+        $tpl->addVars(
+            array(
+                "player_name"           => $player->getName(),
+                "player_type"           => $player->getType(),
+                "player_courage"        => $player->getCourage(),
+                "player_intelligence"   => $player->getIntelligence(),
+                "player_charisma"       => $player->getCharisma(),
+                "player_dexterity"      => $player->getDexterity(),
+                "player_strength"       => $player->getStrength(),
+                "player_description"    => $player->getDescription()
 
+            )
+        );
+        foreach( $player->getEquipment() as $equipment ){
+            $tplplayerequipment = new TplBlock("playerequipment");
+            $tplplayerequipment->addVars(array("name"   => $equipment));
+            $tpl->addSubBlock($tplplayerequipment);
+        }
         return $tpl->applyTplFile("../templates/playerBoard.html");
-
     }
+
     static public function get_content_html(User $user):string{
 
         if(preg_match ( "'^/(.+)$'" , $_SERVER["REQUEST_URI"], $matches)){
@@ -78,8 +98,7 @@ class BoardPlayer extends Route{
     }
 
 
-    static public function apply_post(User $user):string{
-
+    static public function apply_post(User $user):string {
 
         if(preg_match ( "'^/(.+)/initpersonnage$'" , $_SERVER["REQUEST_URI"], $matches)){
             $urlPart = $matches[1];
