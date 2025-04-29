@@ -7,11 +7,16 @@ class BoardPlayer extends Route{
     }
     static public function get_custom_js():string{
 
-        if($_SERVER["REQUEST_URI"] == "/"){
-            return file_get_contents ("../templates/playerBoard_init.js");
-        }else{
+        preg_match ( "'^/(.+)$'" , $_SERVER["REQUEST_URI"], $matches);
+        $urlpart = $matches[1];
+        if( file_exists( "../gamesdatas/" . $urlpart . "/player-" .  self::get_uid_from_cookie()  )){
             return file_get_contents ("../templates/playerBoard.js");
+
+        }else{
+            return file_get_contents ("../templates/playerBoard-init.js");
+
         }
+
 
     }
 
@@ -169,8 +174,11 @@ class BoardPlayer extends Route{
             }
             
             curl_close($ch);
-            return "";
+            header('Location: /' . $board->get_urlpart() );
+            die();
+            
 
         }
+        return "";
     }
 }

@@ -1,3 +1,4 @@
+
 document.addEventListener('DOMContentLoaded', function () {
     // Accordéon
     document.querySelectorAll('.accordion-title').forEach(button => {
