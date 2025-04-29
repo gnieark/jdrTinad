@@ -87,8 +87,24 @@ class Board{
 
     public function newGameTurn(){
         
+    }
+    public function get_players() : array{
+        $players = [];
 
-
+        $folderPath = "../gamesdatas/" . $this->urlpart . "/";
+        if (!is_dir($folderPath)) {
+            return $players;
+        }
+    
+        $files = scandir($folderPath);
+        foreach ($files as $file) {
+            if (str_starts_with($file, "player-")) {
+                $filePath = $folderPath . $file;
+                $players[] = Player::loadPlayer($filePath);
+            }
+        }
+    
+        return $players;
     }
     public function save(): Board
     {

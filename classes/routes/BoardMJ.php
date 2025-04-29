@@ -37,9 +37,7 @@ class BoardMJ extends Route{
             return C403::get_content_html($user);
         }
 
-        if( $_SERVER["REQUEST_URI"] == "/board/init")  {
-            //print_r($_POST); Array ( [game_name] => erturtuyi [prompt] => uyytiuo [custom_url] => non [custom_url_value] => [types] => Array ( [0] => nain [1] => elfe [2] => barbare [3] => humain [4] => ogre [5] => gobelin [6] => demi-elfe ) )
-
+        if( $_SERVER["REQUEST_URI"] == "/board/init")  { 
             $board = new Board();
             $board->set_game_name( $_POST["game_name"] );
 

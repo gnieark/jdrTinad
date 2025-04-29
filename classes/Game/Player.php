@@ -147,4 +147,20 @@ class Player
         return unserialize($data); 
 
     }
+    public function __toArray(): array
+    {
+        return [
+            'uid' => isset($this->uid) ? $this->uid : "",
+            'name' => isset($this->name) ? $this->name : "",
+            'type' => isset($this->type) ? $this->type : "",
+            'courage' => isset($this->courage) ? $this->courage : 0,
+            'intelligence' => isset($this->intelligence) ? $this->intelligence : 0,
+            'charisma' => isset($this->charisma) ? $this->charisma : 0,
+            'dexterity' => isset($this->dexterity) ? $this->dexterity : 0,
+            'strength' => isset($this->strength) ? $this->strength : 0,
+            'equipment' => isset($this->equipment) ? $this->equipment : [],
+            'specialFeatures' => isset($this->specialFeatures) ? $this->specialFeatures : "",
+            'description' => isset($this->description) ? $this->description : "",
+        ];
+    }
 }

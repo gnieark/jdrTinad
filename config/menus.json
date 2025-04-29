@@ -8,6 +8,15 @@
         "uriPattern": "'^/$'",
         "link"  : "/"
     },
+    "API":{
+        "name":"Api",
+        "default_level_needed": "guest",
+        "groups_allowed": [],
+        "display_on_nav": false,
+        "CRUDclass": "Api",
+        "default_one":false,
+        "uriPattern": "'^/API($|/.*)'"
+    },
     "404":{
         "name":"404",
         "default_level_needed": "guest",

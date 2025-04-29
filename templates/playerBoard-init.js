@@ -10,7 +10,10 @@ document.addEventListener('DOMContentLoaded', function () {
   });
 
   const form = document.getElementById('characterform');
+  const submitButton = form.querySelector('button[type="submit"]');
   form.addEventListener('submit', function(event) {
       document.getElementById('loading-overlay').style.display = 'flex';
+      submitButton.disabled = true;
+      submitButton.textContent = 'Chargement...';
   });
 });

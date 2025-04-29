@@ -13,6 +13,17 @@ class C403 extends Route{
     static public function get_custom_css(User $user):string{
         return file_get_contents ("../templates/404.css");
     }
+    static public function send_content_json(): void
+    {
+        http_response_code(403);
+        header('Content-Type: application/json');
+
+        echo json_encode([
+            'error' => 'Forbidden',
+            'message' => 'Vous n\'avez pas les droits pour accéder à cette ressource.'
+        ]);
+        die();
+}
 
     
 }

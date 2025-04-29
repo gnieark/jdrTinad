@@ -82,7 +82,7 @@ class BoardPlayer extends Route{
             return self::get_content_html_new_player($user,$board );
         }
         
-        return self::get_content_html_initialized_player($user,$board );
+        return self::get_content_html_initialized_player( $user,$board );
     }
 
     static public function get_content_html_new_player(User $user, Board $board):string{
