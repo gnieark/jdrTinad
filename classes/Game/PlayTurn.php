@@ -2,10 +2,19 @@
 
 class PlayTurn{
     private string $mjPrompt;
-    private array $playersDiscussions = array();
     private string $allAwnser;
     private array $personalisedAwnsers;
     private bool $closedTurn = false;
+
+    public function __toArrayToPlay( $filterawnsersbyuid = null ): array {
+        
+
+        return [
+            'allAwnser' => $this->allAwnser ?? null,
+            'personalisedAwnsers' => is_null($filterawnsersbyuid )? $this->personalisedAwnsers: $this->personalisedAwnsers[$filterawnsersbyuid],
+            'closedTurn' => $this->closedTurn,
+        ];
+    }
 
     public function set_mjPrompt( string $prompt, bool $isTheFirstTurn = false ):PlayTurn {
         $this->mjPrompt = $prompt;

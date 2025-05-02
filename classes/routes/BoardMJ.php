@@ -35,7 +35,14 @@ class BoardMJ extends Route{
     static public function get_custom_js():string{
 
         if(  preg_match ( "'^/board/(.+)$'", $_SERVER["REQUEST_URI"], $matches)  ){
-            return file_get_contents ("../templates/board.js");
+            $tpl = new TplBlock();
+            $tpl->addVars(
+                array(
+                    "boarduid"  => $matches[1]
+                )
+            );
+
+            return $tpl->applyTplFile ("../templates/board.js");
         }else{
             return file_get_contents ("../templates/board-init.js");
         } 

@@ -10,8 +10,9 @@ class BoardPlayer extends Route{
         preg_match ( "'^/(.+)$'" , $_SERVER["REQUEST_URI"], $matches);
         $urlpart = $matches[1];
         if( file_exists( "../gamesdatas/" . $urlpart . "/player-" .  self::get_uid_from_cookie()  )){
-            return file_get_contents ("../templates/playerBoard.js");
-
+            $tpl = new TplBlock();
+            $tpl->addVars(array("boarduid" => $urlpart ));
+            return $tpl->applyTplFile ("../templates/playerBoard.js");
         }else{
             return file_get_contents ("../templates/playerBoard-init.js");
 
@@ -20,7 +21,7 @@ class BoardPlayer extends Route{
 
     }
 
-    static private function get_uid_from_cookie():string{
+    static public function get_uid_from_cookie():string{
         if( !isset($_COOKIE["jdr_uid"]) ){
             $cookie_name = "jdr_uid";
             $cookie_value = uniqid();

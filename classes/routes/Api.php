@@ -37,7 +37,20 @@ class Api extends Route{
                 "version-uid"   => $board->get_saveUid()
             ),true);
             die();
+        }elseif( preg_match ( "'^/API/board/(.+)/turns$'" , $_SERVER["REQUEST_URI"], $matches) ){
+            $bordUid = $matches[1];
+            if(!Board::boardFileExists($bordUid)){
+                 C404::send_content_json();
+            }
 
+            $board = Board::loadBoard($bordUid);
+            $arr = array();
+            foreach( $board->get_playTurns() as $turn){
+                $arr[] = $turn->__toArrayToPlay( BoardPlayer::get_uid_from_cookie() );
+            }
+            echo (json_encode($arr, true ));
+
+            die();
         }else{
 
             C404::send_content_json();
