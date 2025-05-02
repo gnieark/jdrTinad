@@ -1,3 +1,41 @@
+function createElem(type,attributes)
+{
+    var elem=document.createElement(type);
+    for (var i in attributes)
+    {elem.setAttribute(i,attributes[i]);}
+    return elem;
+}
+
+async function sendPrompt(prompt) {
+  const url = '/API/board/' + boarduid + '/mjprompt';
+  const data = { prompt: prompt };
+
+  try {
+    // Afficher l'overlay de chargement
+    document.getElementById('loading-overlay').style.display = 'flex';
+
+    const response = await fetch(url, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify(data)
+    });
+
+    if (!response.ok) {
+      throw new Error(`Erreur HTTP ${response.status}`);
+    }
+
+    const result = await response.json();
+    console.log('Prompt envoyé avec succès:', result);
+  } catch (error) {
+    console.error('Erreur lors de l’envoi du prompt :', error);
+    alert("Erreur lors de l’envoi du prompt : " + error.message);
+  } finally {
+    // Masquer l'overlay de chargement
+    document.getElementById('loading-overlay').style.display = 'none';
+  }
+}
 function createLinkAndQR(urlPart) {
   const container = document.getElementById('linkandqrcontainer');
   const fullUrl = window.location.protocol + '//' + window.location.host + '/' + urlPart.trim();
@@ -48,17 +86,62 @@ document.addEventListener('DOMContentLoaded', function () {
         content.style.display = expanded ? 'none' : 'block';
       });
     });
-  
-    // Affichage conditionnel de l'URL personnalisée
-    const urlYes = document.getElementById('url-yes');
-    const urlNo = document.getElementById('url-no');
-    const urlField = document.getElementById('custom-url-field');
-  
-    function toggleUrlField() {
-      urlField.style.display = urlYes.checked ? 'block' : 'none';
+
+    const sendPromptButton = document.getElementById("butonSendPrompt");
+    if (sendPromptButton) {
+      sendPromptButton.addEventListener("click", function () {
+        const promptText = document.getElementById("game-prompt").value.trim();
+        sendPrompt(promptText);
+      });
     }
+
+    if (boarduid !== "") {
+      async function fetchPlayers() {
+        try {
+          const response = await fetch(`/API/board/${boarduid}/players`);
+          if (!response.ok) throw new Error('Erreur de chargement');
+          const players = await response.json();
   
-    urlYes.addEventListener('change', toggleUrlField);
-    urlNo.addEventListener('change', toggleUrlField);
-    toggleUrlField(); // Initialisation
+          const container = document.getElementById('players-list');
+          
+          players.forEach(player => {
+            
+            if( document.getElementById("div-listplayers-" + player.uid)){
+              //already exists
+              //divplayer = document.getElementById("div-listplayers-" + player.uid);
+
+            }else{
+              let divplayer = createElem("div",{"class": "player-entry", "id": "div-listplayers-" + player.uid});
+
+
+              let divtitle = createElem("div", {"class":"player-header"} );
+              divtitle.innerText = `${player.name} (${player.type} )`;
+              divtitle.addEventListener('click', () => {
+                document.getElementById("div-listplayers-details" + player.uid).style.display = (document.getElementById("div-listplayers-details" + player.uid).style.display === 'none') ? 'block' : 'none';
+              });
+
+              let divdetails = createElem("div",{"class":"player-details", "id":"div-listplayers-details" + player.uid });
+              divdetails.style.display = 'none';
+              divdetails.innerHTML = `
+              <p><strong>Courage:</strong> ${player.courage}</p>
+              <p><strong>Intelligence:</strong> ${player.intelligence}</p>
+              <p><strong>Charisme:</strong> ${player.charisma}</p>
+              <p><strong>Dextérité:</strong> ${player.dexterity}</p>
+              <p><strong>Force:</strong> ${player.strength}</p>
+              <p><strong>Équipement:</strong> <ul>${player.equipment.map(eq => `<li>${eq}</li>`).join('')}</ul></p>
+              <p><strong>Traits spéciaux:</strong> ${player.specialFeatures || 'Aucun'}</p>
+              <p><strong>Description:</strong> ${player.description}</p>
+              `;
+              divplayer.appendChild(divtitle);
+              divplayer.appendChild(divdetails);
+              container.appendChild(divplayer);
+            }
+          });
+        } catch (err) {
+          console.error('Erreur lors du chargement des joueurs:', err);
+        }
+      }
+      fetchPlayers(); // Chargement initial
+      setInterval(fetchPlayers, 3000); // Mise à jour toutes les 3 secondes
+    }
 });

@@ -4,7 +4,9 @@ class Board{
     private string $game_name;
     private array $allowedCreatures = array();
     private string $urlpart;
-    private array $gamesTurns = array();
+    private array $playTurns = array();
+
+    private string $saveUid;
 
     private int $step;
     /*
@@ -25,8 +27,18 @@ class Board{
         }
     }
 
-
-    public function set_game_name(string $name):board{
+    public function get_saveUid():string{
+        return $this->saveUid;
+    }
+    public function add_playTurn ( PlayTurn $playTurn): Board{
+        $this->playTurns[] = $playTurn;
+        return $this;
+    }
+    public function get_playTurns():array{
+        return $this->playTurns;
+    }
+    
+    public function set_game_name(string $name):Board{
         $this->game_name = $name;
         $this->testStep0To1();
         return $this;
@@ -35,13 +47,13 @@ class Board{
         return $this->game_name;
     }
 
-    public function add_allowedCreature(string $name):board{
+    public function add_allowedCreature(string $name):Board{
         $this->allowedCreatures[] = $name;
         $this->testStep0To1();
         return $this;
     }
 
-    public function set_allowedCreatures(array $creatures): board{
+    public function set_allowedCreatures(array $creatures): Board{
         $this->allowedCreatures = $creatures;
         $this->testStep0To1();
         return $this;
@@ -117,7 +129,7 @@ class Board{
         if (!is_dir($folderPath)) {
             mkdir($folderPath, 0700, true);
         }
-   
+        $this->saveUid = uniqid();
         // Écrire dans le fichier
         $path = $folderPath . "/board.txt";
         file_put_contents($path, serialize($this));
