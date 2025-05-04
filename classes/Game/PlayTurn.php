@@ -55,7 +55,7 @@ class PlayTurn{
             $tplBlock->addSubBlock($tplcustomInstructs);
         }
         $promptToSend =  $tplBlock->applyTplFile($tplFile );
-        $rep = $this->sendMessageToIa($promptToSend );
+        $rep = self::sendMessageToIa($promptToSend );
         $this->allAwnser = $rep["all"];
         foreach($rep["personalised"] as $r){
             $this->personalisedAwnsers[ $r["player-uid"] ] = $r["message"];
@@ -64,7 +64,7 @@ class PlayTurn{
 
     }
 
-    private function sendMessageToIa($message){
+    static public function sendMessageToIa($message){
 
         $apiKey = file_get_contents("../config/mistralapikey.txt");
         $url = 'https://api.mistral.ai/v1/chat/completions';
@@ -100,7 +100,7 @@ class PlayTurn{
             echo 'Erreur cURL : ' . curl_error($ch);
 
         } else {
-            file_put_contents("./Mistral-brut.txt",$response);
+            //file_put_contents("./Mistral-brut.txt",$response);
             $responseArr = json_decode($response,true);
             $onlyTheResponse = $responseArr["choices"][0]["message"]["content"];
 

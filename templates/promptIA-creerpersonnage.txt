@@ -1,19 +1,26 @@
-Nous démarrons un jeu de rôle dans l'univers "Donjon de Naheulbeuk". Un joueur veut créer le personnage suivant:
-Nom: {{playername}}
-Le type ou catégorie du personnage: {{playertype}}.
-Traits particuliers:{{traits}}.
+Nous démarrons un jeu de rôle dans l'univers "Donjon de Naheulbeuk". Un joueur veut créer le personnage suivant :
+- Nom : {{playername}}
+- Type : {{playertype}}
+- Traits particuliers : {{traits}}
 
-Génère sa fiche de personnage avec des compétances, ses signes particuliers, la liste de son équipement et une description du personnage.
-Les compétances  sont un score de 0 à 20 en courage, intelligence, charisme, adresse et force.
-Réponds sous forme d'un JSON structuré comme ceci:
+Ta tâche :
+Génère une fiche de personnage complète avec :
+- des compétences (scores de 0 à 20 en courage, intelligence, charisme, adresse, force),
+- une description du personnage,
+- la liste de son équipement.
 
-{"nom" : "Roger",
-    "type": "Barbare",
-    "courage" : 12,
-    "intelligence": 6,
-    "charisme" : 7,
-    "adresse": 13,
-    "force": 4,
-    "equipement": "Lorem Ipsum...",
-    "description": "Lorem Ipsum..."
+Réponds uniquement au format JSON suivant (aucun texte en dehors du JSON) :
+
+```json
+{
+  "nom": "Roger",
+  "type": "Barbare",
+  "courage": 12,
+  "intelligence": 6,
+  "charisme": 7,
+  "adresse": 13,
+  "force": 4,
+  "equipement": "Lorem Ipsum...",
+  "description": "Lorem Ipsum..."
 }
+```

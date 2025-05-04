@@ -31,6 +31,14 @@ class PlayerAnswer {
         $this->playeranswer = $playeranswer;
         return $this;
     }
+    /*
+    * Parent Board is needed to have more context
+    */
+    public function analyseResponse(Board $board){
+        if (!isset($this->playeranswer) || trim($this->playeranswer) === '') {
+            throw new \LogicException("La réponse du joueur n'a pas été définie avant l'analyse.");
+        }
+    }
     public function get_playeranswer():string{
         return $this->playeranswer;
     }
