@@ -1,6 +1,41 @@
 const boarduid = "{{boarduid}}";
 let boardversion = "";
 
+function createElem(type,attributes)
+{
+    var elem=document.createElement(type);
+    for (var i in attributes)
+    {elem.setAttribute(i,attributes[i]);}
+    return elem;
+}
+
+
+function submitAnwser(awnser, turnuid) {
+  const endpoint = '/API/board/' + boarduid + '/turn/' + turnuid;
+  
+  fetch(endpoint, {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json'
+    },
+    body: JSON.stringify({ "message": awnser })
+  })
+  .then(response => {
+    if (!response.ok) {
+      throw new Error("Échec de l'envoi de la réponse");
+    }
+    return response.json(); // ou .text() selon ce que l'API retourne
+  })
+  .then(data => {
+    console.log("Réponse envoyée avec succès :", data);
+    updateGame(); // Recharger les dialogues après l'envoi
+  })
+  .catch(error => {
+    console.error("Erreur lors de l'envoi de la réponse :", error);
+    alert("Une erreur est survenue lors de l'envoi de votre réponse.");
+  });
+}
+
 
 function updateGame(){
   const endpointApi = '/API/board/' + boarduid + '/turns';
@@ -14,7 +49,12 @@ function updateGame(){
     })
     .then(data => {
       if (!Array.isArray(data)) throw new Error("Format de réponse inattendu");
-
+      if(data.length == 0 ){
+        const mjMessage = document.createElement('div');
+        mjMessage.classList.add('mj-message');
+        mjMessage.innerHTML = `<strong>MJ :</strong> La partie va bientot commencer, veuillez patienter.`;
+        gamedialogsDiv.appendChild(mjMessage);
+      }
       data.forEach((turn, index) => {
         const mjMessage = document.createElement('div');
         mjMessage.classList.add('mj-message');
@@ -30,27 +70,17 @@ function updateGame(){
 
         // Si c'est le dernier tour
         if (index === data.length - 1) {
-          const form = document.createElement('form');
-          form.method = 'POST';
-          form.action = `/API/board/${boarduid}/answer`;
-
-          const textarea = document.createElement('textarea');
-          textarea.name = 'player_response';
-          textarea.placeholder = 'Votre réponse...';
-          textarea.rows = 3;
-
-          const button = document.createElement('button');
-          button.type = 'submit';
-          button.textContent = 'Envoyer';
-
+          let thetextarea = createElem("textarea",{"id":"playerresponsetextarea","placeholder":"Votre réponse...","rows":3});
+          let theButton = createElem("button",{"type":"button"});
+          theButton.textContent = 'Envoyer';
+          theButton.addEventListener('click', () => { submitAnwser( document.getElementById("playerresponsetextarea").value,turn.turnuid ); });
           if (turn.closedTurn) {
-            textarea.disabled = true;
-            button.disabled = true;
+            thetextarea.disabled = true;
+            theButton .disabled = true;
           }
+          gamedialogsDiv.appendChild(thetextarea);
+          gamedialogsDiv.appendChild(theButton);
 
-          form.appendChild(textarea);
-          form.appendChild(button);
-          gamedialogsDiv.appendChild(form);
         }
       });
     })

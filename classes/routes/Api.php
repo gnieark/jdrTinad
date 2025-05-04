@@ -51,6 +51,7 @@ class Api extends Route{
             echo (json_encode($arr, true ));
 
             die();
+
         }else{
 
             C404::send_content_json();
@@ -66,6 +67,11 @@ class Api extends Route{
     static public function apply_post(User $user):string{
         header('Content-Type: application/json; charset=utf-8');
         if(preg_match ( "'^/API/board/(.+)/mjprompt$'" , $_SERVER["REQUEST_URI"], $matches)){
+
+            if( !$user->is_in_group("mj") ){
+                return C403::send_content_json();
+            }
+    
 
             $bordUid = $matches[1];
             if(!Board::boardFileExists($bordUid)){
@@ -91,6 +97,34 @@ class Api extends Route{
             echo '{}'; die();
 
 
+        }elseif( preg_match ( "'^/API/board/(.+)/turn/(.+)$'" , $_SERVER["REQUEST_URI"], $matches)   ){
+        
+            $boardUid = $matches[1];
+            $turnUid = $matches[2];
+
+            $board = Board::loadBoard($boardUid);
+            $turns = $board->get_playTurns();
+            $turn = end( $turns );
+
+            if(( $turn->get_turnUID() !== $turnUid ) || $turn -> is_closed( BoardPlayer::get_uid_from_cookie() )) {
+                header("HTTP/1.1 409 Conflict");
+                echo json_encode(array(
+                    "code" => 409,
+                    "error" => "Turn is already closed for answers."
+                ));
+                die();
+
+            }
+
+            $arr = json_decode( file_get_contents('php://input'), true );
+            $playerAnwser = new PlayerAnswer( $turnUid,  BoardPlayer::get_uid_from_cookie() );
+            $playerAnwser -> set_playeranswer($arr["message"]);
+            var_dump($playerAnwser);
+            die();
+
+      
+        }else{
+            C404::send_content_json();
         }
 
 

@@ -5,6 +5,7 @@ class PlayTurn{
     private string $allAwnser;
     private array $personalisedAwnsers;
     private bool $closedTurn = false;
+    private string $turnUID;
 
     public function __toArrayToPlay( $filterawnsersbyuid = null ): array {
         
@@ -12,15 +13,25 @@ class PlayTurn{
         return [
             'allAwnser' => $this->allAwnser ?? null,
             'personalisedAwnsers' => is_null($filterawnsersbyuid )? $this->personalisedAwnsers: $this->personalisedAwnsers[$filterawnsersbyuid],
-            'closedTurn' => $this->closedTurn,
+            'closedTurn' => $this->is_closed($filterawnsersbyuid),
+            'turnuid'   => $this->turnUID
         ];
     }
-
+    public function is_closed( $filterawnsersbyuid = null ): bool{
+        return $this->closedTurn;
+    }
     public function set_mjPrompt( string $prompt, bool $isTheFirstTurn = false ):PlayTurn {
         $this->mjPrompt = $prompt;
         return $this;
     }
-
+    public function __Construct(){
+        if(!isset( $this->turnUID )){
+            $this->turnUID = uniqid();
+        }
+    }
+    public function get_turnUID():string{
+        return $this->turnUID;
+    }
     public function playPrompt( array $players, bool $isTheFirstTurn = false ): PlayTurn{
         $tplFile = $isTheFirstTurn? "../templates/promptIA-firstTurn.txt" : "../templates/promptIA-newTurn.txt";
         $tplBlock = new TplBlock();
