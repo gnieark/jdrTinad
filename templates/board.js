@@ -76,6 +76,33 @@ function createLinkAndQR(urlPart) {
   }
 }
 
+async function fillTurnDiv(turnuid){
+  let urlapi = '/API/board/' + boarduid + '/turnMJ/' + turnuid;
+
+}
+
+async function placeTurnsDivs(){
+  let urlapi = '/API/board/' + boarduid + '/turnslist';
+
+  const response = await fetch(urlapi);
+  if (!response.ok) throw new Error('Erreur de chargement');
+  const rep = await response.json();
+
+  const container = document.getElementById('gameturns');
+  
+  rep.turns.forEach(turnuid => {
+    
+    if( document.getElementById("div-gameturns-t" + turnuid )){
+      //already exists
+    }else{
+      let divturn = createElem("div",{"class": "turn-entry", "id": "div-gameturns-t" + turnuid });
+      divturn.innerText = turnuid;
+      container.appendChild( divturn );
+    }
+  });
+
+
+}
 document.addEventListener('DOMContentLoaded', function () {
     // Accordéon
     document.querySelectorAll('.accordion-title').forEach(button => {
@@ -143,5 +170,6 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       fetchPlayers(); // Chargement initial
       setInterval(fetchPlayers, 3000); // Mise à jour toutes les 3 secondes
+      setInterval(placeTurnsDivs,3000);
     }
 });

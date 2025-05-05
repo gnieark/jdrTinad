@@ -46,18 +46,38 @@ class Api extends Route{
             $board = Board::loadBoard($bordUid);
             $arr = array();
             foreach( $board->get_playTurns() as $turn){
+                $turn->loadPlayersResponses($bordUid);
                 $arr[] = $turn->__toArrayToPlay( BoardPlayer::get_uid_from_cookie() );
             }
             echo (json_encode($arr, true ));
 
+            die();
+        }elseif( preg_match ( "'^/API/board/(.+)/turnslist$'" , $_SERVER["REQUEST_URI"], $matches) ){
+            $bordUid = $matches[1];
+            //retourne la liste des tours avec leur UID
+            if( !$user->is_in_group("mj") ){
+                return C403::send_content_json();
+            }
+
+            $board = Board::loadBoard($bordUid);
+            $turns = $board->get_playTurns();
+            $turnsArr = array();
+            foreach($turns as $turn){
+                $turnsArr[] = $turn->get_turnUID();
+            }
+            echo json_encode(
+                array(
+                    "message"   => 'OK',
+                    "turns"     => $turnsArr
+                )
+            );
+            
             die();
 
         }else{
 
             C404::send_content_json();
         }
-
-
         return "";
     }
 
@@ -87,7 +107,9 @@ class Api extends Route{
                 //it's the first turn
 
             }
-           
+
+            $board->closeLastTurn();
+
             $gameTurn->set_mjPrompt($arr["prompt"]);
             $gameTurn->playPrompt( $board->get_players(), true );
             $board->add_playTurn($gameTurn);

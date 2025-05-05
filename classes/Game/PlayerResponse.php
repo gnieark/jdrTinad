@@ -4,13 +4,28 @@ class  PlayerResponse{
     private string $playTurnUID;
     private string $playerresponse;
     private bool $needDiceRoll;
-    private string $skillToTest;
+    private array $testedSkills = array();
     private bool $diceRollSuccess;
     private bool $diceResultCritical;
+    private array $diceScores = array();
     private array $playerResponsesCategories = array();
     private string $responseanalysis;
 
+    public function _toArrayToPlay(){
+        $arr = array(
+            "playerUID"         => $this->playerUID,
+            "playTurnUID"       => $this->playTurnUID,
+            "player_response"   => $this->playerresponse,
+            "tested_skills"     => $this->testedSkills,
+        );
+        if(!empty($this->testedSkills)){
+            $arr["dices_scores"]    = $this->diceScores;
+            $arr["dices_succes"]    = $this->diceRollSuccess;
+            $arr["dices_critical"]  = $this->diceResultCritical;
 
+        }
+        return $arr;
+    }
     public function __Construct(string $playTurnUID, string $playerUID){
         $this->set_playerUID($playerUID)
               ->set_playTurnUID($playTurnUID);
@@ -98,6 +113,8 @@ class  PlayerResponse{
             foreach( $repIA["competances_a_tester"] as $competence){
                 //jet de dé
                 $diceScore = random_int(0, 20);
+                $this->diceScores[] = $diceScore;
+                $this->testedSkills[] = $competence;
                 switch($competence){
                     case "courage":
                         $competanceValue = $player->getCourage();

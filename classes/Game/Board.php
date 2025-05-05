@@ -34,11 +34,24 @@ class Board{
         $this->playTurns[] = $playTurn;
         return $this;
     }
+
+    private function loadPlayersResponsesOnPlayTurns(){
+
+    }
+
     public function get_playTurns():array{
+
         return $this->playTurns;
     }
 
-    
+    public function closeLastTurn():self{
+        if( !empty($this->playTurns) ){
+            $this->playTurns[ count($this->playTurns) -1 ]->close();
+            $this->save();
+        }
+        
+
+    }
     public function set_game_name(string $name):Board{
         $this->game_name = $name;
         $this->testStep0To1();
@@ -153,7 +166,7 @@ class Board{
         }
 
         //save path
-        $folderPath = "../gamesdatas/" . $this->urlpart . "turn-" . $playerResponse->get_playTurnUID();
+        $folderPath = "../gamesdatas/" . $this->urlpart . "/turn-" . $playerResponse->get_playTurnUID();
         if (!is_dir($folderPath)) {
             mkdir($folderPath, 0700, true);
         }

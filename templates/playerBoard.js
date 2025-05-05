@@ -11,6 +11,7 @@ function createElem(type,attributes)
 
 
 function submitAnwser(awnser, turnuid) {
+
   const endpoint = '/API/board/' + boarduid + '/turn/' + turnuid;
   
   fetch(endpoint, {
@@ -61,11 +62,34 @@ function updateGame(){
         mjMessage.innerHTML = `<strong>MJ :</strong> ${turn.allAwnser}<br><em>${turn.personalisedAwnsers}</em>`;
         gamedialogsDiv.appendChild(mjMessage);
 
-        if (turn.playerResponse) {
+        if (turn.playersResponses.playerUID) {
           const playerMessage = document.createElement('div');
           playerMessage.classList.add('player-message');
-          playerMessage.innerHTML = `<strong>Vous :</strong> ${turn.playerResponse}`;
+          playerMessage.innerHTML = `<strong>Vous :</strong> ${turn.playersResponses.player_response}`;
           gamedialogsDiv.appendChild(playerMessage);
+
+          if (Array.isArray(turn.playersResponses.tested_skills) && turn.playersResponses.tested_skills.length > 0) {
+            const resultsMessage = document.createElement('div');
+            resultsMessage.classList.add('dice-results');
+      
+            const skills = turn.playersResponses.tested_skills;
+            const scores = turn.playersResponses.dices_scores || [];
+            const success = turn.playersResponses.dices_succes ? "Oui" : "Non";
+            const critical = turn.playersResponses.dices_critical ? "Oui" : "Non";
+      
+            let resultHtml = `<strong>Jet de compétences :</strong><br><ul>`;
+            skills.forEach((skill, i) => {
+              const score = scores[i] !== undefined ? scores[i] : "n/a";
+              resultHtml += `<li>${skill} : ${score}</li>`;
+            });
+            resultHtml += `</ul>`;
+            resultHtml += `<strong>Succès :</strong> ${success}<br>`;
+            resultHtml += `<strong>Critique :</strong> ${critical}`;
+            resultsMessage.innerHTML = resultHtml;
+      
+            gamedialogsDiv.appendChild(resultsMessage);
+          }
+
         }
 
         // Si c'est le dernier tour
@@ -74,7 +98,7 @@ function updateGame(){
           let theButton = createElem("button",{"type":"button"});
           theButton.textContent = 'Envoyer';
           theButton.addEventListener('click', () => { submitAnwser( document.getElementById("playerresponsetextarea").value,turn.turnuid ); });
-          if (turn.closedTurn) {
+          if (turn.closedTurn || turn.playersResponses.playerUID) {
             thetextarea.disabled = true;
             theButton .disabled = true;
           }

@@ -4,22 +4,61 @@ class PlayTurn{
     private string $mjPrompt; //Indications given by the host
     private string $allAwnser; //Prompt given to all players
     private array $personalisedAwnsers;
+    private array $playerResponses = array(); //array of PlayerResponse Objs
     private bool $closedTurn = false;
     private string $turnUID;
     
 
     public function __toArrayToPlay( $filterawnsersbyuid = null ): array {
         
+        $playerResponsesArr = array();
+        if(is_null($filterawnsersbyuid)){
+            
+            foreach($this->playerResponses as $response )
+            {
+                $playerResponsesArr[] = $response->_toArrayToPlay();
+            }
 
-        return [
+        }else{
+            foreach($this->playerResponses as $response )
+            {
+                if( $response->get_playerUID() == $filterawnsersbyuid ){
+                    $playerResponsesArr = $response->_toArrayToPlay();
+                }
+            }
+
+        }
+
+        $arr = [
             'allAwnser' => $this->allAwnser ?? null,
             'personalisedAwnsers' => is_null($filterawnsersbyuid )? $this->personalisedAwnsers: $this->personalisedAwnsers[$filterawnsersbyuid],
+            'playersResponses'  =>  $playerResponsesArr,
             'closedTurn' => $this->is_closed($filterawnsersbyuid),
             'turnuid'   => $this->turnUID
         ];
+
+        return $arr;
     }
+
+    public function loadPlayersResponses(string $boarduid):self{
+        $folderPath = "../gamesdatas/" . $boarduid . "/turn-" . $this->get_turnUID();
+
+        $files = scandir($folderPath);
+        $this->playerResponses = array();
+        foreach ($files as $file) {
+            if (str_ends_with($file, '.txt')) {
+                $filePath = $folderPath . "/" . $file;
+                $this->playerResponses[] = PlayerResponse::load($filePath);
+            }
+        }
+        return $this;
+    }
+
     public function is_closed( $filterawnsersbyuid = null ): bool{
         return $this->closedTurn;
+    }
+    public function close(){
+        $this->closeTurn = true;
     }
     public function set_mjPrompt( string $prompt, bool $isTheFirstTurn = false ):PlayTurn {
         $this->mjPrompt = $prompt;
@@ -28,9 +67,8 @@ class PlayTurn{
     public function get_personalisedAwnsers():array {
         return $this->personalisedAwnsers;
     }
-    public function get_playersResponses(){
-        //to do
-        return array();
+    public function get_playersResponses():array{
+        return $this->playerResponses;
     }
 
     public function get_allAwnser():string{
