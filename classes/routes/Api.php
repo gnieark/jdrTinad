@@ -120,7 +120,24 @@ class Api extends Route{
             $playerResponse = new PlayerResponse( $turnUid,  BoardPlayer::get_uid_from_cookie() );
             $playerResponse -> set_playerresponse($arr["message"]);
             $playerResponse -> analyseResponse($board);
-            var_dump($playerAnwser);
+            $success = $board->add_playerResponse($playerResponse );
+
+            if(!$success) {
+                header("HTTP/1.1 409 Conflict");
+                echo json_encode(array(
+                    "code" => 409,
+                    "error" => "Turn is already closed for answers."
+                ));
+                die();
+
+            }else{
+                echo json_encode(array(
+                    "code" => 200,
+                    "message" => "Réponse ajoutée."
+                ));
+
+
+            }
             die();
 
       

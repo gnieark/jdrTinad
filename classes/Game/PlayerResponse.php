@@ -13,7 +13,7 @@ class  PlayerResponse{
 
     public function __Construct(string $playTurnUID, string $playerUID){
         $this->set_playerUID($playerUID)
-              ->set_playerUID($playTurnUID);
+              ->set_playTurnUID($playTurnUID);
     }
     public function set_playerUID( string $uid ) :PlayerResponse{
         $this->playerUID = $uid;
@@ -94,7 +94,7 @@ class  PlayerResponse{
         if( !empty( $repIA["competances_a_tester"] ) ){
             //have to test dices
             $this->diceRollSuccess = true;
-            $critical = false;
+            $this->diceResultCritical = false;
             foreach( $repIA["competances_a_tester"] as $competence){
                 //jet de dé
                 $diceScore = random_int(0, 20);
@@ -169,6 +169,16 @@ class  PlayerResponse{
 
 
         }
+    }
+
+    public function save( string $file) :self{
+        file_put_contents( $file, serialize($this) );
+        return $this;
+    }
+
+    public static function load($file):self{
+            $data = file_get_contents($file);
+            return unserialize($data); 
     }
 
     

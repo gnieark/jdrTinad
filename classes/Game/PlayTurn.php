@@ -32,6 +32,7 @@ class PlayTurn{
         //to do
         return array();
     }
+
     public function get_allAwnser():string{
         return $this->allAwnser;
     }

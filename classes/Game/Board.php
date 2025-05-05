@@ -37,6 +37,7 @@ class Board{
     public function get_playTurns():array{
         return $this->playTurns;
     }
+
     
     public function set_game_name(string $name):Board{
         $this->game_name = $name;
@@ -144,6 +145,24 @@ class Board{
     
         return $this;
     }
+
+    public function add_playerResponse(PlayerResponse $playerResponse) :bool{
+        $lastTurn = end($this->playTurns);
+        if( $playerResponse->get_playTurnUID() <> $lastTurn->get_turnUID() ){
+            return false;
+        }
+
+        //save path
+        $folderPath = "../gamesdatas/" . $this->urlpart . "turn-" . $playerResponse->get_playTurnUID();
+        if (!is_dir($folderPath)) {
+            mkdir($folderPath, 0700, true);
+        }
+        $savePath = $folderPath . "/" . $playerResponse->get_playerUID() . ".txt";
+        $playerResponse->save($savePath);
+        return true;
+
+    }
+
     public static function boardFileExists(string $urlPart):bool{
         $path = "../gamesdatas/" . $urlPart . "/board.txt";
         return file_exists($path);
@@ -158,6 +177,8 @@ class Board{
         $data = file_get_contents($path);
         return unserialize($data);        
     }
+
+    
 
 
 
