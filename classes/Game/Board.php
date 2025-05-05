@@ -100,6 +100,14 @@ class Board{
     public function newGameTurn(){
         
     }
+
+    public function get_player_by_uid(string $uid):Player{
+        $filePath = "../gamesdatas/" . $this->urlpart . "/player-" .  $uid;
+        if(!file_exists($filePath)){
+            throw new Exception("no player found with uid .".$uid);
+        }
+        return Player::loadPlayer($filePath);
+    }
     public function get_players() : array{
         $players = [];
 

@@ -1,0 +1,2 @@
+La réponse du joueur n'est pas cohérente dans cet univers, ou avec les caratréristique de son personnages ou son inventaire.
+Considère qu'il a eu une halucination ou qu'il a révé et qu'au final, il n'a rien fait à ce tour de jeu.

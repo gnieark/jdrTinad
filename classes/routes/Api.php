@@ -117,8 +117,9 @@ class Api extends Route{
             }
 
             $arr = json_decode( file_get_contents('php://input'), true );
-            $playerAnwser = new PlayerAnswer( $turnUid,  BoardPlayer::get_uid_from_cookie() );
-            $playerAnwser -> set_playeranswer($arr["message"]);
+            $playerResponse = new PlayerResponse( $turnUid,  BoardPlayer::get_uid_from_cookie() );
+            $playerResponse -> set_playerresponse($arr["message"]);
+            $playerResponse -> analyseResponse($board);
             var_dump($playerAnwser);
             die();
 

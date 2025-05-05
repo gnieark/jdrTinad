@@ -20,7 +20,7 @@ Réponds uniquement au format JSON suivant (aucun texte en dehors du JSON) :
   "charisme": 7,
   "adresse": 13,
   "force": 4,
-  "equipement": "Lorem Ipsum...",
+  "equipement": ['hache','bouclier','gourde de boisson doutteuse'],
   "description": "Lorem Ipsum..."
 }
 ```

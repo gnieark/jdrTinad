@@ -1,11 +1,12 @@
 <?php
 
 class PlayTurn{
-    private string $mjPrompt;
-    private string $allAwnser;
+    private string $mjPrompt; //Indications given by the host
+    private string $allAwnser; //Prompt given to all players
     private array $personalisedAwnsers;
     private bool $closedTurn = false;
     private string $turnUID;
+    
 
     public function __toArrayToPlay( $filterawnsersbyuid = null ): array {
         
@@ -23,6 +24,16 @@ class PlayTurn{
     public function set_mjPrompt( string $prompt, bool $isTheFirstTurn = false ):PlayTurn {
         $this->mjPrompt = $prompt;
         return $this;
+    }
+    public function get_personalisedAwnsers():array {
+        return $this->personalisedAwnsers;
+    }
+    public function get_playersResponses(){
+        //to do
+        return array();
+    }
+    public function get_allAwnser():string{
+        return $this->allAwnser;
     }
     public function __Construct(){
         if(!isset( $this->turnUID )){

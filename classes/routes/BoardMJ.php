@@ -70,6 +70,7 @@ class BoardMJ extends Route{
             $board->set_allowedCreatures( $_POST["types"] );
             $board->save();
             header('Location: /board/' . $board->get_urlpart() );
+            die();
         }
 
 
