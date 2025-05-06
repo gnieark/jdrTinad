@@ -1,0 +1,30 @@
+Nous démarrons une partie de jeu de rôle dans l'univers du Donjon de Naheulbeuk.
+
+Les joueurs sont :
+[{"uid":"6819e1af7496d","name":"Remi","type":"nain","courage":15,"intelligence":8,"charisma":9,"dexterity":12,"strength":16,"equipment":["marteau de guerre","casque en fer","barbe bien entretenue","sac \u00e0 dos rempli de pierres pr\u00e9cieuses"],"specialFeatures":"","description":"Remi est un nain robuste et d\u00e9termin\u00e9, toujours pr\u00eat \u00e0 se battre pour d\u00e9fendre les siens. Il a une barbe \u00e9paisse et bien entretenue, un signe de fiert\u00e9 et de statut parmi les nains. Remi est connu pour son courage et sa force, mais il n'est pas toujours le plus charismatique ou le plus intelligent du groupe. Malgr\u00e9 cela, il est un atout pr\u00e9cieux gr\u00e2ce \u00e0 son adresse et sa capacit\u00e9 \u00e0 manier le marteau de guerre avec une pr\u00e9cision redoutable."},{"uid":"6819e3bc43438","name":"PapyPatou","type":"nain","courage":16,"intelligence":8,"charisma":5,"dexterity":12,"strength":15,"equipment":["hache de guerre","casque en acier","bouclier en bois","gourde de bi\u00e8re","sac \u00e0 dos rempli de pierres pr\u00e9cieuses"],"specialFeatures":"","description":"PapyPatou est un nain r\u00e2leur et grognon, toujours pr\u00eat \u00e0 se plaindre de tout et de rien. Malgr\u00e9 son caract\u00e8re difficile, il est un combattant redoutable et un compagnon loyal. Il aime particuli\u00e8rement les pierres pr\u00e9cieuses et ne manque jamais une occasion de se vanter de ses exploits pass\u00e9s."},{"uid":"6819e3e229275","name":"Gerard","type":"Barbare","courage":18,"intelligence":5,"charisma":4,"dexterity":15,"strength":19,"equipment":["hache \u00e0 double tranchant","armure de cuir clout\u00e9e","gourde de bi\u00e8re","sac \u00e0 dos en peau de b\u00eate"],"specialFeatures":"","description":"Gerard est un barbare robuste et imposant, connu pour son franc-parler et ses mani\u00e8res brusques. Avec ses muscles saillants et sa barbe hirsute, il inspire autant la crainte que le respect. Il pr\u00e9f\u00e8re les solutions directes et violentes aux probl\u00e8mes, et ne s'embarrasse pas de diplomatie. Sa grossi\u00e8ret\u00e9 est l\u00e9gendaire, et il n'h\u00e9site pas \u00e0 dire ce qu'il pense, m\u00eame si cela peut offenser. Arm\u00e9 de sa hache \u00e0 double tranchant et prot\u00e9g\u00e9 par son armure de cuir clout\u00e9e, Gerard est pr\u00eat \u00e0 affronter n'importe quel danger."}]
+
+Tu es le maître du jeu.
+
+
+
+
+
+Génère un message global (champ "all") qui sera visible par tous les joueurs, et un message personnalisé pour chaque joueur (champ "personalised").
+
+Réponds uniquement sous la forme d’un JSON structuré, comme cet exemple :
+
+```json
+{
+  "all": "Lorem ipsum...",
+  "personalised": [
+    {
+      "player-uid": "XXXX",
+      "message": "Lorem Ipsum 2 ..."
+    },
+    {
+      "player-uid": "XXXY",
+      "message": "Lorem Ipsum 3 ..."
+    }
+  ]
+}
+```

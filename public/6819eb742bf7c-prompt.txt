@@ -1,0 +1,41 @@
+Nous jouons une partie de jeu de rôle dans l'univers du Donjon de Naheulbeuk.
+
+Les joueurs sont :
+[{"uid":"6819db34d5355","name":"Roger","type":"Magicien","courage":8,"intelligence":18,"charisma":10,"dexterity":12,"strength":5,"equipment":["b\u00e2ton magique","grimoire de sorts","robe de magicien","sacoche de composants","chapeau pointu"],"specialFeatures":"","description":"Roger est un magicien astucieux et curieux, toujours \u00e0 la recherche de nouveaux sorts et connaissances. Malgr\u00e9 son apparence fr\u00eale, il poss\u00e8de une volont\u00e9 de fer et une intelligence aigu\u00eb. Ses comp\u00e9tences en magie sont redoutables, mais il pr\u00e9f\u00e8re \u00e9viter les confrontations directes, pr\u00e9f\u00e9rant utiliser sa ruse et ses sorts pour se tirer d'affaire."}]
+
+Tu es le maître du jeu.
+
+Voici l'historique des échanges entre le maître du jeu, les joueurs et l'animateur de la partie.
+
+```json
+[{"allAwnser":"Bienvenue dans l'univers du Donjon de Naheulbeuk ! Vous vous trouvez \u00e0 l'entr\u00e9e d'un sombre donjon, o\u00f9 des myst\u00e8res et des dangers vous attendent. Pr\u00e9parez-vous \u00e0 affronter des cr\u00e9atures \u00e9tranges et \u00e0 r\u00e9soudre des \u00e9nigmes complexes. Que la chance soit avec vous !","personalisedAwnsers":{"6819db34d5355":"Roger, en tant que magicien, tu devras faire preuve d'intelligence et de ruse pour surmonter les obstacles qui se dresseront devant toi. Utilise tes sorts avec sagesse et n'h\u00e9site pas \u00e0 consulter ton grimoire pour trouver des solutions aux probl\u00e8mes que vous rencontrerez."},"playersResponses":[],"closedTurn":false,"turnuid":"6819eaf993d4f"},{"allAwnser":"Vous vous dirigez vers la guilde des qu\u00eates, un b\u00e2timent imposant et ancien situ\u00e9 au c\u0153ur de la ville. En entrant, vous \u00eates accueillis par une foule de personnages de toutes sortes : aventuriers, marchands, et m\u00eame quelques cr\u00e9atures \u00e9tranges. L'air est charg\u00e9 d'une \u00e9nergie palpable, m\u00e9lange d'excitation et de tension. Vous vous approchez du bureau des missions, o\u00f9 un employ\u00e9 de la guilde vous accueille avec un sourire narquois.","personalisedAwnsers":{"6819db34d5355":"Roger, en tant que magicien, tu pourrais utiliser ton intelligence et ton charisme pour impressionner l'employ\u00e9 de la guilde et obtenir une qu\u00eate int\u00e9ressante. Peut-\u00eatre pourrais-tu lui montrer un de tes sorts les plus impressionnants pour le convaincre de ta valeur."},"playersResponses":[{"playerUID":"6819db34d5355","playTurnUID":"6819eb1c597cc","player_response":"Je fais une d\u00e9monstration du sort d'invisibilit\u00e9","tested_skills":["intelligence","charisma"],"responseanalysis":"Les comp\u00e9tances du joueur ont \u00e9t\u00e9 test\u00e9es aux d\u00e9s pour cette action, c'est un succ\u00e8s.","dices_scores":[11,3],"dices_succes":true,"dices_critical":false}],"closedTurn":false,"turnuid":"6819eb1c597cc"}]
+```
+
+
+
+
+Ta tâche :
+Imagine la suite de l'histoire en restant cohérant avec l'univers et les personnages. Prends en compte notemment:
+- Les actions proposées par les joueurs lors du dernier échange.
+- Les instructions données pour chacune par l'animateur de la partie dans le champs responseanalysis
+
+
+Génère un message global (champ "all") qui sera visible par tous les joueurs, et un message personnalisé pour chaque joueur (champ "personalised").
+
+Réponds uniquement sous la forme d’un JSON structuré, comme cet exemple :
+
+```json
+{
+  "all": "Lorem ipsum...",
+  "personalised": [
+    {
+      "player-uid": "XXXX",
+      "message": "Lorem Ipsum 2 ..."
+    },
+    {
+      "player-uid": "XXXY",
+      "message": "Lorem Ipsum 3 ..."
+    }
+  ]
+}
+```

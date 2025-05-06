@@ -17,6 +17,7 @@ class  PlayerResponse{
             "playTurnUID"       => $this->playTurnUID,
             "player_response"   => $this->playerresponse,
             "tested_skills"     => $this->testedSkills,
+            "responseanalysis"  => $this->responseanalysis
         );
         if(!empty($this->testedSkills)){
             $arr["dices_scores"]    = $this->diceScores;
