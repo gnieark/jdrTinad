@@ -66,7 +66,10 @@ class BoardPlayer extends Route{
     }
 
     static public function get_content_html(User $user):string{
-
+        if(preg_match ( "'^/(.+)/initpersonnage$'" , $_SERVER["REQUEST_URI"], $matches)){
+            header('Location: /' . $matches[1]);
+            die();
+        }
         if(preg_match ( "'^/(.+)$'" , $_SERVER["REQUEST_URI"], $matches)){
             $urlpart = $matches[1];
         }else{

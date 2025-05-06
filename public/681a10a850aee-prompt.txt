@@ -1,0 +1,30 @@
+Nous démarrons une partie de jeu de rôle dans l'univers du Donjon de Naheulbeuk.
+
+Les joueurs sont :
+[{"uid":"680f76507f89c","name":"Ragnar","type":"Elfe","courage":14,"intelligence":16,"charisma":15,"dexterity":18,"strength":8,"equipment":["arc long","carquois de fl\u00e8ches","dague elfique","cape de camouflage","potion de soin"],"specialFeatures":"","description":"Ragnar est un elfe svelte et agile, aux cheveux d'argent et aux yeux per\u00e7ants. Il est un archer hors pair, capable de se fondre dans la nature avec une aisance d\u00e9concertante. Bien que r\u00e9serv\u00e9 et souvent solitaire, il poss\u00e8de un charisme naturel qui lui permet de gagner la confiance de ses alli\u00e9s. Sa grande intelligence et sa sagesse en font un atout pr\u00e9cieux pour l'\u00e9quipe, bien qu'il pr\u00e9f\u00e8re parfois l'isolement pour m\u00e9diter sur les myst\u00e8res de la for\u00eat."},{"uid":"68107ba4c5c85","name":"Gnieark","type":"Barbare","courage":18,"intelligence":8,"charisma":5,"dexterity":14,"strength":17,"equipment":["hache de guerre","armure de cuir","gourde de potion de soin","ceinture de force","amulette de protection"],"specialFeatures":"","description":"Gnieark est un barbare imposant, aux muscles saillants et au regard per\u00e7ant. Il porte une armure de cuir us\u00e9e par les nombreuses batailles et une hache de guerre qu'il manie avec une aisance impressionnante. Sa peau est marqu\u00e9e par des cicatrices de combat, t\u00e9moignant de son exp\u00e9rience et de sa bravoure. Malgr\u00e9 son apparence rude, il poss\u00e8de une certaine sagesse acquise au fil des ann\u00e9es et des aventures."}]
+
+Tu es le maître du jeu.
+
+
+
+
+
+Génère un message global (champ "all") qui sera visible par tous les joueurs, et un message personnalisé pour chaque joueur (champ "personalised").
+
+Réponds uniquement sous la forme d’un JSON structuré, comme cet exemple :
+
+```json
+{
+  "all": "Lorem ipsum...",
+  "personalised": [
+    {
+      "player-uid": "XXXX",
+      "message": "Lorem Ipsum 2 ..."
+    },
+    {
+      "player-uid": "XXXY",
+      "message": "Lorem Ipsum 3 ..."
+    }
+  ]
+}
+```

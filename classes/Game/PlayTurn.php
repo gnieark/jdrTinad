@@ -28,10 +28,15 @@ class PlayTurn{
             }
 
         }
-
+        if( is_null( $filterawnsersbyuid )){
+            $personalisedAwnsers = $this->personalisedAwnsers;
+        }else{
+            $personalisedAwnsers = isset($this->personalisedAwnsers[$filterawnsersbyuid])?$this->personalisedAwnsers[$filterawnsersbyuid]:"";
+        }
+        
         $arr = [
             'allAwnser' => $this->allAwnser ?? null,
-            'personalisedAwnsers' => is_null($filterawnsersbyuid )? $this->personalisedAwnsers: $this->personalisedAwnsers[$filterawnsersbyuid],
+            'personalisedAwnsers' => $personalisedAwnsers,
             'playersResponses'  =>  $playerResponsesArr,
             'closedTurn' => $this->is_closed($filterawnsersbyuid),
             'turnuid'   => $this->turnUID

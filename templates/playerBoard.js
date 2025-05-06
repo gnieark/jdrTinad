@@ -14,6 +14,9 @@ function submitAnwser(awnser, turnuid) {
 
   const endpoint = '/API/board/' + boarduid + '/turn/' + turnuid;
   
+
+  document.getElementById('loading-overlay').style.display = 'flex';
+
   fetch(endpoint, {
     method: 'POST',
     headers: {
@@ -95,7 +98,7 @@ function updateGame(){
         // Si c'est le dernier tour
         if (index === data.length - 1) {
           let thetextarea = createElem("textarea",{"id":"playerresponsetextarea","placeholder":"Votre réponse...","rows":3});
-          let theButton = createElem("button",{"type":"button"});
+          let theButton = createElem("button",{"type":"button","class":"submitButton"});
           theButton.textContent = 'Envoyer';
           theButton.addEventListener('click', () => { submitAnwser( document.getElementById("playerresponsetextarea").value,turn.turnuid ); });
           if (turn.closedTurn || turn.playersResponses.playerUID) {
@@ -106,6 +109,7 @@ function updateGame(){
           gamedialogsDiv.appendChild(theButton);
 
         }
+        document.getElementById('loading-overlay').style.display = 'none';
       });
     })
     .catch(error => {

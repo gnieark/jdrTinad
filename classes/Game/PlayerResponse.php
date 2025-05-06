@@ -9,7 +9,7 @@ class  PlayerResponse{
     private bool $diceResultCritical;
     private array $diceScores = array();
     private array $playerResponsesCategories = array();
-    private string $responseanalysis;
+    private string $responseanalysis = "";
 
     public function _toArrayToPlay(){
         $arr = array(
