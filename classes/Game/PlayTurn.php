@@ -42,7 +42,9 @@ class PlayTurn{
 
     public function loadPlayersResponses(string $boarduid):self{
         $folderPath = "../gamesdatas/" . $boarduid . "/turn-" . $this->get_turnUID();
-
+        if(!is_dir($folderPath)){
+            mkdir($folderPath);
+        }
         $files = scandir($folderPath);
         $this->playerResponses = array();
         foreach ($files as $file) {
@@ -82,9 +84,18 @@ class PlayTurn{
     public function get_turnUID():string{
         return $this->turnUID;
     }
-    public function playPrompt( array $players, bool $isTheFirstTurn = false ): PlayTurn{
-        $tplFile = $isTheFirstTurn? "../templates/promptIA-firstTurn.txt" : "../templates/promptIA-newTurn.txt";
+    /*
+    * The current board is needed to get the history
+    */
+    public function playPrompt( Board $board ): PlayTurn{
+
+        $playsTurns = $board->get_playTurns();
+        $tplFile = empty($playsTurns)? "../templates/promptIA-firstTurn.txt" : "../templates/promptIA-newTurn.txt";
         $tplBlock = new TplBlock();
+
+        $players = $board->get_players();
+
+        //players
         $playersArr = array();
         foreach ($players as $player){
             $playersArr[] = $player->__toArray();
@@ -95,6 +106,20 @@ class PlayTurn{
                 "players" => json_encode($playersArr,true)
             )
         );
+
+
+        //history
+        $historyArr = array();
+        foreach($playsTurns as $playTurn){
+            $playTurn->loadPlayersResponses( $board->get_urlpart() );
+            $historyArr[] = $playTurn->__toArrayToPlay();
+        }
+        $tplBlock->addVars(
+            array(
+                "history" => json_encode($historyArr,true)
+            )
+        );
+
         if(!empty($this->mjPrompt)){
             $tplcustomInstructs = new TplBlock("customInstructs");
             $tplcustomInstructs->addVars(
@@ -104,7 +129,15 @@ class PlayTurn{
             );
             $tplBlock->addSubBlock($tplcustomInstructs);
         }
+
+        
+
         $promptToSend =  $tplBlock->applyTplFile($tplFile );
+
+        //pour du debug
+        file_put_contents("./" . $this->get_turnUID() . "-prompt.txt", $promptToSend );
+
+
         $rep = self::sendMessageToIa($promptToSend );
         $this->allAwnser = $rep["all"];
         foreach($rep["personalised"] as $r){

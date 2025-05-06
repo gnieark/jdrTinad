@@ -35,13 +35,18 @@ class Board{
         return $this;
     }
 
-    private function loadPlayersResponsesOnPlayTurns(){
-
+    public function get_playTurns():array{
+        return $this->playTurns;
     }
 
-    public function get_playTurns():array{
-
-        return $this->playTurns;
+    public function get_PlayTurnByUid(string $turnUid):PlayTurn{
+        foreach($this->playTurns as $playTurn){
+            if($playTurn->get_turnUID() ==  $turnUid ){
+                $playTurn->loadPlayersResponses($this->urlpart);
+                return $playTurn;
+            }
+        }
+        throw new Exception("no turn found with uid .".$turnUid);
     }
 
     public function closeLastTurn():self{
@@ -49,8 +54,7 @@ class Board{
             $this->playTurns[ count($this->playTurns) -1 ]->close();
             $this->save();
         }
-        
-
+        return $this;
     }
     public function set_game_name(string $name):Board{
         $this->game_name = $name;

@@ -154,6 +154,8 @@ class BoardPlayer extends Route{
             } else {
     
                 $responseArr = json_decode($response,true);
+
+                // To do gérer le cas d'erreur
                 $onlyTheResponse = $responseArr["choices"][0]["message"]["content"];
 
                 $rep = json_decode($onlyTheResponse,true);

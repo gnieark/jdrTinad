@@ -73,9 +73,15 @@ class Api extends Route{
             );
             
             die();
+        }elseif( preg_match ( "'^/API/board/(.+)/turnMJ/(.+)$'" , $_SERVER["REQUEST_URI"], $matches) ){
+            $bordUid = $matches[1];
+            $turnUId = $matches[2];
+            $board = Board::loadBoard($bordUid);
+            $turn = $board->get_PlayTurnByUid( $turnUId );
+            echo json_encode( $turn->__toArrayToPlay(null),true );
+            die();
 
         }else{
-
             C404::send_content_json();
         }
         return "";
@@ -111,7 +117,13 @@ class Api extends Route{
             $board->closeLastTurn();
 
             $gameTurn->set_mjPrompt($arr["prompt"]);
-            $gameTurn->playPrompt( $board->get_players(), true );
+
+            
+            $gameTurn->playPrompt( $board );
+
+
+
+
             $board->add_playTurn($gameTurn);
             $board->save();
          
@@ -126,6 +138,7 @@ class Api extends Route{
 
             $board = Board::loadBoard($boardUid);
             $turns = $board->get_playTurns();
+
             $turn = end( $turns );
 
             if(( $turn->get_turnUID() !== $turnUid ) || $turn -> is_closed( BoardPlayer::get_uid_from_cookie() )) {

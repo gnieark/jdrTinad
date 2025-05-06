@@ -76,9 +76,80 @@ function createLinkAndQR(urlPart) {
   }
 }
 
-async function fillTurnDiv(turnuid){
-  let urlapi = '/API/board/' + boarduid + '/turnMJ/' + turnuid;
+async function fillTurnDiv(turnuid) {
+  const urlapi = '/API/board/' + boarduid + '/turnMJ/' + turnuid;
+  try {
+    const response = await fetch(urlapi);
+    if (!response.ok) throw new Error("Erreur de récupération du tour");
 
+    const data = await response.json();
+    const container = document.getElementById("div-gameturns-t" + turnuid);
+    if (!container) return;
+
+    // Nettoyer la div avant d’ajouter du contenu
+    container.innerHTML = "";
+
+    // Créer l’élément pour la narration du MJ
+    const mjDesc = createElem("div",{"class":"mjglobalmessage"});
+    mjDesc.textContent = "MJ (message global) : " + data.allAwnser;
+    container.appendChild(mjDesc);
+
+    // Narations personnalisées des joueurs
+    const playersAnswers = data.personalisedAwnsers;
+    for (const playerUid in playersAnswers) {
+      
+      const playerDiv = document.createElement("div");
+      playerDiv.style.marginBottom = "0.5em";
+      let playerCaption = "";
+      if( playersByUid[ playerUid ]){
+        playerCaption = playersByUid[ playerUid ];
+      }else{
+        playerCaption = playerUid 
+      }
+      
+      playerDiv.textContent = `MJ - message à ${playerCaption} - : ${playersAnswers[playerUid]}`;
+      container.appendChild(playerDiv);
+
+
+      //réponses des joueurs:
+      let currentplayeruid = playerUid;
+      data.playersResponses.forEach(function (reponse) {
+        if(reponse.playerUID == playerUid ){
+          const playerResponse = createElem("div",{"class": "playerresponse"});
+          playerResponse.textContent = reponse.player_response;
+          container.appendChild(playerResponse );
+
+          if(reponse.tested_skills.length > 0 ){
+            const diceResults = createElem("div",{"class":"diceresults"});
+            let plistcompetances = createElem("p",{});
+            plistcompetances.innerText = "Compétances testées :" + reponse.tested_skills.toString();
+            diceResults.appendChild(plistcompetances);
+            
+            let pdiceresult = createElem("p",{});
+            let result = "Jets de dés: " + reponse.dices_scores.toString();
+            if( reponse.dices_succes){
+              result += ' succès';
+            }else{
+              result += ' échec';
+            }
+            if(reponse.dices_critical){
+              result += ' critique!'
+            }
+            pdiceresult.innerText = result;
+            diceResults.appendChild(pdiceresult);
+
+            container.appendChild(diceResults);
+          }
+
+        }
+      });
+      if(!data.closedTurn){
+        setTimeout(fillTurnDiv,3000,turnuid);
+      }
+    }
+  } catch (err) {
+    console.error("Erreur dans fillTurnDiv :", err);
+  }
 }
 
 async function placeTurnsDivs(){
@@ -98,6 +169,7 @@ async function placeTurnsDivs(){
       let divturn = createElem("div",{"class": "turn-entry", "id": "div-gameturns-t" + turnuid });
       divturn.innerText = turnuid;
       container.appendChild( divturn );
+      fillTurnDiv( turnuid );
     }
   });
 
@@ -133,6 +205,8 @@ document.addEventListener('DOMContentLoaded', function () {
           
           players.forEach(player => {
             
+            playersByUid[ player.uid ] = `${player.name} (${player.type})`;
+
             if( document.getElementById("div-listplayers-" + player.uid)){
               //already exists
               //divplayer = document.getElementById("div-listplayers-" + player.uid);
@@ -173,3 +247,5 @@ document.addEventListener('DOMContentLoaded', function () {
       setInterval(placeTurnsDivs,3000);
     }
 });
+
+let playersByUid = {};
