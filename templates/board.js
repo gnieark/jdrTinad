@@ -143,10 +143,8 @@ async function fillTurnDiv(turnuid) {
 
         }
       });
-      if(!data.closedTurn){
-        setTimeout(fillTurnDiv,3000,turnuid);
-      }
     }
+    
   } catch (err) {
     console.error("Erreur dans fillTurnDiv :", err);
   }
@@ -161,7 +159,7 @@ async function placeTurnsDivs(){
 
   const container = document.getElementById('gameturns');
   
-  rep.turns.forEach(turnuid => {
+  rep.turns.forEach((turnuid, index) => {
     
     if( document.getElementById("div-gameturns-t" + turnuid )){
       //already exists
@@ -170,6 +168,9 @@ async function placeTurnsDivs(){
       divturn.innerText = turnuid;
       container.appendChild( divturn );
       fillTurnDiv( turnuid );
+    }
+    if (index === rep.turns.length - 1) {
+      var timeoutturndiv = setTimeout(fillTurnDiv,3000,turnuid);
     }
   });
 
