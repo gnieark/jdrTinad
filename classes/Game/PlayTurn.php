@@ -140,7 +140,7 @@ class PlayTurn{
         $promptToSend =  $tplBlock->applyTplFile($tplFile );
 
         //pour du debug
-        file_put_contents("./" . $this->get_turnUID() . "-prompt.txt", $promptToSend );
+        //file_put_contents("./" . $this->get_turnUID() . "-prompt.txt", $promptToSend );
 
 
         $rep = self::sendMessageToIa($promptToSend );
