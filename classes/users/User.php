@@ -6,6 +6,7 @@ class User {
     private string $login;
     private bool $authentified = false;
     private int $id;
+    private $boards = array(); // Boards UIDS owned by the user
 
     static public function get_table_name(): string {
         return self::TABLE;
@@ -17,6 +18,19 @@ class User {
     public function is_authentified() :bool{
         return $this->authentified;
     }
+
+    public function add_board(string $board_uid):self{
+        $this->boards[] = $board_uid;
+        return $this;
+    }
+    public function does_own_board(string $board_uid):bool{
+        return (in_array($board_uid,$this->boards));
+    }
+    public function get_boards():array{
+        return $this->boards;
+    }
+
+
     public function get_id():int{ return $this->id;}
     public function set_id(int $id):User { $this->id = $id; return $this;}
 
