@@ -102,6 +102,8 @@ foreach($navMenus as $navItem){
     $tpl->addSubBlock($tplNav);
 
 }
+
+
  if( $currentUser->is_authentified() ){
     $tpllogoutlink = new TplBlock("logoutlink");
     $tpllogoutlink->addVars(

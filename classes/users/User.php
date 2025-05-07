@@ -87,6 +87,18 @@ class User {
          return $this;
 
     }
+    public function load_boards(PDO $db):self{
+        $this->boards = array();
+        $sql = "SELECT board_uid FROM `" . UserGroupManager::get_users_boards_rel_table()."`
+                WHERE user_id=:userid;";
+        $sth = $db->prepare($sql);
+        $sth->bindParam(':userId', $this->id, PDO::PARAM_INT);  
+        $sth->execute();
+        while($r = $sth->fetch(PDO::FETCH_ASSOC)){
+           $this->add_board( $r["board_uid"] );
+        }
+        return $this;
+    }
     public function is_in_group(string $groupname):bool{
         foreach($this->groups as $group){
             if( $group->get_name() == $groupname ){
@@ -115,7 +127,9 @@ class User {
         if($r = $sth->fetch(PDO::FETCH_ASSOC)){
             $this->set_login( $r["user_login"] )
                  ->set_display_name( $r["user_display_name"])
-                 ->load_groups($db);
+                 ->load_groups($db)
+                 ->load_boards($db);
+
             return $this;
         }else{
             throw new Exception('id not found on database');
