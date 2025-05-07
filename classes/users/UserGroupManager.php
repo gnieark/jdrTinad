@@ -5,13 +5,16 @@ class UserGroupManager {
     static public function get_table_name():string{
         return self::USERSGROUPSRELTABLE;
     }
+    static public function get_users_boards_rel_table(){
+        return User::get_table_name(). "_boards_rel";
+    }
     static public function createTables(PDO $db) {
         $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
 
         $userTable = User::get_table_name();
         $groupTable = Group::get_table_name();
         $relTable = self::USERSGROUPSRELTABLE;
-
+    
         if ($driver === 'sqlite') {
             $sql = "
             CREATE TABLE IF NOT EXISTS $userTable (
@@ -32,6 +35,12 @@ class UserGroupManager {
                 PRIMARY KEY (user_id, group_id),
                 FOREIGN KEY (user_id) REFERENCES $userTable(id) ON DELETE CASCADE,
                 FOREIGN KEY (group_id) REFERENCES $groupTable(id) ON DELETE CASCADE
+            );
+            CREATE TABLE IF NOT EXISTS `" . self::get_users_boards_rel_table() ."` (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                board_uid TEXT NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES $userTable(id) ON DELETE CASCADE
             );
             ";
         } elseif ($driver === 'mysql') {
@@ -54,6 +63,13 @@ class UserGroupManager {
                 PRIMARY KEY (user_id, group_id),
                 FOREIGN KEY (user_id) REFERENCES $userTable(id) ON DELETE CASCADE,
                 FOREIGN KEY (group_id) REFERENCES $groupTable(id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+            CREATE TABLE IF NOT EXISTS `" . self::get_users_boards_rel_table() ."` (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                board_uid TEXT NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES $userTable(id) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             ";
         } else {

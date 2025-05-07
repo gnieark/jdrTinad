@@ -24,11 +24,12 @@ class CheckDbStructure {
     public function doNeededStructureUpdates(){
         $version = $this->getVersion();
 
-        if( $version == 0 )
+        if( $version < 2 )
         {
             UserGroupManager::createTables($this->db);
-            $version = 1;
+            $version = 2;
             $this->setVersion($version);
-        } 
+        }
+        //idem version suivante, 
     }
 }
