@@ -5,13 +5,16 @@ class UserGroupManager {
     static public function get_table_name():string{
         return self::USERSGROUPSRELTABLE;
     }
+    static public function get_users_boards_rel_table(){
+        return User::get_table_name(). "_boards_rel";
+    }
     static public function createTables(PDO $db) {
         $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
 
         $userTable = User::get_table_name();
         $groupTable = Group::get_table_name();
         $relTable = self::USERSGROUPSRELTABLE;
-
+    
         if ($driver === 'sqlite') {
             $sql = "
             CREATE TABLE IF NOT EXISTS $userTable (
@@ -32,6 +35,12 @@ class UserGroupManager {
                 PRIMARY KEY (user_id, group_id),
                 FOREIGN KEY (user_id) REFERENCES $userTable(id) ON DELETE CASCADE,
                 FOREIGN KEY (group_id) REFERENCES $groupTable(id) ON DELETE CASCADE
+            );
+            CREATE TABLE IF NOT EXISTS `" . self::get_users_boards_rel_table() ."` (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                board_uid TEXT NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES $userTable(id) ON DELETE CASCADE
             );
             ";
         } elseif ($driver === 'mysql') {
@@ -54,6 +63,13 @@ class UserGroupManager {
                 PRIMARY KEY (user_id, group_id),
                 FOREIGN KEY (user_id) REFERENCES $userTable(id) ON DELETE CASCADE,
                 FOREIGN KEY (group_id) REFERENCES $groupTable(id) ON DELETE CASCADE
+            ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+
+            CREATE TABLE IF NOT EXISTS `" . self::get_users_boards_rel_table() ."` (
+                id INTEGER PRIMARY KEY AUTOINCREMENT,
+                user_id INTEGER NOT NULL,
+                board_uid TEXT NOT NULL,
+                FOREIGN KEY (user_id) REFERENCES $userTable(id) ON DELETE CASCADE
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
             ";
         } else {
@@ -113,7 +129,19 @@ class UserGroupManager {
         return $user;
     }
 
+    static public function addBoardOnUserACL(PDO $db, User $user, string $board_uid):User{
+        $user->add_board($board_uid);
+        $sql = "INSERT INTO `" . self::get_users_boards_rel_table() ."` (user_id,board_uid) VALUES (:userid,:boarduid);";
+        $sth = $db->prepare($sql);
+        $sth->execute(
+            array(
+                ":userid"   => $user->get_id(),
+                ":boarduid"  => $board_uid
+            )
+        );
+        return $user;
 
+    }
 
     static public function createGroup(PDO $db, string $name): Group{
         $sql = "INSERT INTO `" . Group::get_table_name() . "` (name) VALUES (:name);";
@@ -165,10 +193,12 @@ class UserGroupManager {
                     `users`.`login`  as user_login,
                     `users`.`display_name`  as user_display_name,
                     `" . Group::get_table_name() . "`.`id` as group_id,
-                    `" . Group::get_table_name() . "`.`name` as group_name 
+                    `" . Group::get_table_name() . "`.`name` as group_name ,
+                    `" . self::get_users_boards_rel_table() ."`.board_uid as board_uid
                 FROM `" . User::get_table_name() . "` as users
                 LEFT JOIN `" . self::get_table_name() . "` as reltable ON reltable.user_id = users.id
-                LEFT JOIN `" . Group::get_table_name() . "` ON `" . Group::get_table_name() . "`.id = reltable.group_id";
+                LEFT JOIN `" . Group::get_table_name() . "` ON `" . Group::get_table_name() . "`.id = reltable.group_id
+                LEFT JOIN `" . self::get_users_boards_rel_table() ."` ON `" . self::get_users_boards_rel_table() ."`.user_id = users.id";
         
         if(!empty($customCond)){
             $sql .= " WHERE " . $customCond;
@@ -183,11 +213,14 @@ class UserGroupManager {
             $users[ $r["user_id"] ] -> set_id( $r["user_id"] )
                                     -> set_login( $r["user_login"] )
                                     -> set_display_name( $r["user_display_name"] );
-
            }
            //group
            if( isset( $r["group_id"] )){
                 $users[ $r["user_id"] ] -> add_group( new Group($r["group_id"], $r["group_name"]) ); 
+           }
+           //board
+           if( isset( $r["board_uid"]) ){
+            $users[ $r["user_id"] ] -> add_board($r["board_uid"]);
            }
         }
         if( $associativebyId ){

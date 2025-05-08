@@ -6,6 +6,7 @@ class User {
     private string $login;
     private bool $authentified = false;
     private int $id;
+    private $boards = array(); // Boards UIDS owned by the user
 
     static public function get_table_name(): string {
         return self::TABLE;
@@ -17,6 +18,19 @@ class User {
     public function is_authentified() :bool{
         return $this->authentified;
     }
+
+    public function add_board(string $board_uid):self{
+        $this->boards[] = $board_uid;
+        return $this;
+    }
+    public function does_own_board(string $board_uid):bool{
+        return (in_array($board_uid,$this->boards));
+    }
+    public function get_boards():array{
+        return $this->boards;
+    }
+
+
     public function get_id():int{ return $this->id;}
     public function set_id(int $id):User { $this->id = $id; return $this;}
 
@@ -73,6 +87,18 @@ class User {
          return $this;
 
     }
+    public function load_boards(PDO $db):self{
+        $this->boards = array();
+        $sql = "SELECT board_uid FROM `" . UserGroupManager::get_users_boards_rel_table()."`
+                WHERE user_id=:userid;";
+        $sth = $db->prepare($sql);
+        $sth->bindParam(':userid', $this->id, PDO::PARAM_INT);  
+        $sth->execute();
+        while($r = $sth->fetch(PDO::FETCH_ASSOC)){
+           $this->add_board( $r["board_uid"] );
+        }
+        return $this;
+    }
     public function is_in_group(string $groupname):bool{
         foreach($this->groups as $group){
             if( $group->get_name() == $groupname ){
@@ -101,7 +127,9 @@ class User {
         if($r = $sth->fetch(PDO::FETCH_ASSOC)){
             $this->set_login( $r["user_login"] )
                  ->set_display_name( $r["user_display_name"])
-                 ->load_groups($db);
+                 ->load_groups($db)
+                 ->load_boards($db);
+
             return $this;
         }else{
             throw new Exception('id not found on database');
