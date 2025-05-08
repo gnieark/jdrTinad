@@ -149,7 +149,7 @@ async function fillTurnDiv(turnuid) {
           if(reponse.tested_skills.length > 0 ){
             const diceResults = createElem("div",{"class":"diceresults"});
             let plistcompetances = createElem("p",{});
-            plistcompetances.innerText = "Compétances testées :" + reponse.tested_skills.toString();
+            plistcompetances.innerText = "Compétances testées :" + reponse.tested_skills.toString()+ " bonus: " + reponse.dices_bonus.toString();
             diceResults.appendChild(plistcompetances);
             
             let pdiceresult = createElem("p",{});

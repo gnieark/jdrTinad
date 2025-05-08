@@ -75,12 +75,13 @@ function updateGame(){
             const resultsMessage = document.createElement('div');
             resultsMessage.classList.add('dice-results');
       
+            const bonus = turn.playersResponses.dices_bonus;
             const skills = turn.playersResponses.tested_skills;
             const scores = turn.playersResponses.dices_scores || [];
             const success = turn.playersResponses.dices_succes ? "Oui" : "Non";
             const critical = turn.playersResponses.dices_critical ? "Oui" : "Non";
       
-            let resultHtml = `<strong>Jet de compétences :</strong><br><ul>`;
+            let resultHtml = `<strong>Jet de compétences (bonus/malus: ${bonus.toString()} ):</strong><br><ul>`;
             skills.forEach((skill, i) => {
               const score = scores[i] !== undefined ? scores[i] : "n/a";
               resultHtml += `<li>${skill} : ${score}</li>`;

@@ -29,10 +29,13 @@ Cette action nécessite-t-elle de tester une ou plusieurs compétences ? Si oui,
 - force
 
 
-Un bonus ou un malus(bonus avec une valeur négative) doit-il s’appliquer à ce test ? (Exemple : une action absurde ou difficile donne un malus, une situation favorable ou bien préparée donne un bonus).
+Un bonus ou un malus(bonus avec une valeur négative) doit-il s’appliquer à ce test ?
+Exemple : une action absurde ou difficile donne un malus, une situation favorable ou bien préparée donne un bonus.
+Le bonus a une valeur comprise entre -10 et 10. -10 pour une action quasiment impossible à réaliser par le personnage. 10 pour une action presque impossible à louper.
+
 
 Catégorise cette action avec un ou plusieurs mots-clés parmi la liste suivante :
-héroïque, prudent, combat, fuite, préparation, dialogue, négociation, absurde, déni, hors sujet, néant.
+attaque, defense, prudent, combat, fuite, préparation, dialogue, négociation, bricolage, absurde, déni, hors sujet, néant.
 
 Réponds uniquement sous la forme d’un JSON strictement conforme à cet exemple :
 ```json
