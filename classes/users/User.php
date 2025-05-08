@@ -92,7 +92,7 @@ class User {
         $sql = "SELECT board_uid FROM `" . UserGroupManager::get_users_boards_rel_table()."`
                 WHERE user_id=:userid;";
         $sth = $db->prepare($sql);
-        $sth->bindParam(':userId', $this->id, PDO::PARAM_INT);  
+        $sth->bindParam(':userid', $this->id, PDO::PARAM_INT);  
         $sth->execute();
         while($r = $sth->fetch(PDO::FETCH_ASSOC)){
            $this->add_board( $r["board_uid"] );

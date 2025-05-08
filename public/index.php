@@ -102,6 +102,22 @@ foreach($navMenus as $navItem){
     $tpl->addSubBlock($tplNav);
 
 }
+if( $currentUser->is_in_group("mj") ){
+   // add his boards on menu
+    foreach( $currentUser->get_boards() as $boardUid ){
+        $board = Board::loadBoard($boardUid);
+        $tplNav = new TplBlock("navmenus");
+        $tplNav ->addVars(
+            array(
+                "url"  => '/board/'.$boardUid ,
+                "caption"  => $board->get_game_name(),
+                "current"  => ''            )
+        );
+        $tpl->addSubBlock($tplNav);
+
+    }
+
+}
 
 
  if( $currentUser->is_authentified() ){
