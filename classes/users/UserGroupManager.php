@@ -193,7 +193,7 @@ class UserGroupManager {
                     `users`.`login`  as user_login,
                     `users`.`display_name`  as user_display_name,
                     `" . Group::get_table_name() . "`.`id` as group_id,
-                    `" . Group::get_table_name() . "`.`name` as group_name 
+                    `" . Group::get_table_name() . "`.`name` as group_name ,
                     `" . self::get_users_boards_rel_table() ."`.board_uid as board_uid
                 FROM `" . User::get_table_name() . "` as users
                 LEFT JOIN `" . self::get_table_name() . "` as reltable ON reltable.user_id = users.id
