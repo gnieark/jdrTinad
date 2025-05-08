@@ -21,7 +21,13 @@ Tu ne dois pas répondre aux joueurs pour le moment. Commence par analyser la r�
 
 L’action est-elle cohérente et réalisable dans cet univers ?
 
-Cette action nécessite-t-elle de tester une ou plusieurs compétences ? Si oui, lesquelles parmis les suivantes: courage, intelligence, charisme, dexterite, force.
+Cette action nécessite-t-elle de tester une ou plusieurs compétences ? Si oui, lesquelles parmis les suivantes: 
+- courage
+- intelligence
+- charisme
+- dexterite
+- force
+
 
 Un bonus ou un malus(bonus avec une valeur négative) doit-il s’appliquer à ce test ? (Exemple : une action absurde ou difficile donne un malus, une situation favorable ou bien préparée donne un bonus).
 

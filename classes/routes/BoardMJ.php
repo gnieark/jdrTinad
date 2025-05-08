@@ -73,6 +73,8 @@ class BoardMJ extends Route{
             $board->set_allowedCreatures( $_POST["types"] );
             $board->save();
             UserGroupManager::addBoardOnUserACL(Database::get_db(), $user, $board->get_urlpart());
+            $_SESSION["user"] = serialize($user);
+            
             header('Location: /board/' . $board->get_urlpart() );
             die();
         }

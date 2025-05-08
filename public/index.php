@@ -116,7 +116,6 @@ if( $currentUser->is_in_group("mj") ){
         $tpl->addSubBlock($tplNav);
 
     }
-
 }
 
 
