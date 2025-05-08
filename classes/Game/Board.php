@@ -214,10 +214,11 @@ class Board{
  
 
         //delete on db
-        $sql = "DELETE FROM `" . UserGroupManager::get_users_boards_rel_table(). "`WHERE board_uid=:boarduid;";
+        $sql = "DELETE FROM `" . UserGroupManager::get_users_boards_rel_table(). "` WHERE board_uid=:boarduid;";
         $db = Database::get_db();
         $sth = $db->prepare($sql);
-        $sth->bindParam(':boarduid', $this->get_urlpart, PDO::PARAM_STR);
+        $boarduid = $this->get_urlpart();
+        $sth->bindParam(':boarduid', $boarduid, PDO::PARAM_STR);
         $sth->execute();
 
 
