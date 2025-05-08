@@ -5,6 +5,7 @@ class  PlayerResponse{
     private string $playerresponse;
     private bool $needDiceRoll;
     private array $testedSkills = array();
+    private int $diceBonus = 0; //should be nagative for a bonus 
     private bool $diceRollSuccess;
     private bool $diceResultCritical;
     private array $diceScores = array();
@@ -20,6 +21,7 @@ class  PlayerResponse{
             "responseanalysis"  => $this->responseanalysis
         );
         if(!empty($this->testedSkills)){
+            $arr["dices_bonus"]     = $this->diceBonus;
             $arr["dices_scores"]    = $this->diceScores;
             $arr["dices_succes"]    = $this->diceRollSuccess;
             $arr["dices_critical"]  = $this->diceResultCritical;
@@ -109,6 +111,7 @@ class  PlayerResponse{
 
         if( !empty( $repIA["competances_a_tester"] ) ){
             //have to test dices
+            $this->diceBonus = $repIA["bonus"];
             $this->diceRollSuccess = true;
             $this->diceResultCritical = false;
             foreach( $repIA["competances_a_tester"] as $competence){
@@ -140,7 +143,7 @@ class  PlayerResponse{
                         break;
 
                 }
-                if( $diceScore > $competanceValue ){
+                if( $diceScore > $competanceValue + $this->diceBonus ){
                     $this->diceRollSuccess = false;
                 }
                 if ($diceScore  == 0){
