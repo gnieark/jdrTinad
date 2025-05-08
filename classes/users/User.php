@@ -23,6 +23,10 @@ class User {
         $this->boards[] = $board_uid;
         return $this;
     }
+    public function remove_board(string $board_uid):self{
+        $this->boards = array_filter($this->boards, fn($item) => $item !== $board_uid);
+        return $this;
+    }
     public function does_own_board(string $board_uid):bool{
         return (in_array($board_uid,$this->boards));
     }

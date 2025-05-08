@@ -179,7 +179,49 @@ class Board{
         return true;
 
     }
+    private static function deleteDirectory($dir){
+        if (!file_exists($dir)) {
+            return true; // Le dossier n'existe pas
+        }
+    
+        if (!is_dir($dir)) {
+            return unlink($dir); // Si ce n'est pas un dossier, c'est un fichier : on le supprime
+        }
+    
+        foreach (scandir($dir) as $item) {
+            if ($item == '.' || $item == '..') {
+                continue;
+            }
+            $path = $dir . DIRECTORY_SEPARATOR . $item;
+            if (is_dir($path)) {
+                if (!self::deleteDirectory($path)) {
+                    return false;
+                }
+            } else {
+                if (!unlink($path)) {
+                    return false;
+                }
+            }
+        }
+    
+        return rmdir($dir);
+    }
+    public function delete_board(): void{
+        
+        $folderPath = "../gamesdatas/" . $this->urlpart;
+        //delete path
+        self::deleteDirectory($folderPath);
+ 
 
+        //delete on db
+        $sql = "DELETE FROM `" . UserGroupManager::get_users_boards_rel_table(). "`WHERE board_uid=:boarduid;";
+        $db = Database::get_db();
+        $sth = $db->prepare($sql);
+        $sth->bindParam(':boarduid', $this->get_urlpart, PDO::PARAM_STR);
+        $sth->execute();
+
+
+    }
     public static function boardFileExists(string $urlPart):bool{
         $path = "../gamesdatas/" . $urlPart . "/board.txt";
         return file_exists($path);
@@ -194,6 +236,7 @@ class Board{
         $data = file_get_contents($path);
         return unserialize($data);        
     }
+
 
     
 

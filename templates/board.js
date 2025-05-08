@@ -6,6 +6,33 @@ function createElem(type,attributes)
     return elem;
 }
 
+async function deleteBoard(boarduid) {
+  if (!confirm("Es-tu sûr de vouloir supprimer ce plateau ? Cette action est irréversible.")) {
+    return;
+  }
+
+  const url = '/board/' + boarduid;
+
+  try {
+    const response = await fetch(url, {
+      method: 'DELETE',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    });
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(`Erreur lors de la suppression : ${errorText}`);
+    }
+
+    // Rediriger vers la liste des plateaux
+    window.location.href = '/board';
+  } catch (error) {
+    alert("La suppression a échoué : " + error.message);
+  }
+}
+
 async function sendPrompt(prompt) {
   const url = '/API/board/' + boarduid + '/mjprompt';
   const data = { prompt: prompt };

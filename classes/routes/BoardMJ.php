@@ -82,5 +82,29 @@ class BoardMJ extends Route{
 
         return "";
     }
+    static public function apply_delete(User $user):string{
+        //check group 
+        if( !$user->is_in_group("mj") ){
+            return C403::get_content_html($user);
+        }
+        if(  preg_match ( "'^/board/(.+)$'", $_SERVER["REQUEST_URI"], $matches)  ){
+            $bordUid = $matches[1];
+            if(!$user->does_own_board($bordUid)){
+                return C403::get_content_html($user);
+            }
+            $board = Board::loadBoard($bordUid);
+            $board->delete_board();
+            $user->remove_board($bordUid);
+            $_SESSION["user"] = serialize($user);
+            header('Content-Type: application/json; charset=utf-8');
+            echo json_encode(
+                array(
+                    "message"   => 'OK'
+                )
+            );
+            die();
+        }
+        return '';
+    }
     
 }
