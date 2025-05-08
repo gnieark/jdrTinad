@@ -35,7 +35,7 @@
         "uriPattern": "'^/auth$'"
     },
     "Board":{
-        "name":"Table de jeu de rôle",
+        "name":"Nouvelle table",
         "default_level_needed": "user",
         "groups_allowed": ["mj"],
         "display_on_nav": true,

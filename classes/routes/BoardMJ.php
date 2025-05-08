@@ -9,6 +9,9 @@ class BoardMJ extends Route{
         }
         if(  preg_match ( "'^/board/(.+)$'", $_SERVER["REQUEST_URI"], $matches)  ){
             $bordUid = $matches[1];
+            if(!$user->does_own_board($bordUid)){
+                return C403::get_content_html($user);
+            }
             $board = Board::loadBoard($bordUid);
             return self::get_content_html_initialized_board($user,$board);
 

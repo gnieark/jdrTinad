@@ -37,6 +37,7 @@ class Api extends Route{
                 "version-uid"   => $board->get_saveUid()
             ),true);
             die();
+            
         }elseif( preg_match ( "'^/API/board/(.+)/turns$'" , $_SERVER["REQUEST_URI"], $matches) ){
             $bordUid = $matches[1];
             if(!Board::boardFileExists($bordUid)){
@@ -56,6 +57,9 @@ class Api extends Route{
             $bordUid = $matches[1];
             //retourne la liste des tours avec leur UID
             if( !$user->is_in_group("mj") ){
+                return C403::send_content_json();
+            }
+            if(!$user->does_own_board($bordUid)){
                 return C403::send_content_json();
             }
 
@@ -102,6 +106,9 @@ class Api extends Route{
             $bordUid = $matches[1];
             if(!Board::boardFileExists($bordUid)){
                  C404::send_content_json();
+            }
+            if(!$user->does_own_board($bordUid)){
+                return C403::send_content_json();
             }
 
             $board = Board::loadBoard($bordUid);
