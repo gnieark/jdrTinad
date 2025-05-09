@@ -1,5 +1,6 @@
 <?php
 class Player_gnome_des_forets_du_nord extends Player {
+    protected static $origine_title = "gnome-des-forets-du-nord";
     protected static $minAD = 13;
     protected static $minINT = 10;
     protected static $maxFO = 8;

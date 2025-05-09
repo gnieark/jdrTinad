@@ -1,5 +1,6 @@
 <?php
 class Player_barbare extends Player {
+    protected static $origine_title = "barbare";
     protected static $minFO = 13;
     protected static $minCOU = 12;
     protected static $maxPV = 35;

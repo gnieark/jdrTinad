@@ -1,5 +1,6 @@
 <?php
 class Player_semi_homme extends Player {
+    protected static $origine_title = "semi-homme";
     protected static $minCOU = 12;
     protected static $minINT = 10;
     protected static $maxFO = 10;

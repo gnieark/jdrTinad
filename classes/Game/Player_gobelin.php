@@ -1,5 +1,6 @@
 <?php
 class Player_gobelin extends Player {
+    protected static $origine_title = "gobelin";
     protected static $maxFO = 9;
     protected static $maxINT = 10;
     protected static $maxCHA = 8;

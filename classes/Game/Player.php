@@ -4,14 +4,12 @@ class Player
 {
     private string $uid;
     private string $name;
-    private string $type;
     private int $courage;
     private int $intelligence;
     private int $charisma;
     private int $dexterity;
     private int $strength;
     private string $job;
-    private int $pvmax; //points de vie max
     private int $pv;
     private array $equipment;
     private string $specialFeatures;
@@ -42,32 +40,26 @@ class Player
         return $this;
     }
 
-    public function set_job( string $job ):self{
+    public function setJob( string $job ):self{
         $this->job = $job;
         return $this;
     }
-    public function get_job():string{
+    public function getJob():string{
         return $this->job;
     }
-    public function getType(): string
-    {
-        return $this->type;
+    public function setPv(int $pv):self{
+        $this->pv = $pv;
+        return $this;
+    }
+    public function getPv():int{
+        return $this->pv;
+    }
+    public function getMaxPv():int{
+        return static::$maxPV;
     }
 
-    public function setType(string $type): self
-    {
-        $this->type = $type;
-        switch( $type ){
-
-
-
-
-        }
-        //define pv max
-
-
-
-        return $this;
+    public function getOrigine(): string {
+        return static::$origine_title ?? 'inconnue';
     }
 
     public function getCourage(): int
@@ -167,20 +159,58 @@ class Player
         return unserialize($data); 
 
     }
+    public function get_instructions_generation_competances(): string {
+        $instructions = "";
+    
+        if (isset(static::$minFO)) {
+            $instructions .= " Force minimale: " . static::$minFO . ".";
+        }
+        if (isset(static::$maxFO)) {
+            $instructions .= " Force maximale: " . static::$maxFO . ".";
+        }
+        if (isset(static::$minCOU)) {
+            $instructions .= " Courage minimal: " . static::$minCOU . ".";
+        }
+        if (isset(static::$maxCOU)) {
+            $instructions .= " Courage maximal: " . static::$maxCOU . ".";
+        }
+        if (isset(static::$minINT)) {
+            $instructions .= " Intelligence minimale: " . static::$minINT . ".";
+        }
+        if (isset(static::$maxINT)) {
+            $instructions .= " Intelligence maximale: " . static::$maxINT . ".";
+        }
+        if (isset(static::$minAD)) {
+            $instructions .= " Adresse minimale: " . static::$minAD . ".";
+        }
+        if (isset(static::$maxAD)) {
+            $instructions .= " Adresse maximale: " . static::$maxAD . ".";
+        }
+        if (isset(static::$minCHA)) {
+            $instructions .= " Charisme minimal: " . static::$minCHA . ".";
+        }
+        if (isset(static::$maxCHA)) {
+            $instructions .= " Charisme maximal: " . static::$maxCHA . ".";
+        }
+    
+        return trim($instructions);
+    }
     public function __toArray(): array
     {
         return [
-            'uid' => isset($this->uid) ? $this->uid : "",
-            'name' => isset($this->name) ? $this->name : "",
-            'type' => isset($this->type) ? $this->type : "",
-            'courage' => isset($this->courage) ? $this->courage : 0,
-            'intelligence' => isset($this->intelligence) ? $this->intelligence : 0,
-            'charisma' => isset($this->charisma) ? $this->charisma : 0,
-            'dexterity' => isset($this->dexterity) ? $this->dexterity : 0,
-            'strength' => isset($this->strength) ? $this->strength : 0,
-            'equipment' => isset($this->equipment) ? $this->equipment : [],
-            'specialFeatures' => isset($this->specialFeatures) ? $this->specialFeatures : "",
-            'description' => isset($this->description) ? $this->description : "",
+            'uid'               => isset($this->uid) ? $this->uid : "",
+            'name'              => isset($this->name) ? $this->name : "",
+            'origine'           => $this->getOrigine(),
+            'pv'                => $this->getPv(),
+            'pvmax'             => $this->getMaxPv(),
+            'courage'           => isset($this->courage) ? $this->courage : 0,
+            'intelligence'      => isset($this->intelligence) ? $this->intelligence : 0,
+            'charisma'          => isset($this->charisma) ? $this->charisma : 0,
+            'dexterity'         => isset($this->dexterity) ? $this->dexterity : 0,
+            'strength'          => isset($this->strength) ? $this->strength : 0,
+            'equipment'         => isset($this->equipment) ? $this->equipment : [],
+            'specialFeatures'   => isset($this->specialFeatures) ? $this->specialFeatures : "",
+            'description'       => isset($this->description) ? $this->description : "",
         ];
     }
 }

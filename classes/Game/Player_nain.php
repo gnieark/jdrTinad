@@ -1,5 +1,6 @@
 <?php
 class Player_nain extends Player {
+    protected static $origine_title = "nain";
     protected static $minFO = 12;
     protected static $minCOU = 11;
     protected static $maxPV = 35;

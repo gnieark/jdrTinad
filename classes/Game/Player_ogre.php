@@ -1,5 +1,6 @@
 <?php
 class Player_ogre extends Player {
+    protected static $origine_title = "ogre";
     protected static $minFO = 13;
     protected static $maxINT = 9;
     protected static $maxCHA = 10;

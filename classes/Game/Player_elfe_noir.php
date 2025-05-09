@@ -1,5 +1,6 @@
 <?php
 class Player_elfe_noir extends Player {
+    protected static $origine_title = "elfe-noir";
     protected static $minAD = 13;
     protected static $minINT = 12;
     protected static $maxFO = 12;
