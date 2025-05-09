@@ -1,0 +1,20 @@
+Le Semi-Homme est petit, rondouillard, et très attaché à ses repas (et à ses pieds). Il ne rêve pas d’aventure, mais s’y retrouve souvent à cause d’un pari perdu, d’un héritage douteux ou d’une erreur administrative. Plutôt peureux, mais débrouillard, il sait se cacher quand il faut, courir quand c’est urgent, et taper quand il n’a plus le choix.
+
+Sous ses airs de hobbit de taverne, le Semi-Homme peut se révéler utile, surtout pour repérer les pièges, dénicher des raccourcis ou cuisiner un ragout potable avec une vieille botte et deux champignons.
+
+**Caractéristiques spéciales :**
+- EV initiale : 25  
+- COU minimum : 12  
+- INT minimum : 10  
+- FO maximale : 10  
+
+**Compétences de naissance :**
+Souvent liées à la discrétion, à la chance, à la cuisine, au vol à la tire, ou à la fuite stratégique.
+
+**Équipement et magie :**
+Pas d’armures lourdes (trop gênantes), pas d’armes énormes (trop lourdes), mais il utilise facilement des armes courtes et peut très bien manier des objets magiques, voire devenir prêtre ou ménestrel s’il se découvre une vocation.
+
+**Personnalité :**
+Radin, gourmand, farceur, prudent… parfois à l’extrême. Mais une fois en confiance, il devient un compagnon fiable et malin. Idéal pour les joueurs qui aiment l’humour, la ruse et les situations absurdes.
+
+⚠️ À éviter si vous voulez jouer un héros tragique ou un barbare hurleur. Le Semi-Homme, c’est avant tout le roi de la sieste (entre deux bastons).

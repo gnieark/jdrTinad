@@ -1,0 +1,21 @@
+L’Ogre est gros. Très gros. Immensément fort, résistant, et capable d’arracher la porte d’une auberge à mains nues juste parce qu’elle était « pas gentille ». Il ne parle pas bien, il réfléchit lentement, mais il cogne fort. Très fort. Et souvent au mauvais moment.
+
+C’est un personnage taillé pour le combat pur, sans finesse ni stratégie. L’Ogre aime porter de grosses armes, frapper dans le tas, et pousser des cris gutturaux. La magie, il comprend pas. La subtilité, encore moins. Mais s’il vous aime bien, il vous défendra jusqu’à la mort. Ou jusqu’à ce qu’il oublie pourquoi il était là.
+
+**Caractéristiques spéciales :**
+- EV initiale : 45  
+- FO minimum : 13  
+- INT maximale : 9  
+- AD maximale : 11  
+- CHA maximale : 10  
+
+**Compétences de naissance :**
+Typiquement orientées vers la force brute, le combat, la menace, ou… manger des trucs.
+
+**Équipement et magie :**
+L’Ogre manie des armes énormes, porte parfois des morceaux d’armure qu’il a « trouvés », et évite la magie (qu’il considère comme suspecte ou incompréhensible). Il peut utiliser une arme enchantée… s’il ne la casse pas en jouant avec.
+
+**Personnalité :**
+Lent mais loyal, maladroit mais sincère, dangereux mais attachant. L’ogre est idéal pour les joueurs qui veulent incarner un gros bourrin rigolo, à mi-chemin entre le bulldozer et le bébé hérisson.
+
+⚠️ À éviter si vous aimez les casse-têtes, la diplomatie ou la poésie elfique.

@@ -1,0 +1,19 @@
+Le Nain, c’est un bloc. Petit, trapu, résistant, toujours prêt à se battre pour défendre son honneur, sa barbe ou son tonnelet. Né dans les montagnes, il a grandi à la pioche et à la bière, élevé à la dure dans un monde de pierres, de grottes sombres et de bastons en taverne.
+
+Il n’est pas très rapide, ni très souple, ni très ouvert d’esprit, mais il est fiable, coriace, tenace et capable de cogner plus fort qu’il n’y paraît. Il ne comprend pas trop la magie, il se méfie des elfes, et il a un avis tranché sur tout (surtout sur ce qui ne le concerne pas).
+
+**Caractéristiques spéciales :**
+- EV initiale : 35  
+- FO minimum : 12  
+- COU minimum : 11  
+
+**Compétences de naissance :**
+Souvent liées au combat, à la survie souterraine, à la résistance physique ou à l’artisanat.
+
+**Équipement et magie :**
+Le Nain peut porter des armures lourdes, manier des haches, des marteaux, ou des arbalètes, mais il a peu de dispositions pour la magie (qu’il juge suspecte ou inutile). Il peut néanmoins utiliser des objets magiques s’ils sont simples… ou s’ils brillent.
+
+**Personnalité :**
+Grincheux, méfiant, têtu comme un bouc, mais d’une loyauté inébranlable envers ses alliés (une fois qu’ils ont fait leurs preuves). Il est parfait pour les joueurs qui aiment foncer dans la mêlée en râlant, encaisser les coups, et donner des leçons de tradition.
+
+⚠️ Incompatible avec les elfes trop précieux ou les discussions de plus de deux phrases sur un sujet abstrait.

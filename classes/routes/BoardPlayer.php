@@ -47,7 +47,10 @@ class BoardPlayer extends Route{
         $tpl->addVars(
             array(
                 "player_name"           => $player->getName(),
-                "player_type"           => $player->getType(),
+                "player_pv"             => $player->getPv(),
+                "player_maxpv"          => $player->getMaxPv(),
+                "player_fortune"        => $player->getFortune(),
+                "player_origin"         => $player->getOrigine(),
                 "player_courage"        => $player->getCourage(),
                 "player_intelligence"   => $player->getIntelligence(),
                 "player_charisma"       => $player->getCharisma(),
@@ -112,15 +115,71 @@ class BoardPlayer extends Route{
         if(preg_match ( "'^/(.+)/initpersonnage$'" , $_SERVER["REQUEST_URI"], $matches)){
             $urlPart = $matches[1];
             $board = Board::loadBoard($urlPart);
+
+
+            switch ($_POST["race"]) {
+                case "humain":
+                    $player = new Player_humain();
+                    break;
+                case "barbare":
+                    $player = new Player_barbare();
+                    break;
+                case "nain":
+                    $player = new Player_nain();
+                    break;
+                case "haut-elfe":
+                    $player = new Player_haut_elfe();
+                    break;
+                case "demi-elfe":
+                    $player = new Player_demi_elfe();
+                    break;
+                case "elfe-sylvain":
+                    $player = new Player_elfe_sylvain();
+                    break;
+                case "elfe-noir":
+                    $player = new Player_elfe_noir();
+                    break;
+                case "orque":
+                    $player = new Player_orque();
+                    break;
+                case "demi-orque":
+                    $player = new Player_demi_orque();
+                    break;
+                case "gobelin":
+                    $player = new Player_gobelin();
+                    break;
+                case "ogre":
+                    $player = new Player_ogre();
+                    break;
+                case "semi-homme":
+                    $player = new Player_semi_homme();
+                    break;
+                case "gnome-des-forets-du-nord":
+                    $player = new Player_gnome_des_forets_du_nord();
+                    break;
+                default:
+                    throw new Exception("Origine inconnue : " . $_POST["race"]);
+            }
+
+
+            $player->setJob($_POST["job"]);
+
             $promptIa = new TplBlock();
             $promptIa->addVars(
                 array(
-                    "playername" => $_POST["name"],
-                    "playertype" => $_POST["race"],
-                    "traits"    => $_POST["traits"]
+                    "playername"                => $_POST["name"],
+                    "playerOrigine"             => $player->getOrigine(),
+                    "playerjob"                 => $player->getJob(),
+                    "traits"                    => $_POST["traits"],
+                    "playercompetanceslimits"   => $player->get_instructions_generation_competances(),
+                    "origineDesc"               => get_class($player)::get_origine_desc()
                 )
             );
-            
+
+
+
+
+
             $apiKey = file_get_contents("../config/mistralapikey.txt");
             $url = 'https://api.mistral.ai/v1/chat/completions';
             
@@ -128,7 +187,7 @@ class BoardPlayer extends Route{
                 'model' => 'mistral-large-latest',
                 'messages' => array(array(
                         'role' => 'user',
-                        'content' => $promptIa->applyTplFile("../templates/promptIA-creerpersonnage.txt")
+                        'content' => $promptIa->applyTplFile("../templates/prompts/promptIA-creerpersonnage.txt")
                 )),
                 'response_format' => array("type" => "json_object")
             )
@@ -163,18 +222,19 @@ class BoardPlayer extends Route{
 
                 $rep = json_decode($onlyTheResponse,true);
 
-                $player = new Player();
-                
+
                 $player ->setUid( SELF::get_uid_from_cookie() )
                         ->setName( $rep["nom"] )
-                        ->setType( $rep["type"] )
                         ->setCourage( $rep["courage"] )
                         ->setIntelligence( $rep["intelligence"] )
                         ->setCharisma( $rep["charisme"] )
                         ->setDexterity( $rep["adresse"] )
                         ->setStrength( $rep["force"] )
                         ->setEquipment( $rep["equipement"] )
-                        ->setDescription( $rep["description"]);
+                        ->setDescription( $rep["description"])
+                        ->setPv( $player->getMaxPv() )
+                        ->setFortune( random_int(0, 120)  );
+                        
 
                 $player->save( $board->get_save_real_path()."/player-" . self::get_uid_from_cookie() );     
             }

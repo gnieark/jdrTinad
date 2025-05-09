@@ -1,0 +1,21 @@
+Le Gobelin est petit, moche, peureux… mais plein de ressources. Vivant d’habitude dans des trous sales en bandes malodorantes, il a réussi à s’extraire de sa communauté pour devenir (plus ou moins) un aventurier. Ce n’est pas un grand guerrier, ni un érudit, ni même un bon camarade, mais il court vite, frappe sournoisement, et sait se faufiler partout. Et il mord, aussi.
+
+Très limité intellectuellement, il n’a pas accès à la magie, ni à des fonctions importantes dans un groupe, mais il peut se rendre utile… souvent sans faire exprès. Il adore fouiller dans les poubelles, piquer des trucs, et surtout fuir au bon moment.
+
+**Caractéristiques spéciales :**
+- EV initiale : 20  
+- FO maximale : 9  
+- INT maximale : 10  
+- CHA maximale : 8  
+- COU maximale : 10  
+
+**Compétences de naissance :**
+Principalement axées sur la discrétion, le vol, la fuite, la survie urbaine ou souterraine.
+
+**Équipement et magie :**
+Le gobelin utilise des armes petites et simples (couteaux, frondes, arcs courts…), ne porte que des armures légères, et ne comprend rien à la magie — mais il peut essayer d’utiliser des objets magiques sans en saisir les conséquences.
+
+**Personnalité :**
+Lâche, voleur, râleur, sournois… mais étonnamment attachant avec le temps. Le Gobelin est parfait pour les joueurs qui veulent un personnage comique, imprévisible, ou simplement pénible pour les autres aventuriers.
+
+⚠️ Ne convient pas aux rôles de chef de groupe, prêtre, stratège ou figure charismatique (vous ne serez jamais pris au sérieux).

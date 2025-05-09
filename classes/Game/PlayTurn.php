@@ -95,7 +95,7 @@ class PlayTurn{
     public function playPrompt( Board $board ): PlayTurn{
 
         $playsTurns = $board->get_playTurns();
-        $tplFile = empty($playsTurns)? "../templates/promptIA-firstTurn.txt" : "../templates/promptIA-newTurn.txt";
+        $tplFile = empty($playsTurns)? "../templates/prompts/promptIA-firstTurn.txt" : "../templates/prompts/promptIA-newTurn.txt";
         $tplBlock = new TplBlock();
 
         $players = $board->get_players();
@@ -139,14 +139,29 @@ class PlayTurn{
 
         $promptToSend =  $tplBlock->applyTplFile($tplFile );
 
-        //pour du debug
-        //file_put_contents("./" . $this->get_turnUID() . "-prompt.txt", $promptToSend );
+        //debog
+        file_put_contents("out.txt",$promptToSend); //die();
+        
 
 
         $rep = self::sendMessageToIa($promptToSend );
         $this->allAwnser = $rep["all"];
         foreach($rep["personalised"] as $r){
             $this->personalisedAwnsers[ $r["player-uid"] ] = $r["message"];
+
+            //enregister les modifications de chaque player
+            $player = $board->get_player_by_uid($r["player-uid"]);
+            $player->applyDeltaPv($r["delta-lifePoints"])
+                   ->applyDeltaFortune($r["delta-fortune"]);
+
+            foreach($r["lost-equipment"] as $lostEquipment){
+                $player->removeEquipment($lostEquipment);
+            }
+            foreach($r["picked-equipment"] as $pickedEquipment){
+                $player->addEquipment($pickedEquipment);
+            }
+            $player->save(  $board->get_save_real_path()."/player-" . $player->getUid()   );
+
         }
         return $this;
 

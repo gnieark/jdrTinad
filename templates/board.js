@@ -236,31 +236,54 @@ document.addEventListener('DOMContentLoaded', function () {
             playersByUid[ player.uid ] = `${player.name} (${player.type})`;
 
             if( document.getElementById("div-listplayers-" + player.uid)){
-              //already exists
-              //divplayer = document.getElementById("div-listplayers-" + player.uid);
+              //already exists just update pv, fortune and equipment
+              document.getElementById("pointsdevie" + player.uid).innerText = `${player.lifePoints}/${player.lifePointsMax}`;
+              document.getElementById("pfortune" + player.uid).innerText = `${player.fortune} pièces d'or`;
+              let ulequipment = createElem("ul",{});
+              ulequipment.innerHTML = player.equipment.map(eq => `<li>${eq}</li>`).join('');
+              document.getElementById("pequipment" + player.uid ).innerHTML = "";
+              document.getElementById("pequipment" + player.uid ).appendChild(ulequipment);
+              
 
             }else{
               let divplayer = createElem("div",{"class": "player-entry", "id": "div-listplayers-" + player.uid});
 
 
               let divtitle = createElem("div", {"class":"player-header"} );
-              divtitle.innerText = `${player.name} (${player.type} )`;
+              divtitle.innerText = `${player.name} (${player.origine} ${player.job})`;
               divtitle.addEventListener('click', () => {
                 document.getElementById("div-listplayers-details" + player.uid).style.display = (document.getElementById("div-listplayers-details" + player.uid).style.display === 'none') ? 'block' : 'none';
               });
 
               let divdetails = createElem("div",{"class":"player-details", "id":"div-listplayers-details" + player.uid });
               divdetails.style.display = 'none';
-              divdetails.innerHTML = `
-              <p><strong>Courage:</strong> ${player.courage}</p>
-              <p><strong>Intelligence:</strong> ${player.intelligence}</p>
-              <p><strong>Charisme:</strong> ${player.charisma}</p>
-              <p><strong>Dextérité:</strong> ${player.dexterity}</p>
-              <p><strong>Force:</strong> ${player.strength}</p>
-              <p><strong>Équipement:</strong> <ul>${player.equipment.map(eq => `<li>${eq}</li>`).join('')}</ul></p>
-              <p><strong>Traits spéciaux:</strong> ${player.specialFeatures || 'Aucun'}</p>
-              <p><strong>Description:</strong> ${player.description}</p>
-              `;
+
+              let ppointsDeVie = createElem("p",{"class":"player_stats_elem stats_pv","id":"pointsdevie" + player.uid });
+              ppointsDeVie.innerText = `${player.lifePoints}/${player.lifePointsMax}`;
+              divdetails.appendChild(ppointsDeVie);
+
+              let pfortune = createElem("p",{"class":"player_stats_elem stats_fortune","id":"pfortune" + player.uid });
+              pfortune.innerText = `${player.fortune} pièces d'or`;
+              divdetails.appendChild(pfortune);
+              
+              let pcompetances = createElem("p",{"class":"player_stats_elem stats_competences","id":"pcompetences" + player.uid });
+              pcompetances.innerText = `COU: ${player.courage}, INT: ${player.intelligence}, CHA: ${player.charisma}, DEXT: ${player.dexterity}, FO: ${player.strength}`;
+              divdetails.appendChild(pcompetances);
+
+              let pequipment = createElem("p",{"class":"player_stats_elem stats_equipment","id":"pequipment" + player.uid });
+              let ulequipment = createElem("ul",{});
+              ulequipment.innerHTML = player.equipment.map(eq => `<li>${eq}</li>`).join('');
+              pequipment.appendChild(ulequipment);
+              divdetails.appendChild(pequipment);
+
+              let ptraits = createElem("p",{"class":"player_stats_elem stats_traits","id":"ptraits" + player.uid });
+              ptraits.innerText = `${player.specialFeatures || 'Aucun'}`;
+              divdetails.appendChild(ptraits);
+
+              let pdescription = createElem("p",{"class":"player_stats_elem stats_description","id":"pdescription" + player.uid });
+              pdescription.innerText = `${player.description}`;
+              divdetails.appendChild(pdescription);
+
               divplayer.appendChild(divtitle);
               divplayer.appendChild(divdetails);
               container.appendChild(divplayer);

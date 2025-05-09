@@ -1,0 +1,20 @@
+Le Demi-Elfe est un aventurier partagé entre deux mondes : il hérite de la grâce et de l’agilité des elfes, mais aussi de la robustesse des humains. Rejeté par les deux peuples, il a souvent grandi dans la méfiance et la solitude, développant une certaine paranoïa.
+
+Doté d’une excellente vue et de capacités équilibrées, il s’adapte facilement à toutes sortes de rôles, qu’ils soient physiques, discrets ou magiques. Il peut manier toutes les armes sauf celles à deux mains, qui le rendent maladroit, et préfère les armures légères (PR5 max, sauf magiques). Il peut transporter jusqu’à 15 kg.
+
+**Caractéristiques spéciales :**
+- EV initiale : 28
+- Ne peut pas utiliser d’armes à deux mains (sauf exception elfique)
+- Armure max PR5 (sauf magique)
+- Charge maximale : 15 kg
+
+**Compétences de naissance :**
+- Appel des renforts
+- Détection
+- Chouraver
+- Méfiance
+
+**Compétences au choix :**
+Bricolo du dimanche, chevaucher, érudition, escalader, fouiller dans les poubelles, mendier et pleurnicher, nager, tirer correctement
+
+Le Demi-Elfe est parfait pour les joueurs qui veulent de la liberté de choix et de la souplesse dans le rôle qu’ils joueront, avec une touche d’élégance et un fond d’amertume.

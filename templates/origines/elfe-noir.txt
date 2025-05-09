@@ -1,0 +1,20 @@
+L’Elfe Noir est un être aussi gracieux que redoutable. Né dans les ténèbres et la perfidie, il se distingue par sa beauté inquiétante, son intelligence aiguisée et sa cruauté raffinée. Contrairement à ses cousins des forêts, il n’a aucun scrupule à recourir à la magie, à l’assassinat ou à la manipulation pour parvenir à ses fins.
+
+Cynique, froid, calculateur, il méprise la faiblesse, la niaiserie et tout ce qui sent la lumière ou la gentillesse. Ne comptez pas sur lui pour chanter des ballades ou faire des dons à l’auberge : il a bien mieux à faire avec une dague bien placée ou un sort destructeur.
+
+**Caractéristiques spéciales :**
+- EV initiale : 25
+- AD minimum : 13
+- INT minimum : 12
+- FO maximale : 12
+
+**Compétences de naissance :**
+Varient selon le métier, mais souvent tournées vers la ruse, la magie ou les attaques sournoises.
+
+**Équipement et magie :**
+Il peut utiliser la magie, y compris les arts sombres, ainsi que des armes fines ou exotiques. Il porte des armures légères mais stylées, et évite tout ce qui gêne ses mouvements élégants.
+
+**Personnalité :**
+Arrogant, implacable, charmeur et dangereux. Il est un excellent choix pour les joueurs qui veulent incarner un personnage mystérieux, puissant et moralement discutable.
+
+⚠️ Les métiers « gentils » (paladin, ménestrel, marchand, bourgeois) sont à proscrire : un Elfe Noir ne sert ni la lumière, ni les masses, ni les fleurs.

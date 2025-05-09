@@ -1,0 +1,23 @@
+Le Barbare, c’est la force brute incarnée. Un colosse des steppes, élevé à la sueur, au combat, et à l’idée que « réfléchir, c’est tricher ». Il est grand, musclé, endurant, et surtout pas compliqué. Il déteste la magie, les livres, les trucs fins, et les gens qui parlent trop (surtout les mages).
+
+Ce qu’il aime, c’est taper. Fort. De préférence avec deux armes. Il résiste naturellement au froid, au chaud, à la douleur, et à la logique. Il n’utilise ni armures complètes, ni boucliers, ni arbalètes (trop subtils), mais il peut porter des morceaux d’équipement tant qu’il reste libre de ses mouvements.
+
+**Caractéristiques spéciales :**
+- EV initiale : 35  
+- FO minimum : 13  
+- COU minimum : 12  
+- +1 en Attaque, -1 en Parade au départ
+
+**Compétences de naissance :**
+Ambidextrie, Chercher des noises, Sentir des pieds, Tête vide
+
+**Compétences au choix :**
+Armes de bourrin, bourre-pif, chevaucher, escalader, intimider, nager, pister, tirer correctement, truc de mauviette
+
+**Équipement et magie :**
+Le Barbare n’utilise pas de magie, sauf peut-être une arme enchantée qu’on lui a bien expliqué (et qui brille). Il ne porte jamais une armure complète, mais peut porter quelques pièces bien placées tant que ça ne l’étouffe pas.
+
+**Personnalité :**
+Simple, direct, bruyant, bourrin. Il est parfait pour les joueurs qui aiment résoudre les conflits à coups de hache, éviter la réflexion, et foncer tête la première dans l’ennui… pour lui casser la gueule.
+
+⚠️ Incompatible avec les mages, les objets complexes, les discussions nuancées et les bibliothèques.

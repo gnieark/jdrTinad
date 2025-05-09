@@ -102,7 +102,7 @@ class  PlayerResponse{
         );
 
 
-        $promptIa = $tpl->applyTplFile("../templates/promptIA-Analyseawnser.txt");
+        $promptIa = $tpl->applyTplFile("../templates/prompts/promptIA-Analyseawnser.txt");
         $repIA = PlayTurn::sendMessageToIa( $promptIa );
 
         $player = $board->get_player_by_uid( $this->get_playerUID() );
@@ -172,22 +172,22 @@ class  PlayerResponse{
             //analyse:
 
             if( !$repIA["reponse_coherente"] ){
-                $this->responseanalysis = file_get_contents("../templates/promptIA-Unconsistent.txt");
+                $this->responseanalysis = file_get_contents("../templates/prompts/promptIA-Unconsistent.txt");
             }elseif( ( isset($this->diceRollSuccess) ) ){
                 if( $this->diceRollSuccess ){
                     //succes
                     if($this->diceResultCritical){
-                        $this->responseanalysis = file_get_contents("../templates/promptIA-Success-critical.txt");
+                        $this->responseanalysis = file_get_contents("../templates/prompts/promptIA-Success-critical.txt");
                     }else{
-                        $this->responseanalysis = file_get_contents("../templates/promptIA-Success-normal.txt");
+                        $this->responseanalysis = file_get_contents("../templates/prompts/promptIA-Success-normal.txt");
                     }
 
                 }else{
                     //echec
                     if($this->diceResultCritical){
-                        $this->responseanalysis = file_get_contents("../templates/promptIA-Fail-critical.txt");
+                        $this->responseanalysis = file_get_contents("../templates/prompts/promptIA-Fail-critical.txt");
                     }else{
-                        $this->responseanalysis = file_get_contents("../templates/promptIA-Fail-normal.txt");
+                        $this->responseanalysis = file_get_contents("../templates/prompts/promptIA-Fail-normal.txt");
                     }
 
                 }

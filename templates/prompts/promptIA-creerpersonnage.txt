@@ -1,7 +1,18 @@
 Nous démarrons un jeu de rôle dans l'univers "Donjon de Naheulbeuk". Un joueur veut créer le personnage suivant :
 - Nom : {{playername}}
-- Type : {{playertype}}
+- Origine : {{playerOrigine}}
+- Metier: {{playerjob}}
 - Traits particuliers : {{traits}}
+
+Voici les instructions liées au type du personnage concernant ses compétances:
+```text
+  {{playercompetanceslimits}}
+```
+
+Voici le descriptif de l'origine {{playerOrigine}} donnée par l'animateur du jeu:
+```markdown
+{{origineDesc}}
+```
 
 Ta tâche :
 Génère une fiche de personnage complète avec :

@@ -9,7 +9,55 @@ function createElem(type,attributes)
     return elem;
 }
 
+async function refresh_character_sheet(){
+  const container = document.getElementById("character-sheet");
+  container.innerHTML = "";
 
+  const endpoint = '/API/board/' + boarduid + '/player/myperso';
+
+  const response = await fetch(endpoint);
+  if (!response.ok) throw new Error('Erreur de chargement');
+  const player = await response.json();
+
+  let divplayer = createElem("div",{"class": "player-entry", "id": "div-listplayers-" + player.uid});
+
+
+  let divtitle = createElem("div", {"class":"player-header"} );
+  divtitle.innerText = `${player.name} (${player.origine} ${player.job})`;
+
+  let divdetails = createElem("div",{"class":"player-details", "id":"div-listplayers-details" + player.uid });
+
+  let ppointsDeVie = createElem("p",{"class":"player_stats_elem stats_pv","id":"pointsdevie" + player.uid });
+  ppointsDeVie.innerText = `${player.lifePoints}/${player.lifePointsMax}`;
+  divdetails.appendChild(ppointsDeVie);
+
+  let pfortune = createElem("p",{"class":"player_stats_elem stats_fortune","id":"pfortune" + player.uid });
+  pfortune.innerText = `${player.fortune} pièces d'or`;
+  divdetails.appendChild(pfortune);
+  
+  let pcompetances = createElem("p",{"class":"player_stats_elem stats_competences","id":"pcompetences" + player.uid });
+  pcompetances.innerText = `COU: ${player.courage}, INT: ${player.intelligence}, CHA: ${player.charisma}, DEXT: ${player.dexterity}, FO: ${player.strength}`;
+  divdetails.appendChild(pcompetances);
+
+  let pequipment = createElem("p",{"class":"player_stats_elem stats_equipment","id":"pequipment" + player.uid });
+  let ulequipment = createElem("ul",{});
+  ulequipment.innerHTML = player.equipment.map(eq => `<li>${eq}</li>`).join('');
+  pequipment.appendChild(ulequipment);
+  divdetails.appendChild(pequipment);
+
+  let ptraits = createElem("p",{"class":"player_stats_elem stats_traits","id":"ptraits" + player.uid });
+  ptraits.innerText = `${player.specialFeatures || 'Aucun'}`;
+  divdetails.appendChild(ptraits);
+
+  let pdescription = createElem("p",{"class":"player_stats_elem stats_description","id":"pdescription" + player.uid });
+  pdescription.innerText = `${player.description}`;
+  divdetails.appendChild(pdescription);
+
+  divplayer.appendChild(divtitle);
+  divplayer.appendChild(divdetails);
+  container.appendChild(divplayer);
+
+}
 function submitAnwser(awnser, turnuid) {
 
   const endpoint = '/API/board/' + boarduid + '/turn/' + turnuid;
@@ -148,5 +196,6 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     setInterval(checkBoardVersion, 3000);
+    refresh_character_sheet();
 
   });
