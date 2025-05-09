@@ -163,8 +163,53 @@ class BoardPlayer extends Route{
 
                 $rep = json_decode($onlyTheResponse,true);
 
-                $player = new Player();
+                //$player = new Player();
                 
+                switch ($_POST["race"]) {
+                    case "humain":
+                        $player = new Player_humain();
+                        break;
+                    case "barbare":
+                        $player = new Player_barbare();
+                        break;
+                    case "nain":
+                        $player = new Player_nain();
+                        break;
+                    case "haut-elfe":
+                        $player = new Player_haut_elfe();
+                        break;
+                    case "demi-elfe":
+                        $player = new Player_demi_elfe();
+                        break;
+                    case "elfe-sylvain":
+                        $player = new Player_elfe_sylvain();
+                        break;
+                    case "elfe-noir":
+                        $player = new Player_elfe_noir();
+                        break;
+                    case "orque":
+                        $player = new Player_orque();
+                        break;
+                    case "demi-orque":
+                        $player = new Player_demi_orque();
+                        break;
+                    case "gobelin":
+                        $player = new Player_gobelin();
+                        break;
+                    case "ogre":
+                        $player = new Player_ogre();
+                        break;
+                    case "semi-homme":
+                        $player = new Player_semi_homme();
+                        break;
+                    case "gnome-des-forets-du-nord":
+                        $player = new Player_gnome_des_forets_du_nord();
+                        break;
+                    default:
+                        throw new Exception("Origine inconnue : " . $_POST["race"]);
+                }
+
+
                 $player ->setUid( SELF::get_uid_from_cookie() )
                         ->setName( $rep["nom"] )
                         ->setType( $rep["type"] )
