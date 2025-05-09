@@ -1,0 +1,20 @@
+Le Gnome des Forêts du Nord est petit, discret, vif et... extrêmement méfiant. Vivant reclus dans les bois les plus touffus et les grottes les plus humides du nord, il connaît mille façons de survivre sans jamais se faire remarquer. Ce n’est pas un grand bagarreur, mais il compense sa petite taille par une agilité surprenante, une intelligence vive et une tendance à se cacher derrière les autres au bon moment.
+
+Malgré son aspect frêle et ses oreilles étrangement rondes, le gnome n’est pas sans ressources. Il sait bricoler, ruser, se faufiler, et parler aux animaux mieux qu’aux humains. Il est rarement pris au sérieux, ce qui lui sauve souvent la mise. Et non, il ne chevauche pas de lapins géants.
+
+**Caractéristiques spéciales :**
+- EV initiale : 15  
+- AD minimum : 13  
+- INT minimum : 10  
+- FO maximale : 8  
+
+**Compétences de naissance :**
+Souvent liées à la nature, au camouflage, au bricolage, ou à la discrétion.
+
+**Équipement et magie :**
+Le gnome ne manie pas d’objets trop lourds (il est petit, faut pas exagérer) et n’a pas accès à la magie offensive. Il peut néanmoins utiliser des objets bénis, des potions et des gadgets intelligents. Il préfère les armes simples (fronde, dague, arc court) et les armures souples.
+
+**Personnalité :**
+Suspicieux, débrouillard, pas très sociable. Il parle peu, observe beaucoup, et court vite. Il est idéal pour les joueurs qui veulent un personnage agile, rusé et original, sans jouer les héros musclés.
+
+⚠️ À éviter si vous aimez foncer dans le tas ou soulever des trolls à mains nues.

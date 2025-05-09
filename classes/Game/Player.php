@@ -10,6 +10,9 @@ class Player
     private int $charisma;
     private int $dexterity;
     private int $strength;
+    private string $job;
+    private int $pvmax; //points de vie max
+    private int $pv;
     private array $equipment;
     private string $specialFeatures;
     private string $description;
@@ -39,6 +42,13 @@ class Player
         return $this;
     }
 
+    public function set_job( string $job ):self{
+        $this->job = $job;
+        return $this;
+    }
+    public function get_job():string{
+        return $this->job;
+    }
     public function getType(): string
     {
         return $this->type;
@@ -47,6 +57,16 @@ class Player
     public function setType(string $type): self
     {
         $this->type = $type;
+        switch( $type ){
+
+
+
+
+        }
+        //define pv max
+
+
+
         return $this;
     }
 
