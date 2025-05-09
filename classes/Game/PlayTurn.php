@@ -140,7 +140,7 @@ class PlayTurn{
         $promptToSend =  $tplBlock->applyTplFile($tplFile );
 
         //debog
-        file_put_contents("out.txt",$promptToSend); //die();
+        //file_put_contents("out.txt",$promptToSend); //die();
         
 
 
