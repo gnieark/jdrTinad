@@ -11,6 +11,7 @@ class Player
     private int $strength;
     private string $job;
     private int $pv;
+    private int $fortune = 0;
     private array $equipment;
     private string $specialFeatures;
     private string $description;
@@ -26,6 +27,17 @@ class Player
     public function setUid(string $uid): self
     {
         $this->uid = $uid;
+        return $this;
+    }
+    public function setFortune(int $fortune):self{
+        $this->fortune = $fortune;
+        return $this;
+    }
+    public function getFortune():int{
+        return $this->fortune;
+    }
+    public function applyDeltaFortune(int $delta):self{
+        $this->fortune = $this->fortune + $delta;
         return $this;
     }
 
@@ -54,6 +66,12 @@ class Player
     public function getPv():int{
         return $this->pv;
     }
+    public function applyDeltaPv(int $delta):self{
+        $this->pv = $this->pv + $delta;
+        return $this;
+    }
+
+
     public function getMaxPv():int{
         return static::$maxPV;
     }
@@ -125,6 +143,18 @@ class Player
     public function setEquipment(array $equipment): self
     {
         $this->equipment = $equipment;
+        return $this;
+    }
+    public function removeEquipment(string $piece): self
+    {
+        $this->equipment = array_values(
+            array_filter($this->equipment, fn($item) => $item !== $piece)
+        );
+        return $this;
+    }
+    public function addEquipment(string $piece):self
+    {
+        $this->equipment[] = $piece;
         return $this;
     }
 
@@ -200,9 +230,11 @@ class Player
         return [
             'uid'               => isset($this->uid) ? $this->uid : "",
             'name'              => isset($this->name) ? $this->name : "",
+            'job'               => $this->getJob(),
             'origine'           => $this->getOrigine(),
-            'pv'                => $this->getPv(),
-            'pvmax'             => $this->getMaxPv(),
+            'lifePoints'        => $this->getPv(),
+            'lifePointsMax'     => $this->getMaxPv(),
+            'fortune'           => $this->getFortune(),
             'courage'           => isset($this->courage) ? $this->courage : 0,
             'intelligence'      => isset($this->intelligence) ? $this->intelligence : 0,
             'charisma'          => isset($this->charisma) ? $this->charisma : 0,

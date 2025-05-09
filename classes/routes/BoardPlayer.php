@@ -49,6 +49,7 @@ class BoardPlayer extends Route{
                 "player_name"           => $player->getName(),
                 "player_pv"             => $player->getPv(),
                 "player_maxpv"          => $player->getMaxPv(),
+                "player_fortune"        => $player->getFortune(),
                 "player_origin"         => $player->getOrigine(),
                 "player_courage"        => $player->getCourage(),
                 "player_intelligence"   => $player->getIntelligence(),
@@ -175,9 +176,7 @@ class BoardPlayer extends Route{
                 )
             );
 
-            //debog stop
-            //file_put_contents("out.txt", $promptIa->applyTplFile("../templates/promptIA-creerpersonnage.txt") );
-            //echo $promptIa->applyTplFile("../templates/promptIA-creerpersonnage.txt"); die();
+
 
 
 
@@ -188,7 +187,7 @@ class BoardPlayer extends Route{
                 'model' => 'mistral-large-latest',
                 'messages' => array(array(
                         'role' => 'user',
-                        'content' => $promptIa->applyTplFile("../templates/promptIA-creerpersonnage.txt")
+                        'content' => $promptIa->applyTplFile("../templates/prompts/promptIA-creerpersonnage.txt")
                 )),
                 'response_format' => array("type" => "json_object")
             )
@@ -233,7 +232,8 @@ class BoardPlayer extends Route{
                         ->setStrength( $rep["force"] )
                         ->setEquipment( $rep["equipement"] )
                         ->setDescription( $rep["description"])
-                        ->setPv( $player->getMaxPv() );
+                        ->setPv( $player->getMaxPv() )
+                        ->setFortune( random_int(0, 120)  );
                         
 
                 $player->save( $board->get_save_real_path()."/player-" . self::get_uid_from_cookie() );     

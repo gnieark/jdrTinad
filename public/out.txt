@@ -1,0 +1,55 @@
+Nous jouons une partie de jeu de rôle dans l'univers du Donjon de Naheulbeuk.
+
+Les joueurs sont :
+[{"uid":"680f76507f89c","name":"Gnieark","job":"assassin","origine":"barbare","lifePoints":32,"lifePointsMax":35,"fortune":106,"courage":15,"intelligence":5,"charisma":8,"dexterity":12,"strength":16,"equipment":["hache","\u00e9p\u00e9e courte","bottes en cuir","gourde de boisson douteuse","sac \u00e0 dos"],"specialFeatures":"","description":"Gnieark est un colosse des steppes, \u00e9lev\u00e9 \u00e0 la dure et au combat. Il d\u00e9teste la magie et les gens qui parlent trop. Ce qu'il aime, c'est taper fort, de pr\u00e9f\u00e9rence avec deux armes. Il r\u00e9siste naturellement au froid, au chaud, \u00e0 la douleur, et \u00e0 la logique. Gnieark est simple, direct, bruyant et bourrin. Il est parfait pour les joueurs qui aiment r\u00e9soudre les conflits \u00e0 coups de hache, \u00e9viter la r\u00e9flexion, et foncer t\u00eate la premi\u00e8re dans l\u2019ennui\u2026 pour lui casser la gueule."}]
+
+Tu es le maître du jeu et ta tâche est de générer la suite de l'histoire, en restant fidèle à l'univers et aux personnages.
+
+
+
+Voici l'historique des échanges entre le maître du jeu, les joueurs et l'animateur de la partie.
+
+```json
+[{"allAwnser":"Gnieark se trouve dans une taverne sombre et enfum\u00e9e, entour\u00e9 de brigands et de mercenaires. L'ambiance est tendue, et la bi\u00e8re coule \u00e0 flots. Soudain, un homme encapuchonn\u00e9 entre et s'approche de Gnieark. Il lui murmure quelque chose \u00e0 l'oreille avant de dispara\u00eetre aussi myst\u00e9rieusement qu'il est arriv\u00e9. Gnieark, intrigu\u00e9, d\u00e9cide de suivre cet homme.","personalisedAwnsers":{"680f76507f89c":"L'homme encapuchonn\u00e9 t'a murmur\u00e9 une information cruciale sur un tr\u00e9sor cach\u00e9 dans les ruines d'un ancien ch\u00e2teau. Tu d\u00e9cides de partir imm\u00e9diatement, mais en sortant de la taverne, tu tr\u00e9buches sur un ivrogne et perds quelques points de vie. Tu trouves \u00e9galement une dague rouill\u00e9e par terre."},"playersResponses":[{"playerUID":"680f76507f89c","playTurnUID":"681e058431f31","player_response":"je tente de suivre discr\u00e8tement l'homme","tested_skills":["dexterite"],"responseanalysis":"Les comp\u00e9tances du joueur ont \u00e9t\u00e9 test\u00e9es aux d\u00e9s pour cette action, c'est un succ\u00e8s.","dices_bonus":[0],"dices_scores":[3],"dices_succes":true,"dices_critical":false}],"closedTurn":false,"turnuid":"681e058431f31"},{"allAwnser":"Gnieark, apr\u00e8s avoir tr\u00e9buch\u00e9 sur l'ivrogne, se rel\u00e8ve rapidement et se met \u00e0 suivre discr\u00e8tement l'homme encapuchonn\u00e9 \u00e0 travers les ruelles sombres de la ville. L'homme se dirige vers une porte d\u00e9rob\u00e9e dans une ruelle \u00e9troite et dispara\u00eet \u00e0 l'int\u00e9rieur. Gnieark, d\u00e9termin\u00e9, s'approche prudemment de la porte et l'ouvre lentement, d\u00e9couvrant un passage secret menant \u00e0 une salle souterraine.","personalisedAwnsers":{"680f76507f89c":"Tu as r\u00e9ussi \u00e0 suivre l'homme encapuchonn\u00e9 jusqu'\u00e0 une porte d\u00e9rob\u00e9e. En entrant, tu d\u00e9couvres un passage secret menant \u00e0 une salle souterraine. Ta d\u00e9termination et ta discr\u00e9tion t'ont permis de ne pas te faire rep\u00e9rer."},"playersResponses":[{"playerUID":"680f76507f89c","playTurnUID":"681e05bd1bfff","player_response":"J'\u00e9coute et analyse mon environnement","tested_skills":["intelligence"],"responseanalysis":"Les comp\u00e9tances du joueur ont \u00e9t\u00e9 test\u00e9es aux d\u00e9s pour cette action, c'est un \u00e9chec, il n'arrive pas \u00e0 r\u00e9aliser son action.","dices_bonus":[0],"dices_scores":[6],"dices_succes":false,"dices_critical":false}],"closedTurn":false,"turnuid":"681e05bd1bfff"},{"allAwnser":"Gnieark p\u00e9n\u00e8tre dans la salle souterraine, l'obscurit\u00e9 l'entoure et une odeur de moisi emplit l'air. Il entend des bruits de pas s'\u00e9loigner rapidement. En avan\u00e7ant prudemment, il d\u00e9couvre une s\u00e9rie de tunnels menant \u00e0 diff\u00e9rentes directions. L'homme encapuchonn\u00e9 semble avoir disparu dans l'un de ces tunnels. Gnieark doit choisir rapidement quel chemin suivre.","personalisedAwnsers":{"680f76507f89c":"Tu avances prudemment dans la salle souterraine, mais tu n'arrives pas \u00e0 d\u00e9terminer quel tunnel l'homme encapuchonn\u00e9 a emprunt\u00e9. Tu te retrouves face \u00e0 plusieurs choix de chemins, chacun menant \u00e0 des destinations inconnues. Tu dois te d\u00e9cider rapidement."},"playersResponses":[{"playerUID":"680f76507f89c","playTurnUID":"681e0d1c2c92b","player_response":"je jette 3 pi\u00e8ces d'or par terre","tested_skills":[],"responseanalysis":""}],"closedTurn":false,"turnuid":"681e0d1c2c92b"},{"allAwnser":"Gnieark se tient immobile dans la salle souterraine, entour\u00e9 de plusieurs tunnels menant \u00e0 des destinations inconnues. Il d\u00e9cide de jeter trois pi\u00e8ces d'or par terre, esp\u00e9rant peut-\u00eatre qu'un signe divin lui indiquera la direction \u00e0 prendre. Les pi\u00e8ces roulent et s'arr\u00eatent, pointant vaguement vers l'un des tunnels. Gnieark, suivant son instinct brut et direct, choisit de suivre cette direction, se lan\u00e7ant t\u00eate baiss\u00e9e dans l'inconnu.","personalisedAwnsers":{"680f76507f89c":"Tu as jet\u00e9 trois pi\u00e8ces d'or par terre, esp\u00e9rant un signe divin. Les pi\u00e8ces roulent et semblent indiquer une direction. Suivant ton instinct, tu te lances dans le tunnel indiqu\u00e9, pr\u00eat \u00e0 affronter ce qui t'attend."},"playersResponses":[{"playerUID":"680f76507f89c","playTurnUID":"681e0d5be23b3","player_response":"Je continue \u00e0 avancer mais tiens mon \u00e9p\u00e9e courte au cas o\u00f9.","tested_skills":["dexterite"],"responseanalysis":"Les comp\u00e9tances du joueur ont \u00e9t\u00e9 test\u00e9es aux d\u00e9s pour cette action, c'est un \u00e9chec, il n'arrive pas \u00e0 r\u00e9aliser son action.","dices_bonus":[0],"dices_scores":[19],"dices_succes":false,"dices_critical":false}],"closedTurn":false,"turnuid":"681e0d5be23b3"},{"allAwnser":"Gnieark avance prudemment dans le tunnel, tenant son \u00e9p\u00e9e courte pr\u00eate \u00e0 l'action. Soudain, il tr\u00e9buche sur une pierre et, dans sa maladresse, se blesse b\u00eatement avec sa propre \u00e9p\u00e9e. La douleur est vive, mais il serre les dents et continue d'avancer, d\u00e9termin\u00e9 \u00e0 ne pas se laisser arr\u00eater par un simple accident.","personalisedAwnsers":{"680f76507f89c":"Tu avances prudemment dans le tunnel, mais tu tr\u00e9buches et te blesses b\u00eatement avec ton \u00e9p\u00e9e courte. Tu perds des points de vie, mais tu continues d'avancer, d\u00e9termin\u00e9 \u00e0 ne pas te laisser arr\u00eater."},"playersResponses":[{"playerUID":"680f76507f89c","playTurnUID":"681e0dfc994db","player_response":"M\u00e9content de m'\u00eatre bl\u00e9ss\u00e9 avec, je laisse mon \u00e9p\u00e9e au sol, et prend ma hache dans la main.","tested_skills":[],"responseanalysis":""}],"closedTurn":false,"turnuid":"681e0dfc994db"}]
+```
+
+
+
+
+Ta tâche :
+Imagine la suite de l'histoire en restant cohérant avec l'univers et les personnages. Prends en compte notemment:
+- Les actions proposées par les joueurs lors du dernier échange.
+- Les instructions données pour chacune par l'animateur de la partie dans le champs responseanalysis
+Enregistre les éléments suivants dans la progression de l'aventure :
+- Points de vie (delta-lifePoints) : Ajout ou réduction de points de vie en fonction des blessures, des soins ou des actions spécifiques.
+- Équipement (picked-equipment / lost-equipment) : Suivi des objets que le personnage perd ou acquiert au cours de l’aventure.
+- Fortune (delta-fortune) : Modifications de la fortune, avec des gains ou des pertes d'argent (par exemple, une côte de mailles neuve coûte 500 pièces d'or).
+Génère deux types de messages :
+1. Message global (all) : Un résumé de l'événement que tous les joueurs peuvent voir.
+2. Messages personnalisés (personalised) : Un message spécifique pour chaque joueur avec les changements qui le concernent (points de vie, équipement, argent, etc.).
+
+Réponds uniquement sous la forme suivante en JSON :
+
+```json
+{
+  "all": "Résumé de l'événement global pour tous les joueurs.",
+  "personalised": [
+    {
+      "player-uid": "XXXX",
+      "message": "Message pour le joueur concernant son expérience.",
+      "delta-fortune": 0,
+      "delta-lifePoints": -3,
+      "lost-equipment": [],
+      "picked-equipment":["dague rouillée"] 
+    },
+    {
+      "player-uid": "XXXY",
+      "message": "Message pour un autre joueur.",
+      "delta-fortune": 0,
+      "delta-lifePoints": -3,
+      "lost-equipment": ["dague rouillée"],
+      "picked-equipment":[] 
+    }
+  ]
+}
+```

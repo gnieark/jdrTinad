@@ -244,7 +244,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
               let divtitle = createElem("div", {"class":"player-header"} );
-              divtitle.innerText = `${player.name} (${player.type} )`;
+              divtitle.innerText = `${player.name} (${player.origine} ${player.job})`;
               divtitle.addEventListener('click', () => {
                 document.getElementById("div-listplayers-details" + player.uid).style.display = (document.getElementById("div-listplayers-details" + player.uid).style.display === 'none') ? 'block' : 'none';
               });
@@ -252,6 +252,8 @@ document.addEventListener('DOMContentLoaded', function () {
               let divdetails = createElem("div",{"class":"player-details", "id":"div-listplayers-details" + player.uid });
               divdetails.style.display = 'none';
               divdetails.innerHTML = `
+              <p><strong>Points de vie:</strong> ${player.lifePoints}/${player.lifePointsMax}</p>
+              <p><strong>Fortune:</strong> ${player.fortune} pièces d'or</p>
               <p><strong>Courage:</strong> ${player.courage}</p>
               <p><strong>Intelligence:</strong> ${player.intelligence}</p>
               <p><strong>Charisme:</strong> ${player.charisma}</p>

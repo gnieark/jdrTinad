@@ -96,7 +96,11 @@ class Api extends Route{
     }
     static public function apply_post(User $user):string{
         header('Content-Type: application/json; charset=utf-8');
+        
         if(preg_match ( "'^/API/board/(.+)/mjprompt$'" , $_SERVER["REQUEST_URI"], $matches)){
+
+
+            //nouveau tour de jeu déclenché par le MJ
 
             if( !$user->is_in_group("mj") ){
                 return C403::send_content_json();
@@ -139,6 +143,8 @@ class Api extends Route{
 
 
         }elseif( preg_match ( "'^/API/board/(.+)/turn/(.+)$'" , $_SERVER["REQUEST_URI"], $matches)   ){
+
+            //Un joueur apporte une réponse
         
             $boardUid = $matches[1];
             $turnUid = $matches[2];
