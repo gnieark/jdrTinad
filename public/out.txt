@@ -1,24 +1,35 @@
-Nous démarrons une partie de jeu de rôle dans l'univers du Donjon de Naheulbeuk.
+Nous jouons une partie de jeu de rôle dans l'univers du Donjon de Naheulbeuk.
 
 Les joueurs sont :
+[{"uid":"6811c5e999073","name":"Gnieark","job":"assassin","origine":"elfe-noir","lifePoints":25,"lifePointsMax":25,"fortune":29,"courage":15,"intelligence":16,"charisma":14,"dexterity":18,"strength":10,"equipment":["dague empoisonn\u00e9e","armure l\u00e9g\u00e8re en cuir noir","cape d'ombre","amulette de protection contre la d\u00e9tection","flacon de poison","grappin et corde","potion de soin"],"specialFeatures":"","description":"Gnieark est un assassin elfe-noir, n\u00e9 dans les t\u00e9n\u00e8bres et la perfidie. Sa beaut\u00e9 inqui\u00e9tante et son intelligence aiguis\u00e9e en font un adversaire redoutable. Il se d\u00e9place avec une gr\u00e2ce mortelle, utilisant ses comp\u00e9tences en ruse et en magie pour \u00e9liminer ses cibles sans laisser de trace. Cynique et calculateur, il m\u00e9prise la faiblesse et pr\u00e9f\u00e8re la discr\u00e9tion \u00e0 la brutalit\u00e9. \u00c9quip\u00e9 de ses dagues empoisonn\u00e9es et de son amulette de protection, il est pr\u00eat \u00e0 accomplir ses sombres desseins."}]
+
+Tu es le maître du jeu et ta tâche est de générer la suite de l'histoire, en restant fidèle à l'univers et aux personnages.
+
+
+
+Voici l'historique des échanges entre le maître du jeu, les joueurs et l'animateur de la partie.
+
 ```json
-[{"uid":"6811c5e999073","name":"Gnieark","job":"assassin","origine":"elfe-noir","lifePoints":25,"lifePointsMax":25,"fortune":32,"courage":15,"intelligence":16,"charisma":14,"dexterity":18,"strength":10,"equipment":["dague empoisonn\u00e9e","armure l\u00e9g\u00e8re en cuir noir","cape d'ombre","amulette de protection contre la d\u00e9tection","flacon de poison","grappin et corde","potion de soin"],"specialFeatures":"","description":"Gnieark est un assassin elfe-noir, n\u00e9 dans les t\u00e9n\u00e8bres et la perfidie. Sa beaut\u00e9 inqui\u00e9tante et son intelligence aiguis\u00e9e en font un adversaire redoutable. Il se d\u00e9place avec une gr\u00e2ce mortelle, utilisant ses comp\u00e9tences en ruse et en magie pour \u00e9liminer ses cibles sans laisser de trace. Cynique et calculateur, il m\u00e9prise la faiblesse et pr\u00e9f\u00e8re la discr\u00e9tion \u00e0 la brutalit\u00e9. \u00c9quip\u00e9 de ses dagues empoisonn\u00e9es et de son amulette de protection, il est pr\u00eat \u00e0 accomplir ses sombres desseins."}]
+[{"allAwnser":"La nuit tombe sur Terre de Fangh, et Gnieark se pr\u00e9pare pour une nouvelle mission. Alors qu'il se faufile dans les ruelles sombres, il perd trois pi\u00e8ces d'or en se faisant bousculer par un mendiant. La mission s'annonce p\u00e9rilleuse, mais l'assassin elfe-noir est pr\u00eat \u00e0 tout pour accomplir ses sombres desseins.","personalisedAwnsers":{"6811c5e999073":"Gnieark, alors que tu te faufiles discr\u00e8tement dans les ruelles sombres, un mendiant te bouscule et te vole trois pi\u00e8ces d'or. Reste vigilant, la mission ne fait que commencer."},"playersResponses":[{"playerUID":"6811c5e999073","playTurnUID":"681e3a56efd8f","player_response":"j'observe aux alentours.","tested_skills":["intelligence"],"responseanalysis":"Les comp\u00e9tances du joueur ont \u00e9t\u00e9 test\u00e9es aux d\u00e9s pour cette action, c'est un succ\u00e8s.","dices_bonus":[0],"dices_scores":[2],"dices_succes":true,"dices_critical":false}],"closedTurn":false,"turnuid":"681e3a56efd8f"}]
 ```
-Tu es le maître du jeu et ta tâche est de générer le début de l'histoire, en restant fidèle à l'univers et aux personnages.
+
 
 L'animateur de la partie (qui sert d'interface entre toi et les joueurs) a ajouté les instructions suivantes :
 ```text
-Gnieark perd 3 pièces d'or
+Un paladin sort une lame et tente de porter un coup
 ```
 
-
+Ta tâche :
+Imagine la suite de l'histoire en restant cohérant avec l'univers et les personnages. Prends en compte notemment:
+- Les actions proposées par les joueurs lors du dernier échange.
+- Les instructions données pour chacune par l'animateur de la partie dans le champs responseanalysis
 Enregistre les éléments suivants dans la progression de l'aventure :
- - Points de vie (delta-lifePoints) : Ajout ou réduction de points de vie en fonction des blessures, des soins ou des actions spécifiques.
- - Équipement (picked-equipment / lost-equipment) : Suivi des objets que le personnage perd ou acquiert au cours de l’aventure.
- - Fortune (delta-fortune) : Modifications de la fortune, avec des gains ou des pertes d'argent (par exemple, une côte de mailles neuve coûte 500 pièces d'or).
+- Points de vie (delta-lifePoints) : Ajout ou réduction de points de vie en fonction des blessures, des soins ou des actions spécifiques.
+- Équipement (picked-equipment / lost-equipment) : Suivi des objets que le personnage perd ou acquiert au cours de l’aventure.
+- Fortune (delta-fortune) : Modifications de la fortune, avec des gains ou des pertes d'argent (par exemple, une côte de mailles neuve coûte 500 pièces d'or).
 Génère deux types de messages :
- 1. Message global (all) : Un résumé de l'événement que tous les joueurs peuvent voir.
- 2. Messages personnalisés (personalised) : Un message spécifique pour chaque joueur avec les changements qui le concernent (points de vie, équipement, argent, etc.).
+1. Message global (all) : Un résumé de l'événement que tous les joueurs peuvent voir.
+2. Messages personnalisés (personalised) : Un message spécifique pour chaque joueur avec les changements qui le concernent (points de vie, équipement, argent, etc.).
 
 Réponds uniquement sous la forme suivante en JSON :
 

@@ -2,54 +2,14 @@
 
 <div class="accordion">
   <div class="accordion-item">
-    <button class="accordion-title">Fiche personnage</button>
-    <div class="accordion-content">
-      <div class="character-sheet">
-        <p><strong>Nom :</strong> {{player_name}}</p>
-        <p><strong>Points de vie:</strong> {{player_pv}}/{{player_maxpv}}</p>
-        <p><strong>Fortune:</strong> {{player_fortune}} pièces d'or</p>
-        <p><strong>Origine:</strong> {{player_origin}}</p>
-        <p><strong>Courage :</strong> {{player_courage}}/20</p>
-        <p><strong>Intelligence :</strong> {{player_intelligence}}/20</p>
-        <p><strong>Charisme :</strong> {{player_charisma}}/20</p>
-        <p><strong>Dextérité :</strong> {{player_dexterity}}/20</p>
-        <p><strong>Force :</strong> {{player_strength}}/20</p>
-        <p><strong>Inventaire :</strong> 
-          <ul>
-            <!-- BEGIN playerequipment -->
-             <li>{{playerequipment.name}}</li>
-            <!-- END playerequipment -->
-          </ul>
-        </p>
-        <p><strong>Description et spécificités :</strong><br>
-            {{player_description}}
-        </p>
-      </div>
+    <button class="accordion-title" onclick="refresh_character_sheet();">Fiche personnage</button>
+    <div class="accordion-content" id="character-sheet">
     </div>
   </div>
 
   <div class="accordion-item">
     <button class="accordion-title">Déroulement du jeu</button>
     <div class="accordion-content" id="gamedialogs">
-
-      
-
-
-    </div>
-  </div>
-
-
-  <div class="accordion-item">
-    <button class="accordion-title">Chat entre joueurs</button>
-    <div class="accordion-content">
-      <div class="chat-box" id="chat-box">
-        <div class="chat-message"><strong>ElfeDoué :</strong> Vous croyez qu'on doit traverser ?</div>
-        <div class="chat-message"><strong>OgreBourrin :</strong> Moi j'cours dessus !</div>
-      </div>
-      <form id="chat-form" action="/board/chat" method="POST">
-        <input type="text" name="chat_message" placeholder="Écrire un message..." required>
-        <button type="submit">Envoyer</button>
-      </form>
     </div>
   </div>
 

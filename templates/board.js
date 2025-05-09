@@ -243,7 +243,8 @@ document.addEventListener('DOMContentLoaded', function () {
               ulequipment.innerHTML = player.equipment.map(eq => `<li>${eq}</li>`).join('');
               document.getElementById("pequipment" + player.uid ).innerHTML = "";
               document.getElementById("pequipment" + player.uid ).appendChild(ulequipment);
-          
+              
+
             }else{
               let divplayer = createElem("div",{"class": "player-entry", "id": "div-listplayers-" + player.uid});
 

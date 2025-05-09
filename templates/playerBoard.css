@@ -175,3 +175,10 @@
     background-color: #999;
     cursor: not-allowed;
   }
+
+.stats_pv::before{ content: "Points de vie: "; font-weight: bold; }
+.stats_fortune::before{ content: "Fortune: "; font-weight: bold; }
+.stats_competences::before{ content: "Compétences: "; font-weight: bold; }
+.stats_equipment::before{ content: "Equipement: "; font-weight: bold; }
+.stats_traits::before{ content: "Traits: "; font-weight: bold; }
+.stats_description::before{ content: "Description: "; font-weight: bold; }
