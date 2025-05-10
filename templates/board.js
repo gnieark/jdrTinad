@@ -233,7 +233,7 @@ document.addEventListener('DOMContentLoaded', function () {
           
           players.forEach(player => {
             
-            playersByUid[ player.uid ] = `${player.name} (${player.type})`;
+            playersByUid[ player.uid ] = `${player.name} (${player.origine} ${player.job})`;
 
             if( document.getElementById("div-listplayers-" + player.uid)){
               //already exists just update pv, fortune and equipment
