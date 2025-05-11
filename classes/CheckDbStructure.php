@@ -56,6 +56,11 @@ class CheckDbStructure {
 
 
         }
+        if( $version == 3 ){
+            ProposingLink::create_table($this->db);
+            $version = 4;
+            $this->setVersion($version);
+        }
         //idem version suivante, 
     }
 }

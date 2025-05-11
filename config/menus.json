@@ -44,6 +44,15 @@
         "link":"/board",
         "uriPattern": "'^/board(/.*|$)'"
     },
+    "GodFatherLink":{
+        "name":"Nouvelle table",
+        "default_level_needed": "guest",
+        "groups_allowed": [],
+        "display_on_nav": false,
+        "CRUDclass": "GodFatherLink",
+        "default_one":false,
+        "uriPattern": "'^/godfatherlink/(.+)'"
+    },
     "PlayerBoard":{
         "name":"Table de jeu de rôle joueur",
         "default_level_needed": "guest",
