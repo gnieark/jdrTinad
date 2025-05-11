@@ -144,7 +144,7 @@ class User {
 
     } 
     public function authentificate(PDO $db, string $login, string $clearpassword):User{
-        $sql = "SELECT id, password FROM `". self::TABLE ."` WHERE login=:login;";
+        $sql = "SELECT id, password FROM `". self::TABLE ."` WHERE login=:login; AND provider='local'";
         $sth = $db->prepare($sql);
         $sth->execute( array(":login"  => $login) );
         if( $r = $sth->fetch() ){  

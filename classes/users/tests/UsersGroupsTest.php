@@ -31,7 +31,7 @@ class UsersGroupsTest extends TestCase {
         $stmt = $this->pdo->query("PRAGMA table_info(users)");
         $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
     
-        $expected = ['id', 'login', 'password', 'display_name'];
+        $expected = ['id', 'login', 'password', 'display_name','provider','oauth_id'];
         $actual = array_column($columns, 'name');
         $this->assertEquals($expected, $actual);
     }
