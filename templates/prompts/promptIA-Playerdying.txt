@@ -1,0 +1,1 @@
+Le personnage est mourrant. Il est inconscient. Il ne peut donc rien faire. Son état s'aggrave, il perd un point de vie  (lifePoints) supplémantaire s'il n'est pas soigné dans ce tour de jeu.
