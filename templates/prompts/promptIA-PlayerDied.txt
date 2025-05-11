@@ -1,0 +1,1 @@
+Ce personnage est mort. Ne le prend plus en compte dans le déroulement de l'histoire.

@@ -198,7 +198,16 @@ class  PlayerResponse{
 
             }
 
-
+            //Points de vie
+            if( $player->getPv() == 0 ){
+                $this->responseanalysis .= file_get_contents("../templates/prompts/promptIA-Playeurunconscious.txt");
+            }
+            if( $player->getPv() < 0 && $player->getPv() > -10 ){
+                $this->responseanalysis .= file_get_contents("../templates/prompts/promptIA-Playerdying.txt");
+            }
+            if( $player->getPv() < -9 ){
+                $this->responseanalysis .= file_get_contents("../templates/prompts/promptIA-PlayerDied.txt");
+            }
         }
     }
 
