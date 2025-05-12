@@ -49,6 +49,12 @@ class GodFatherLink extends Route{
             if (!$sub) {
                 return("Identifiant OpenID non trouvé.");
             }
+
+
+            //vérifier si le compte n'existerait pas déjà
+            
+
+
             return $sub;
     
         }elseif (preg_match ( "'^/godfatherlink/(.+)/provider/(.+)$'", $_SERVER["REQUEST_URI"], $matches)){
