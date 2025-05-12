@@ -115,7 +115,7 @@ class User {
         return false;
 
     }
-    private function load_from_db(PDO $db): User{
+    public function load_from_db(PDO $db): User{
         if( !isset($this->id) ){
             throw new Exception('id must be instancied before');
             die();
