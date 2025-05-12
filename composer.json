@@ -1,9 +1,14 @@
 {
+    "name": "tinad/naheulbeuk",
+    "description": "Projet JdR en ligne avec authentification OAuth2",
+    "require": {
+      "league/oauth2-client": "^2.6",
+      "league/oauth2-google": "^4.0",
+      "psr/http-message": "^1.0"
+    },
     "autoload": {
       "psr-4": {
-        "League\\OAuth2\\Client\\": "classes/oauth2-client/src/",
-        "League\\OAuth2\\Google\\": "classes/oauth2-google/src/",
-        "Psr\\Http\\Message\\": "classes/http-message/src/"
+        "App\\": "classes/"
       }
     }
   }

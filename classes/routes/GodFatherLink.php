@@ -3,7 +3,55 @@ use League\OAuth2\Client\Provider\Google;
 
 class GodFatherLink extends Route{
     static public function get_content_html(User $user):string{
-        if (preg_match ( "'^/godfatherlink/(.+)/provider/(.+)$'", $_SERVER["REQUEST_URI"], $matches)){
+        if (preg_match ( "'^/godfatherlink/callback/google'", $_SERVER["REQUEST_URI"], $matches)){
+
+            if (!isset($_GET['state'])) {
+                return("State manquant.");
+            }
+            
+            $stateData = json_decode(base64_decode($_GET['state']), true);
+            // Vérifie le token CSRF
+            if (!isset($stateData['csrf']) || $stateData['csrf'] !== ($_SESSION['oauth2state'] ?? '')) {
+                return("Erreur de sécurité (state mismatch)");
+            }
+
+            $linkUid = $stateData['linkuid'] ?? null;
+
+            if (!$linkUid) {
+                return("Aucun linkUid transmis.");
+            }
+
+
+            $providers = json_decode(file_get_contents("../config/oauth.json"), true);
+            $gProvider = $providers["google"];
+            $provider = new Google([
+                'clientId'     => $gProvider["web"]["client_id"],
+                'clientSecret' => $gProvider["web"]["client_secret"],
+                'redirectUri'  => 'https://jdr.tinad.fr/godfatherlink/callback/google',
+                'scope'        => ['openid'] 
+            ]);
+
+
+            $token = $provider->getAccessToken('authorization_code', [
+                'code' => $_GET['code']
+            ]);
+            
+            $idToken = $token->getValues()['id_token'] ?? null;
+            
+            if (!$idToken) {
+                return("Aucun id_token fourni.");
+            }
+            
+            $parts = explode('.', $idToken);
+            $payload = json_decode(base64_decode(strtr($parts[1], '-_', '+/')), true);
+            $sub = $payload['sub'] ?? null;
+            
+            if (!$sub) {
+                return("Identifiant OpenID non trouvé.");
+            }
+            return $sub;
+    
+        }elseif (preg_match ( "'^/godfatherlink/(.+)/provider/(.+)$'", $_SERVER["REQUEST_URI"], $matches)){
             $linkUid = $matches[1];
             $provider = $matches[2];
 
@@ -20,7 +68,8 @@ class GodFatherLink extends Route{
                     $provider = new Google([
                         'clientId'     => $gProvider["web"]["client_id"],
                         'clientSecret' => $gProvider["web"]["client_secret"],
-                        'redirectUri'  => 'https://jdr.tinad.fr/oauth/callback/google',
+                        'redirectUri'  => 'https://jdr.tinad.fr/godfatherlink/callback/google',
+                        'scope'        => ['openid'] 
                     ]);
 
                     
@@ -31,9 +80,16 @@ class GodFatherLink extends Route{
                     break;
 
             }
+                // Génère une valeur `state` contenant le linkUid
+            $statePayload = [
+                'linkuid' => $linkUid,
+                'csrf' => bin2hex(random_bytes(16))
+            ];
+            $encodedState = base64_encode(json_encode($statePayload));
+            $_SESSION['oauth2state'] = $statePayload['csrf'];
+
             // Redirection vers le provider
-            $authUrl = $provider->getAuthorizationUrl();
-            $_SESSION['oauth2state'] = $provider->getState();
+            $authUrl = $provider->getAuthorizationUrl(['state' => $encodedState]);
             header('Location: ' . $authUrl);
             exit;
 
