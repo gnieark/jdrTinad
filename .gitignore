@@ -1,4 +1,5 @@
 /config/mistralapikey.txt
+/config/oauth.json
 /db
 /test.db
 /gamesdatas
