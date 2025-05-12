@@ -1,0 +1,9 @@
+{
+    "autoload": {
+      "psr-4": {
+        "League\\OAuth2\\Client\\": "classes/oauth2-client/src/",
+        "League\\OAuth2\\Google\\": "classes/oauth2-google/src/",
+        "Psr\\Http\\Message\\": "classes/http-message/src/"
+      }
+    }
+  }

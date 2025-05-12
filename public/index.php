@@ -1,13 +1,15 @@
 <?php
 
 //autoload classes
+require_once '../vendor/autoload.php';
 spl_autoload_register(function ($class_name) {
+
+
     $classFolders = array(  "../classes/", 
                             "../classes/menus/",
                             "../classes/users/",
                             "../classes/routes/",
-                            "../classes/Game/",
-
+                            "../classes/Game/"
                         );
     foreach($classFolders as $folder)
     {

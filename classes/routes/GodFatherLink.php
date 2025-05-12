@@ -1,4 +1,6 @@
 <?php
+use League\OAuth2\Client\Provider\Google;
+
 class GodFatherLink extends Route{
     static public function get_content_html(User $user):string{
         if (preg_match ( "'^/godfatherlink/(.+)/provider/(.+)$'", $_SERVER["REQUEST_URI"], $matches)){
@@ -9,20 +11,15 @@ class GodFatherLink extends Route{
                 return C404::get_content_html($user);
             }
 
-            //inclide oauth lib files
-            $pathOuthLibs = $realPath("../classes/oauth2-client/src");
-            $subDirs = array_filter(glob($pathOuthLibs . '/*'), 'is_dir');
-            foreach($subDirs as $subDir){
-                foreach (glob($subDir . '/*.php') as $phpFile) {
-                    require_once $phpFile;
-                }
-            }
-
+ 
+            $providers = json_decode(file_get_contents("../config/oauth.json"), true);
             switch( $provider ){
                 case "google":
+                    
+                    $gProvider = $providers["google"];
                     $provider = new Google([
-                        'clientId'     => 'XXX',
-                        'clientSecret' => 'XXX',
+                        'clientId'     => $gProvider["web"]["client_id"],
+                        'clientSecret' => $gProvider["web"]["client_secret"],
                         'redirectUri'  => 'https://jdr.tinad.fr/oauth/callback/google',
                     ]);
 
@@ -34,7 +31,11 @@ class GodFatherLink extends Route{
                     break;
 
             }
-
+            // Redirection vers le provider
+            $authUrl = $provider->getAuthorizationUrl();
+            $_SESSION['oauth2state'] = $provider->getState();
+            header('Location: ' . $authUrl);
+            exit;
 
         }elseif( preg_match ( "'^/godfatherlink/(.+)'", $_SERVER["REQUEST_URI"], $matches) ){
 
@@ -50,7 +51,9 @@ class GodFatherLink extends Route{
             $tpl = new TplBlock();
             $tpl->addVars(
                 array(
-                    "nom_du_mj"  => $godfather->get_display_name()
+                    "nom_du_mj"         => $godfather->get_display_name(),
+                    "linkgoogleauth"    => "/godfatherlink/" . $linkUid . "/provider/google",
+                    "linkdiscordauth"    => "/godfatherlink/" . $linkUid . "/provider/discord"
                 )
             );
 
