@@ -27,7 +27,8 @@ class User {
     }
     public function set_oauth_provider(string $provider):self{
         $allowedProviders = array("local");
-        $providersdefs = json_decode( file_get_contents("../config/oauth.json") );
+        $providersdefs = json_decode( file_get_contents("../config/oauth.json"), true );
+
         $allowedProviders = array_merge( $allowedProviders , array_keys( $providersdefs ) );
 
         if(!in_array($provider,$allowedProviders)){
@@ -145,7 +146,7 @@ class User {
                         `login`         as user_login,
                         `display_name`  as user_display_name,
                         `oauth_id`      as oauth_id,
-                        `provider`      as oauth_provider,
+                        `provider`      as oauth_provider
                 FROM ". self::TABLE . " 
                 WHERE `id` = :id ;";
 
@@ -155,8 +156,8 @@ class User {
         if($r = $sth->fetch(PDO::FETCH_ASSOC)){
             $this->set_login( $r["user_login"] )
                  ->set_display_name( $r["user_display_name"])
-                 ->set_oauth_id( $r["oauth_id"] )
-                 ->set_oauth_provider( $r["oauth_provider"])
+                 ->set_oauth_id( is_null($r["oauth_id"])? "":  $r["oauth_id"]  )
+                 ->set_oauth_provider( is_null($r["oauth_provider"])? "" : $r["oauth_provider"] )
                  ->load_groups($db)
                  ->load_boards($db);
 

@@ -218,8 +218,8 @@ class UserGroupManager {
             $users[ $r["user_id"] ] = new user();
             $users[ $r["user_id"] ] -> set_id( $r["user_id"] )
                                     -> set_login( $r["user_login"] )
-                                    -> set_display_name( $r["user_display_name"] )
-                                    -> set_oauth_provider($r["user_oauth_provider"] )
+                                    -> set_display_name( is_null($r["user_display_name"])? "" :  $r["user_display_name"] )
+                                    -> set_oauth_provider( is_null($r["user_oauth_provider"])? "" : $r["user_oauth_provider"]  )
                                     -> set_oauth_id($r["user_oauth_id"]);
            }
            //group
