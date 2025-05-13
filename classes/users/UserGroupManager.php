@@ -196,6 +196,8 @@ class UserGroupManager {
                     `users`.`id` as user_id,
                     `users`.`login`  as user_login,
                     `users`.`display_name`  as user_display_name,
+                    `users`.`oauth_id`      as user_oauth_id,
+                    `users`.`provider`      as user_oauth_provider,
                     `" . Group::get_table_name() . "`.`id` as group_id,
                     `" . Group::get_table_name() . "`.`name` as group_name ,
                     `" . self::get_users_boards_rel_table() ."`.board_uid as board_uid
@@ -216,7 +218,9 @@ class UserGroupManager {
             $users[ $r["user_id"] ] = new user();
             $users[ $r["user_id"] ] -> set_id( $r["user_id"] )
                                     -> set_login( $r["user_login"] )
-                                    -> set_display_name( $r["user_display_name"] );
+                                    -> set_display_name( $r["user_display_name"] )
+                                    -> set_oauth_provider($r["user_oauth_provider"] )
+                                    -> set_oauth_id($r["user_oauth_id"]);
            }
            //group
            if( isset( $r["group_id"] )){
