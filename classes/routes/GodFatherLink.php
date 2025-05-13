@@ -1,9 +1,13 @@
 <?php
 use League\OAuth2\Client\Provider\Google;
+use Wohali\OAuth2\Client\Provider\Discord;
 
 class GodFatherLink extends Route{
+
     static public function get_content_html(User $user):string{
-        if (preg_match ( "'^/godfatherlink/callback/google'", $_SERVER["REQUEST_URI"], $matches)){
+        if (preg_match ( '~^/godfatherlink/callback/([^/?]+)~', $_SERVER["REQUEST_URI"], $matches)){
+
+            $providername = $matches[1];
 
             if (!isset($_GET['state'])) {
                 return("State manquant.");
@@ -23,13 +27,33 @@ class GodFatherLink extends Route{
 
 
             $providers = json_decode(file_get_contents("../config/oauth.json"), true);
-            $gProvider = $providers["google"];
-            $provider = new Google([
-                'clientId'     => $gProvider["web"]["client_id"],
-                'clientSecret' => $gProvider["web"]["client_secret"],
-                'redirectUri'  => 'https://jdr.tinad.fr/godfatherlink/callback/google',
-                'scope'        => ['openid'] 
-            ]);
+
+            switch($providername){
+                case "google":
+                    $gProvider = $providers["google"];
+                    $provider = new Google([
+                        'clientId'     => $gProvider["web"]["client_id"],
+                        'clientSecret' => $gProvider["web"]["client_secret"],
+                        'redirectUri'  => 'https://jdr.tinad.fr/godfatherlink/callback/google',
+                        'scope'        => ['openid'] 
+                    ]);
+                    break;
+                case "discord":
+                    $gProvider = $providers["discord"];
+
+                    $provider = new Discord([
+                        'clientId'     => $gProvider["web"]["client_id"],
+                        'clientSecret' => $gProvider["web"]["client_secret"],
+                        'redirectUri'  => 'https://jdr.tinad.fr/godfatherlink/callback/discord',
+                        'scope'        => ['openid'] 
+                    ]);
+                    break;
+                default:
+                    return C404::get_content_html($user);
+                    break;
+
+            }
+
 
 
             $token = $provider->getAccessToken('authorization_code', [
@@ -51,11 +75,11 @@ class GodFatherLink extends Route{
             }
 
             //for check later
-            $_SESSION["verifiedoauth"] = array("sub"    => $sub, "provider" => "google");
+            $_SESSION["verifiedoauth"] = array("sub"    => $sub, "provider" => $providername );
 
             //TO do vérifier si le compte n'existerait pas déjà
             $testUser = new User();
-            $testUser->authentificated_oauth(Database::get_db(), "google", $sub);
+            $testUser->authentificated_oauth(Database::get_db(), $providername , $sub);
             if( $testUser-> is_authentified() ){
                 return "Erreur: Ce compte Google est déjà utilisé";
             }
@@ -75,7 +99,7 @@ class GodFatherLink extends Route{
     
         }elseif (preg_match ( "'^/godfatherlink/(.+)/provider/(.+)$'", $_SERVER["REQUEST_URI"], $matches)){
             $linkUid = $matches[1];
-            $provider = $matches[2];
+            $providername = $matches[2];
 
             if(! $proposinglLink = ProposingLink::load_link_by_uid(Database::get_db(), $linkUid)){
                 return C404::get_content_html($user);
@@ -83,7 +107,7 @@ class GodFatherLink extends Route{
 
  
             $providers = json_decode(file_get_contents("../config/oauth.json"), true);
-            switch( $provider ){
+            switch( $providername ){
                 case "google":
                     
                     $gProvider = $providers["google"];
@@ -95,6 +119,16 @@ class GodFatherLink extends Route{
                     ]);
 
                     
+                    break;
+                case 'discord':
+                    $gProvider = $providers["discord"];
+
+                    $provider = new Discord([
+                        'clientId'     => $gProvider["web"]["client_id"],
+                        'clientSecret' => $gProvider["web"]["client_secret"],
+                        'redirectUri'  => 'https://jdr.tinad.fr/godfatherlink/callback/discord',
+                        'scope'        => ['openid'] 
+                    ]);
                     break;
 
                 default:
@@ -110,8 +144,14 @@ class GodFatherLink extends Route{
             $encodedState = base64_encode(json_encode($statePayload));
             $_SESSION['oauth2state'] = $statePayload['csrf'];
 
+            
+            $options = ['state' => $encodedState];
+            if($providername == "discord" ){
+                //pour Discord le scope doit etre déclaré ici
+                $options["scope"] = array("openid");
+            }
             // Redirection vers le provider
-            $authUrl = $provider->getAuthorizationUrl(['state' => $encodedState]);
+            $authUrl = $provider->getAuthorizationUrl($options);
             header('Location: ' . $authUrl);
             exit;
 

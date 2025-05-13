@@ -13,6 +13,10 @@ class ComposerStaticInitf9343a7852293cd667b267d5d8f20a3c
     );
 
     public static $prefixLengthsPsr4 = array (
+        'W' => 
+        array (
+            'Wohali\\OAuth2\\Client\\' => 21,
+        ),
         'P' => 
         array (
             'Psr\\Http\\Message\\' => 17,
@@ -35,10 +39,14 @@ class ComposerStaticInitf9343a7852293cd667b267d5d8f20a3c
     );
 
     public static $prefixDirsPsr4 = array (
+        'Wohali\\OAuth2\\Client\\' => 
+        array (
+            0 => __DIR__ . '/..' . '/wohali/oauth2-discord-new/src',
+        ),
         'Psr\\Http\\Message\\' => 
         array (
-            0 => __DIR__ . '/..' . '/psr/http-message/src',
-            1 => __DIR__ . '/..' . '/psr/http-factory/src',
+            0 => __DIR__ . '/..' . '/psr/http-factory/src',
+            1 => __DIR__ . '/..' . '/psr/http-message/src',
         ),
         'Psr\\Http\\Client\\' => 
         array (

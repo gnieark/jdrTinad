@@ -3,8 +3,8 @@ use League\OAuth2\Client\Provider\Google;
 class Auth extends Route{
     static public function get_content_html(User $user):string{
         if(preg_match("~^/auth/provider/([^/?]+)~", $_SERVER["REQUEST_URI"], $matches)){
-            $provider = $matches[1];
-            switch($provider){
+            $providername = $matches[1];
+            switch($providername){
                 case "google":
                     $providers = json_decode(file_get_contents("../config/oauth.json"), true);
                     $gProvider = $providers["google"];
