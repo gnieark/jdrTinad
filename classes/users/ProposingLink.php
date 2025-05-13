@@ -39,7 +39,13 @@ class ProposingLink {
     
         $db->exec($sql);
     }
+    public function delete(PDO $db){
+        $sql = "DELETE FROM `" . self::TABLE . "` WHERE link_uid = :link_uid LIMIT 1";
+        $stmt = $db->prepare($sql);
+        $stmt->execute([':link_uid' => $this-> linkUid ]);
 
+        
+    }
     public static function load_link_by_uid(PDO $db, string $link_uid){
         $sql = "SELECT godfather_uid, link_uid FROM `" . self::TABLE . "` WHERE link_uid = :link_uid LIMIT 1";
         $stmt = $db->prepare($sql);

@@ -191,7 +191,7 @@ class User {
         return $this;
     }
     public function authentificated_oauth(PDO $db, string $oauth_provider, string $oauth_id):self{
-        $sql = "SELECT id FROM `". self::TABLE ."` WHERE oauth_id=:oauthid; AND provider=:oauthprovider;";
+        $sql = "SELECT id FROM `". self::TABLE ."` WHERE oauth_id=:oauthid AND provider=:oauthprovider;";
         $sth = $db->prepare($sql);
         $sth->bindParam(':oauthid', $oauth_id, PDO::PARAM_STR);
         $sth->bindParam(':oauthprovider', $oauth_provider, PDO::PARAM_STR);

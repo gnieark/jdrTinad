@@ -84,7 +84,35 @@ class UserGroupManager {
         $db->exec($sql);
     }
 
-    static public function createUser (PDO $db, string $display_name, string $login, string $clearpassword, array $groupsIds = []):User
+    static public function createOauthUser(PDO $db, string $display_name,string $provider,string $oauth_id, array $groupsIds = []):User{
+        foreach($groupsIds as $groupId){
+            if(!is_int($groupId)){
+                throw new Exception("groupsIds param must contains only ints");
+            }
+        }
+        $sql = "INSERT INTO `" . User::get_table_name() . "` (login, password,display_name,provider,oauth_id) VALUES(
+                :oauthid,
+                '',
+                :displayname,
+                :provider,
+                :oauthid);";
+
+        $st = $db->prepare($sql);
+        $st->execute(
+            array(
+                ":oauthid"          => $oauth_id,
+                ":displayname"      => $display_name,
+                ":provider"         => $provider
+            )
+        );
+        $nuser = new User();
+        $nuser->authentificated_oauth($db, $provider, $oauth_id);
+        foreach($groupsIds as $groupId){
+            $nuser = self::addUserToGroup( $db, $nuser, self::get_group_by_id( $db, $groupId) );
+        }
+        return $nuser;
+    }
+    static public function createUser (PDO $db, string $display_name, string $login, string $clearpassword , array $groupsIds = []):User
     {
         //clean groupsIds
         
@@ -94,11 +122,13 @@ class UserGroupManager {
             }
         }
         
-        $sql = "INSERT INTO `" . User::get_table_name() . "` (login, password,display_name) VALUES
+        $sql = "INSERT INTO `" . User::get_table_name() . "` (login, password,display_name,provider,oauth_id) VALUES
         (
             :login,
             :password,
-            :displayname
+            :displayname,
+            'local',
+            ''
         );";
         $st = $db->prepare($sql);
         $st->execute(
@@ -183,6 +213,14 @@ class UserGroupManager {
     }
     static public function get_group_by_id(PDO $db, int $id ):?Group{
         $customcond = " id = " . $id;
+        $groups = self::get_groups($db, $customcond);
+        if(isset($groups[0])){
+            return $groups[0];
+        }
+        return false;
+    }
+    static public function get_group_by_name(PDO $db, string $name ):?Group{
+        $customcond = " name = " . $db->quote($name );
         $groups = self::get_groups($db, $customcond);
         if(isset($groups[0])){
             return $groups[0];
