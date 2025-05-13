@@ -58,6 +58,28 @@
       0% { transform: rotate(0deg); }
       100% { transform: rotate(360deg); }
     }
+    /* Logo principal */
+.site-logo {
+    display: block;
+    max-width: 300px;
+    width: 100%;
+    height: auto;
+    margin: 1rem auto;
+  }
+  
+  /* Optionnel : centrer dans un conteneur */
+  .logo-container {
+    text-align: center;
+    padding: 1rem 0;
+  }
+  
+  /* Responsive : réduire légèrement sur petit écran */
+  @media (max-width: 480px) {
+    .site-logo {
+      max-width: 200px;
+    }
+  }
+  
   </style>
   {{customElemsOnHeader}}
   <style>{{customCSS}}</style>

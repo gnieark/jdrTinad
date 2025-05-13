@@ -1,0 +1,11 @@
+<div class="referral-container">
+    <h2>Choisis ton pseudonyme de Maître du jeu</h2>
+    <form method="POST" action="/godfatherlink">
+      <input type="hidden" name="godfatherlinkuid" value="{{godfatherlinkuid}}"/>
+      <input type="hidden" name="oauth_id" value="{{oauth_id}}"/>
+      <div class="form-group">
+        <input type="text" name="pseudo" placeholder="Ton pseudonyme" required/>
+      </div>
+      <button type="submit" class="btn-submit">Valider</button>
+    </form>
+  </div>

@@ -32,7 +32,7 @@
         "CRUDclass": "Auth",
         "default_one":false,
         "link":"/auth",
-        "uriPattern": "'^/auth$'"
+        "uriPattern": "'^/auth(/provider/.+|$)'"
     },
     "Board":{
         "name":"Nouvelle table",
@@ -43,6 +43,15 @@
         "default_one":false,
         "link":"/board",
         "uriPattern": "'^/board(/.*|$)'"
+    },
+    "GodFatherLink":{
+        "name":"Lien de parainage",
+        "default_level_needed": "guest",
+        "groups_allowed": [],
+        "display_on_nav": false,
+        "CRUDclass": "GodFatherLink",
+        "default_one":false,
+        "uriPattern": "'^/godfatherlink(/.*|$)'"
     },
     "PlayerBoard":{
         "name":"Table de jeu de rôle joueur",

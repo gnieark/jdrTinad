@@ -21,7 +21,9 @@ class UserGroupManager {
                 id INTEGER PRIMARY KEY AUTOINCREMENT,
                 login TEXT UNIQUE NOT NULL,
                 password TEXT NOT NULL,
-                display_name TEXT NOT NULL
+                display_name TEXT NOT NULL,
+                provider TEXT NOT NULL DEFAULT 'local',
+                oauth_id TEXT
             );
 
             CREATE TABLE IF NOT EXISTS $groupTable (
@@ -49,7 +51,9 @@ class UserGroupManager {
                 id INT AUTO_INCREMENT PRIMARY KEY,
                 login VARCHAR(255) UNIQUE NOT NULL,
                 password VARCHAR(255) NOT NULL,
-                display_name VARCHAR(255) NOT NULL
+                display_name VARCHAR(255) NOT NULL,
+                provider TEXT NOT NULL DEFAULT 'local',
+                oauth_id TEXT
             ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
 
             CREATE TABLE IF NOT EXISTS $groupTable (
@@ -80,7 +84,35 @@ class UserGroupManager {
         $db->exec($sql);
     }
 
-    static public function createUser (PDO $db, string $display_name, string $login, string $clearpassword, array $groupsIds = []):User
+    static public function createOauthUser(PDO $db, string $display_name,string $provider,string $oauth_id, array $groupsIds = []):User{
+        foreach($groupsIds as $groupId){
+            if(!is_int($groupId)){
+                throw new Exception("groupsIds param must contains only ints");
+            }
+        }
+        $sql = "INSERT INTO `" . User::get_table_name() . "` (login, password,display_name,provider,oauth_id) VALUES(
+                :oauthid,
+                '',
+                :displayname,
+                :provider,
+                :oauthid);";
+
+        $st = $db->prepare($sql);
+        $st->execute(
+            array(
+                ":oauthid"          => $oauth_id,
+                ":displayname"      => $display_name,
+                ":provider"         => $provider
+            )
+        );
+        $nuser = new User();
+        $nuser->authentificated_oauth($db, $provider, $oauth_id);
+        foreach($groupsIds as $groupId){
+            $nuser = self::addUserToGroup( $db, $nuser, self::get_group_by_id( $db, $groupId) );
+        }
+        return $nuser;
+    }
+    static public function createUser (PDO $db, string $display_name, string $login, string $clearpassword , array $groupsIds = []):User
     {
         //clean groupsIds
         
@@ -90,11 +122,13 @@ class UserGroupManager {
             }
         }
         
-        $sql = "INSERT INTO `" . User::get_table_name() . "` (login, password,display_name) VALUES
+        $sql = "INSERT INTO `" . User::get_table_name() . "` (login, password,display_name,provider,oauth_id) VALUES
         (
             :login,
             :password,
-            :displayname
+            :displayname,
+            'local',
+            ''
         );";
         $st = $db->prepare($sql);
         $st->execute(
@@ -185,6 +219,14 @@ class UserGroupManager {
         }
         return false;
     }
+    static public function get_group_by_name(PDO $db, string $name ):?Group{
+        $customcond = " name = " . $db->quote($name );
+        $groups = self::get_groups($db, $customcond);
+        if(isset($groups[0])){
+            return $groups[0];
+        }
+        return false;
+    }
 
     static public function get_users(PDO $db, string $customCond = "", bool $associativebyId = false):array{
         $users = array();
@@ -192,6 +234,8 @@ class UserGroupManager {
                     `users`.`id` as user_id,
                     `users`.`login`  as user_login,
                     `users`.`display_name`  as user_display_name,
+                    `users`.`oauth_id`      as user_oauth_id,
+                    `users`.`provider`      as user_oauth_provider,
                     `" . Group::get_table_name() . "`.`id` as group_id,
                     `" . Group::get_table_name() . "`.`name` as group_name ,
                     `" . self::get_users_boards_rel_table() ."`.board_uid as board_uid
@@ -212,7 +256,9 @@ class UserGroupManager {
             $users[ $r["user_id"] ] = new user();
             $users[ $r["user_id"] ] -> set_id( $r["user_id"] )
                                     -> set_login( $r["user_login"] )
-                                    -> set_display_name( $r["user_display_name"] );
+                                    -> set_display_name( is_null($r["user_display_name"])? "" :  $r["user_display_name"] )
+                                    -> set_oauth_provider( is_null($r["user_oauth_provider"])? "" : $r["user_oauth_provider"]  )
+                                    -> set_oauth_id($r["user_oauth_id"]);
            }
            //group
            if( isset( $r["group_id"] )){
@@ -229,5 +275,6 @@ class UserGroupManager {
         return array_values($users);
     
     }
+    
 
 }

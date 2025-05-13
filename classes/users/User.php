@@ -6,6 +6,8 @@ class User {
     private string $login;
     private bool $authentified = false;
     private int $id;
+    private string $oauth_provider = "";
+    private string $oauth_id = "";
     private $boards = array(); // Boards UIDS owned by the user
 
     static public function get_table_name(): string {
@@ -21,6 +23,25 @@ class User {
 
     public function add_board(string $board_uid):self{
         $this->boards[] = $board_uid;
+        return $this;
+    }
+    public function set_oauth_provider(string $provider):self{
+        $allowedProviders = array("local");
+        $providersdefs = json_decode( file_get_contents("../config/oauth.json"), true );
+
+        $allowedProviders = array_merge( $allowedProviders , array_keys( $providersdefs ) );
+
+        if(!in_array($provider,$allowedProviders)){
+            throw new Exception('unknowed provider ' . $provider);
+        }
+        $this->oauth_provider = $provider;
+        return $this;
+    }
+    public function get_oauth_provider():string{
+        return $this->oauth_provider;
+    }
+    public function set_oauth_id(string $oauth_id):self{
+        $this->oauth_id = $oauth_id;
         return $this;
     }
     public function remove_board(string $board_uid):self{
@@ -115,7 +136,7 @@ class User {
         return false;
 
     }
-    private function load_from_db(PDO $db): User{
+    public function load_from_db(PDO $db): User{
         if( !isset($this->id) ){
             throw new Exception('id must be instancied before');
             die();
@@ -123,7 +144,9 @@ class User {
 
         $sql = "SELECT 
                         `login`         as user_login,
-                        `display_name`  as user_display_name
+                        `display_name`  as user_display_name,
+                        `oauth_id`      as oauth_id,
+                        `provider`      as oauth_provider
                 FROM ". self::TABLE . " 
                 WHERE `id` = :id ;";
 
@@ -133,6 +156,8 @@ class User {
         if($r = $sth->fetch(PDO::FETCH_ASSOC)){
             $this->set_login( $r["user_login"] )
                  ->set_display_name( $r["user_display_name"])
+                 ->set_oauth_id( is_null($r["oauth_id"])? "":  $r["oauth_id"]  )
+                 ->set_oauth_provider( is_null($r["oauth_provider"])? "" : $r["oauth_provider"] )
                  ->load_groups($db)
                  ->load_boards($db);
 
@@ -143,8 +168,8 @@ class User {
         }
 
     } 
-    public function authentificate(PDO $db, string $login, string $clearpassword):User{
-        $sql = "SELECT id, password FROM `". self::TABLE ."` WHERE login=:login;";
+    public function authentificate(PDO $db, string $login, string $clearpassword):self{
+        $sql = "SELECT id, password FROM `". self::TABLE ."` WHERE login=:login; AND provider='local'";
         $sth = $db->prepare($sql);
         $sth->execute( array(":login"  => $login) );
         if( $r = $sth->fetch() ){  
@@ -157,6 +182,25 @@ class User {
                 return $this;
             }
 
+        }
+        $this->authentified = false;
+        $this->set_id(-1)
+             ->set_login("")
+             ->set_display_name("");
+        $this->groups = array();
+        return $this;
+    }
+    public function authentificated_oauth(PDO $db, string $oauth_provider, string $oauth_id):self{
+        $sql = "SELECT id FROM `". self::TABLE ."` WHERE oauth_id=:oauthid AND provider=:oauthprovider;";
+        $sth = $db->prepare($sql);
+        $sth->bindParam(':oauthid', $oauth_id, PDO::PARAM_STR);
+        $sth->bindParam(':oauthprovider', $oauth_provider, PDO::PARAM_STR);
+        $sth->execute();
+        if( $r = $sth->fetch() ){  
+            $this->set_id( $r["id"] );
+            $this->load_from_db($db);
+            $this->authentified = true;
+            return $this;
         }
         $this->authentified = false;
         $this->set_id(-1)

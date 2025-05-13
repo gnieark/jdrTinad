@@ -30,6 +30,37 @@ class CheckDbStructure {
             $version = 2;
             $this->setVersion($version);
         }
+        if( $version == 2 ){
+            $stmt = $this->db->prepare("PRAGMA table_info(" . User::get_table_name(). ")");
+            $stmt->execute();
+            $columns = $stmt->fetchAll(PDO::FETCH_ASSOC);
+            $migration_ever_done = false;
+
+            foreach ($columns as $col) {
+                if ($col['name'] === "oauth_id") {
+                    $migration_ever_done = true;
+                }
+            }
+            if(!$migration_ever_done){
+
+                $sql = "ALTER TABLE `" . User::get_table_name(). "` ADD COLUMN provider TEXT NOT NULL DEFAULT 'local'";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute();
+                $sql = "ALTER TABLE `" . User::get_table_name(). "` ADD COLUMN oauth_id TEXT;";
+                $stmt = $this->db->prepare($sql);
+                $stmt->execute();
+                
+                $version = 3;
+                $this->setVersion($version);
+            }
+
+
+        }
+        if( $version == 3 ){
+            ProposingLink::create_table($this->db);
+            $version = 4;
+            $this->setVersion($version);
+        }
         //idem version suivante, 
     }
 }
