@@ -77,7 +77,7 @@ class GodFatherLink extends Route{
             //for check later
             $_SESSION["verifiedoauth"] = array("sub"    => $sub, "provider" => $providername );
 
-            //TO do vérifier si le compte n'existerait pas déjà
+            //vérifier si le compte n'existerait pas déjà
             $testUser = new User();
             $testUser->authentificated_oauth(Database::get_db(), $providername , $sub);
             if( $testUser-> is_authentified() ){
