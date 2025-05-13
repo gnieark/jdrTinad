@@ -32,7 +32,7 @@
         "CRUDclass": "Auth",
         "default_one":false,
         "link":"/auth",
-        "uriPattern": "'^/auth$'"
+        "uriPattern": "'^/auth(/provider/.+|$)'"
     },
     "Board":{
         "name":"Nouvelle table",
