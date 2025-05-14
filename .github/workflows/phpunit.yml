@@ -35,6 +35,7 @@ jobs:
 
       - name: Run PHPUnit
         run: |
+          mkdir -p config
           echo '{}' > config/oauth.json
           phpunit classes/users/tests/UsersGroupsTest.php --bootstrap classes/users/autoloadUsers.php
           phpunit classes/menus/tests/MenusTest.php --bootstrap classes/menus/autoloadMenus.php
