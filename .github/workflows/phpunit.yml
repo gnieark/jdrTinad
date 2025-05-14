@@ -29,12 +29,12 @@ jobs:
 
       - name: Download PHPUnit
         run: |
-          echo '{}' > config/oauth.json
           curl -Ls https://phar.phpunit.de/phpunit-9.phar -o phpunit
           chmod +x phpunit
           sudo mv phpunit /usr/local/bin/phpunit
 
       - name: Run PHPUnit
         run: |
+          echo '{}' > config/oauth.json
           phpunit classes/users/tests/UsersGroupsTest.php --bootstrap classes/users/autoloadUsers.php
           phpunit classes/menus/tests/MenusTest.php --bootstrap classes/menus/autoloadMenus.php
