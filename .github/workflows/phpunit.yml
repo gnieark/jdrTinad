@@ -29,7 +29,7 @@ jobs:
 
       - name: Download PHPUnit
         run: |
-          echo '{}' > config/oatuh.json
+          echo '{}' > config/oauth.json
           curl -Ls https://phar.phpunit.de/phpunit-9.phar -o phpunit
           chmod +x phpunit
           sudo mv phpunit /usr/local/bin/phpunit
