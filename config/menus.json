@@ -53,6 +53,15 @@
         "default_one":false,
         "uriPattern": "'^/godfatherlink(/.*|$)'"
     },
+    "MyAccount":{
+        "name":"Mon compte",
+        "default_level_needed": "user",
+        "groups_allowed": [],
+        "display_on_nav": false,
+        "CRUDclass": "MyAccount",
+        "default_one":false,
+        "uriPattern": "'^/MyAccount$'"
+    },
     "PlayerBoard":{
         "name":"Table de jeu de rôle joueur",
         "default_level_needed": "guest",
