@@ -1,0 +1,21 @@
+<div class="account-page-wrapper">
+  <div class="account-form-container">
+    <h1>Mon compte</h1>
+    <form id="account-form" method="POST" action="/MyAccount">
+      <label for="login">Identifiant (login):</label><br>
+      <input type="text" id="login" name="login" value="{{userlogin}}" required><br>
+
+      <label for="displayname">Nom affiché:</label><br>
+      <input type="text" id="displayname" name="displayname" value="{{userdisplayname}}" required><br>
+
+      <label for="password">Nouveau mot de passe:<br/><em class="label-hint">(Laissez vide si vous ne souhaitez pas le modifier)</em></label><br>
+      <input type="password" id="password" name="password"><br>
+
+      <label for="confirm_password">Confirmer le mot de passe:</label><br>
+      <input type="password" id="confirm_password" name="confirm_password"><br>
+
+      <button type="submit">Enregistrer les modifications</button>
+    </form>
+    <div id="form-message" role="alert"></div>
+  </div>
+</div>

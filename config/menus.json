@@ -60,7 +60,7 @@
         "display_on_nav": false,
         "CRUDclass": "MyAccount",
         "default_one":false,
-        "uriPattern": "'^/MyAccount$)'"
+        "uriPattern": "'^/MyAccount$'"
     },
     "PlayerBoard":{
         "name":"Table de jeu de rôle joueur",

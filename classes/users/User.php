@@ -44,6 +44,9 @@ class User {
         $this->oauth_id = $oauth_id;
         return $this;
     }
+    public function get_oauth_id():string{
+        return $this->oauth_id;
+    }
     public function remove_board(string $board_uid):self{
         $this->boards = array_values(
             array_filter($this->boards, fn($item) => $item !== $board_uid)
@@ -64,8 +67,36 @@ class User {
     public function get_display_name():string{ return $this->display_name;}
     public function set_display_name(string $display_name):User{ $this->display_name = $display_name; return $this;}
 
+    public function set_and_save_display_name(PDO $db, string $display_name):self{
+
+        $this->display_name = $display_name; 
+        $sql = "UPDATE `" . self::TABLE . "`SET display_name=:displayname WHERE id=:id";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                ":id"               =>  $this->id,
+                ":displayname"      =>  $this->display_name
+            )
+        );
+        return $this;
+    }
+
     public function get_login():string {return $this->login; }
     public function set_login(string $login):User{ $this->login = $login; return $this;}
+
+    public function set_and_save_login(PDO $db, string $login):self{
+
+        $this->login = $login;
+        $sql = "UPDATE `" . self::TABLE . "`SET login=:login WHERE id=:id";
+        $stmt = $db->prepare($sql);
+        $stmt->execute(
+            array(
+                ":id"               =>  $this->id,
+                ":login"            =>  $this->login
+            )
+        );
+        return $this;
+    }
 
     public function add_group(Group $group ):User{
         $this->groups[] = $group;

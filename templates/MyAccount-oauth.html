@@ -1,0 +1,13 @@
+<div class="account-page-wrapper">
+  <div class="account-form-container">
+    <h1>Mon compte</h1>
+    <p>Vous vous êtes authentifié via: {{provider_name}}. L'identifiant unique généré par le provider spécifiquement pour jdr.tinad.fr est {{provider_openid}}</p>
+    <form id="account-form" method="POST" action="/MyAccount">
+      <label for="displayname">Nom affiché:</label><br>
+      <input type="text" id="displayname" name="displayname" value="{{userdisplayname}}" required><br>
+
+      <button type="submit">Enregistrer les modifications</button>
+    </form>
+    <div id="form-message" role="alert"></div>
+  </div>
+</div>

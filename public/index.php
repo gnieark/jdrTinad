@@ -120,15 +120,15 @@ if( $currentUser->is_in_group("mj") ){
     }
 }
 
-
  if( $currentUser->is_authentified() ){
-    $tpllogoutlink = new TplBlock("logoutlink");
-    $tpllogoutlink->addVars(
+    $tplaccountlink = new TplBlock("accountlink");
+    $tplaccountlink ->addVars(
         array(
-            "title"   => "Déconnecter " .htmlentities($currentUser->get_display_name())
+            "displayname"   => htmlentities($currentUser->get_display_name())
             )
     );
-    $tpl->addSubBlock($tpllogoutlink);
+    $tpl->addSubBlock($tplaccountlink );
+
  }else{
     $tplauthlink = new TplBlock("authlink");
     $tplauthlink -> addVars(
