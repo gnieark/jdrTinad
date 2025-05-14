@@ -25,9 +25,9 @@ class GodFatherLink extends Route{
                 return("Aucun linkUid transmis.");
             }
 
-
+      
             $providers = json_decode(file_get_contents("../config/oauth.json"), true);
-
+        
             switch($providername){
                 case "google":
                     $gProvider = $providers["google"];
