@@ -29,15 +29,8 @@ class MyAccount extends route
         ) {
             $scheme = 'https';
         }
-        $host = $_SERVER['HTTP_X_FORWARDED_HOST'] ?? $_SERVER['SERVER_NAME'];
-        $port = $_SERVER['HTTP_X_FORWARDED_PORT'] ?? $_SERVER['SERVER_PORT'];
+        $host = $_SERVER['HTTP_HOST'];
         $urlbase = $scheme . '://' . $host;
-        if (($scheme === 'http' && $port != 80) || ($scheme === 'https' && $port != 443)) {
-            $urlbase .= ':' . $port;
-        }
-
-
-
 
         foreach($proposindLinks as $proposindLink ){
             $tplgodfatherlinks = new TplBlock("godfatherlinks");
