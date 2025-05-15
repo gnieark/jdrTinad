@@ -12,4 +12,10 @@ document.addEventListener("DOMContentLoaded", function () {
         msg.textContent = "";
       }
     });
+    document.querySelectorAll('.copy-btn').forEach(function (btn) {
+      btn.addEventListener('click', function () {
+        const input = this.previousElementSibling;
+        navigator.clipboard.writeText(input.value);
+      });
+    });
 });
