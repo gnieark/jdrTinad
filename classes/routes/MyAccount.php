@@ -30,12 +30,19 @@ class MyAccount extends route
             $scheme = 'https';
         }
         $host = $_SERVER['HTTP_X_FORWARDED_HOST'] ?? $_SERVER['SERVER_NAME'];
+        $port = $_SERVER['HTTP_X_FORWARDED_PORT'] ?? $_SERVER['SERVER_PORT'];
+        $urlbase = $scheme . '://' . $host;
+        if (($scheme === 'http' && $port != 80) || ($scheme === 'https' && $port != 443)) {
+            $urlbase .= ':' . $port;
+        }
+
+
 
 
         foreach($proposindLinks as $proposindLink ){
             $tplgodfatherlinks = new TplBlock("godfatherlinks");
                 $tplgodfatherlinks -> addVars(array(
-                    "href"  => $scheme . "://". $host . "/godfatherlink/" . $proposindLink->get_linkUid()
+                    "href"  => $urlbase . "/godfatherlink/" . $proposindLink->get_linkUid()
                 ));
 
             $tpl->addSubBlock( $tplgodfatherlinks  );
