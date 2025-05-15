@@ -22,10 +22,20 @@ class MyAccount extends route
             $proposindLinks = ProposingLink::add_links(Database::get_db(), $user->get_id(), 3);
         }
 
+        $scheme = 'http';
+        if (
+            (!empty($_SERVER['HTTP_X_FORWARDED_PROTO']) && $_SERVER['HTTP_X_FORWARDED_PROTO'] === 'https') ||
+            (!empty($_SERVER['HTTPS']) && $_SERVER['HTTPS'] !== 'off')
+        ) {
+            $scheme = 'https';
+        }
+        $host = $_SERVER['HTTP_X_FORWARDED_HOST'] ?? $_SERVER['SERVER_NAME'];
+
+
         foreach($proposindLinks as $proposindLink ){
             $tplgodfatherlinks = new TplBlock("godfatherlinks");
                 $tplgodfatherlinks -> addVars(array(
-                    "href"  => $_SERVER['REQUEST_SCHEME'] . "://". $_SERVER['SERVER_NAME'] . "/godfatherlink/" . $proposindLink->get_linkUid()
+                    "href"  => $scheme . "://". $host . "/godfatherlink/" . $proposindLink->get_linkUid()
                 ));
 
             $tpl->addSubBlock( $tplgodfatherlinks  );
