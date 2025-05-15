@@ -11,8 +11,14 @@ class ProposingLink {
     private int $godfather_uid;
     private string $linkUid;
 
+    static public function get_table_name(): string {
+        return self::TABLE;
+    }
     public function get_godfather_uid(): int{
         return $this->godfather_uid;
+    }
+    public function get_linkUid():string {
+        return $this->linkUid;
     }
     public static function create_table(PDO $db){
         $driver = $db->getAttribute(PDO::ATTR_DRIVER_NAME);
@@ -39,6 +45,14 @@ class ProposingLink {
     
         $db->exec($sql);
     }
+    public function __construct(int $godfather_uid = null, string $linkUid = null){
+        if(!is_null($godfather_uid)){
+            $this->godfather_uid = $godfather_uid;
+        }
+        if(!is_null($linkUid)){
+            $this->linkUid = $linkUid;
+        }
+    }
     public function delete(PDO $db){
         $sql = "DELETE FROM `" . self::TABLE . "` WHERE link_uid = :link_uid LIMIT 1";
         $stmt = $db->prepare($sql);
@@ -62,16 +76,20 @@ class ProposingLink {
     }
 
 
-    public static function add_links(PDO $db, int $godfather_id, int $quantity){
+    public static function add_links(PDO $db, int $godfather_id, int $quantity):array{
         $sql = "INSERT INTO `" . self::TABLE . "` (godfather_uid, link_uid) VALUES (:godfather_uid, :link_uid)";
         $stmt = $db->prepare($sql);
     
+        $links = array();
         for ($i = 0; $i < $quantity; $i++) {
             $link_uid = uniqid();
             $stmt->execute([
                 ':godfather_uid' => $godfather_id,
                 ':link_uid' => $link_uid
             ]);
+            $links[] = new ProposingLink($godfather_id,$link_uid );
         }
+        return $links;
     }
+        
 }

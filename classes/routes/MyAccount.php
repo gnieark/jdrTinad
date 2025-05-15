@@ -9,7 +9,29 @@ class MyAccount extends route
     }
 
     static public function get_content_html(User $user):string{
+
+        if( !$user->is_in_group("mj") ){
+            return C403::get_content_html($user);
+        }
+
         $tpl = new TplBlock();
+
+
+        $proposindLinks = $user->get_proposinglinks(Database::get_db());
+        if(empty($proposindLinks )){
+            $proposindLinks = ProposingLink::add_links(Database::get_db(), $user->get_id(), 3);
+        }
+
+        foreach($proposindLinks as $proposindLink ){
+            $tplgodfatherlinks = new TplBlock("godfatherlinks");
+                $tplgodfatherlinks -> addVars(array(
+                    "href"  => $_SERVER['REQUEST_SCHEME'] . "://". $_SERVER['SERVER_NAME'] . "/godfatherlink/" . $proposindLink->get_linkUid()
+                ));
+
+            $tpl->addSubBlock( $tplgodfatherlinks  );
+
+        }
+
         if( $user->get_oauth_provider() == 'local' ){
             $tpl->addVars(
                 array(

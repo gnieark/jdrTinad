@@ -56,3 +56,36 @@ form button:hover {
   margin-top: 1em;
   font-weight: bold;
 }
+
+ul.referral-links {
+  list-style: none;
+  padding-left: 0;
+}
+
+ul.referral-links li {
+  display: flex;
+  align-items: center;
+  margin-bottom: 1em;
+}
+
+ul.referral-links input[type="text"] {
+  flex-grow: 1;
+  padding: 0.5em;
+  margin-right: 0.5em;
+  font-family: monospace;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+ul.referral-links .copy-btn {
+  padding: 0.5em 1em;
+  background-color: #333;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+ul.referral-links .copy-btn:hover {
+  background-color: #555;
+}

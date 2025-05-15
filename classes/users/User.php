@@ -245,6 +245,16 @@ class User {
         $this->groups = array();
         return $this;
     }
+    public function get_proposinglinks(PDO $db):array{
+        $sql = " SELECT link_uid FROM `" . ProposingLink::get_table_name() ."` WHERE godfather_uid=:userid";
+        $sth = $db->prepare($sql);
+        $sth->execute(array(":userid"   => $this->id) );
+        $proposingLinks = array();
+        while( $r = $sth->fetch() ){
+            $proposingLinks[] = new ProposingLink($this->id, $r["link_uid"] );
+        }
+        return $proposingLinks;
+    }
 
 
 }
