@@ -95,6 +95,13 @@ class Api extends Route{
             $turn = $board->get_PlayTurnByUid( $turnUId );
             echo json_encode( $turn->__toArrayToPlay(null),true );
             die();
+        }elseif( preg_match ( "'^/API/board/(.+)/turnPLAYER/(.+)$'" , $_SERVER["REQUEST_URI"], $matches) ){
+            //same as previous but give only the current player awnser
+            $boardUid = $matches[1];
+            $turnUId = $matches[2];
+            $board = Board::loadBoard($boardUid);
+            $turn = $board->get_PlayTurnByUid( $turnUId );
+            echo json_encode( $turn->__toArrayToPlay( BoardPlayer::get_uid_from_cookie() ),true );
 
         }else{
             C404::send_content_json();

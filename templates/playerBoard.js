@@ -1,5 +1,8 @@
 const boarduid = "{{boarduid}}";
 let boardversion = "";
+let turnsUids = [];
+let currentTurnUid = "";
+let lastTurnUid = "";
 
 function createElem(type,attributes)
 {
@@ -183,7 +186,71 @@ function updateGame(){
         console.error("Erreur lors de la vérification de la version :", error);
       });
   }
+  function thereisANewTurn(){
 
+  }
+  async function displayTurn(turnUid){
+    fetch(`/API/board/${boarduid}/turnPLAYER/${turnUid}`)
+        .then(response => {
+      if (!response.ok) throw new Error("Erreur réseau");
+      return response.json();
+    })
+    .then(data => {
+      currentTurnUid = data["turnuid"];
+      const container = document.getElementById("gamedialogs");
+      container.innerHTML = "";
+
+      let pmjglobal = createElem("p",{"class": "mjglobal"});
+      pmjglobal.innerText = data["allAwnser"];
+      container.appendChild(pmjglobal);
+
+      let pmjpersonalized = createElem("p",{"class": "mjpersonalized"});
+      pmjpersonalized.innerText = data["personalisedAwnsers"];
+      container.appendChild(pmjpersonalized);
+    
+
+
+      console.log(data);
+
+ 
+    })
+    .catch(error => {
+      console.error("Erreur lors de la vérification de la version :", error);
+    });
+
+  }
+
+  async function refreshTurnList(){
+    fetch(`/API/board/${boarduid}/turnslist`)
+    .then(response => {
+      if (!response.ok) throw new Error("Erreur réseau");
+      return response.json();
+    })
+    .then(data => {
+
+      turnsUids = data["turns"];
+      if(turnsUids.length == 0 ){
+        //do nothing
+        return;
+      }
+      //turnsUids.at(-1)
+      if( currentTurnUid == "" ){
+        lastTurnUid = turnsUids.at(-1);
+        displayTurn(lastTurnUid );
+
+      }else if( turnsUids.at(-1)!== lastTurnUid ){
+        lastTurnUid = turnsUids.at(-1);
+        thereisANewTurn();
+
+      }
+    })
+    .catch(error => {
+      console.error("Erreur lors de la vérification de la version :", error);
+    });
+
+    
+
+  }
 document.addEventListener('DOMContentLoaded', function () {
     // Accordéon
     document.querySelectorAll('.accordion-title').forEach(button => {
@@ -195,7 +262,10 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
 
-    setInterval(checkBoardVersion, 3000);
+    ///API/board/(.+)/turnslist
+    setInterval( refreshTurnList, 3000 );
+
+    //setInterval(checkBoardVersion, 3000);
     refresh_character_sheet();
 
   });
