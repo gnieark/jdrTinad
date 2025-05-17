@@ -169,7 +169,8 @@ class PlayTurn{
 
     static public function sendMessageToIa($message){
 
-        $apiKey = file_get_contents("../config/mistralapikey.txt");
+        $apiKeyF = json_decode(file_get_contents("../config/mistralapikey.json"),true);
+        $apiKey = $apiKeyF["key"];
         $url = 'https://api.mistral.ai/v1/chat/completions';
         
         $data = array(

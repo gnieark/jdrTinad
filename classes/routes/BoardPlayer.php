@@ -180,7 +180,8 @@ class BoardPlayer extends Route{
 
 
 
-            $apiKey = file_get_contents("../config/mistralapikey.txt");
+            $apiKeyF = json_decode(file_get_contents("../config/mistralapikey.json"),true);
+            $apiKey = $apiKeyF["key"];
             $url = 'https://api.mistral.ai/v1/chat/completions';
             
             $data = array(
