@@ -208,7 +208,46 @@ function updateGame(){
       pmjpersonalized.innerText = data["personalisedAwnsers"];
       container.appendChild(pmjpersonalized);
     
+      
+      if( turnsUids.indexOf(currentTurnUid ) > 0 ){
+        //previous page
+        let buttonprevious = createElem("button", {"type":"button","class":"navturnsbutton previousbutton","title":"Voir le tour précédent"});
+        buttonprevious.innerText = "◀";
+        buttonprevious.addEventListener("click",(event)=>{
+          let currentIndex = turnsUids.indexOf( currentTurnUid );
+          displayTurn(turnsUids[ currentIndex - 1  ]);
+        });
+        container.appendChild(buttonprevious);
 
+        //first page
+        let buttonfirst = createElem("button", {"type":"button","class":"navturnsbutton firstbutton","title":"Voir le premier tour"});
+        buttonfirst.innerText = "⏮";
+        buttonfirst.addEventListener("click",(event)=>{
+          displayTurn(turnsUids[0]);
+        });
+        container.appendChild(buttonfirst);
+      }
+
+      if( turnsUids.indexOf(currentTurnUid ) < turnsUids.length - 1 ){    
+        //next page
+        let buttonnext =  createElem("button", {"type":"button","class":"navturnsbutton nextbutton","title":"Voir le tour suivant"});
+        buttonnext.innerText = "▶";
+        buttonnext.addEventListener("click",(event)=>{
+          let currentIndex = turnsUids.indexOf( currentTurnUid );
+          displayTurn(turnsUids[ currentIndex + 1]);
+        });
+        container.appendChild(buttonnext);
+
+        //last page
+        let buttonlast = createElem("button",{"type":"button","class":"navturnsbutton lastbutton","title":"Voir le dernier tour"});
+        buttonlast.innerText = "⏭";
+        buttonlast.addEventListener("click",(event)=>{
+          displayTurn(turnsUids.at(-1));
+        });
+        container.appendChild(buttonlast);
+      }
+
+      
 
       console.log(data);
 

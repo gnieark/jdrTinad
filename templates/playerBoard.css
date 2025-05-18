@@ -168,9 +168,10 @@
 #gamedialogs{
   display: grid;
   grid-template-areas:
-    "global global"
-    "player player"
-    "previous next";
+    "global global global global"
+    "player player player player"
+    "first previous next last";
+    grid-template-columns: repeat(4, 1fr); 
 
 }
 .mjglobal{
@@ -188,4 +189,16 @@
     font-style: normal;
     content: "MJ (à toi seulement):";
     font-weight: bold;
+}
+.previousbutton{
+  grid-area: previous;
+}
+.firstbutton{
+  grid-area: first;
+}
+.nextbutton{
+  grid-area: next;
+}
+.lastbutton{
+  grid-area: last;
 }
