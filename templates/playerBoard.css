@@ -100,26 +100,7 @@
   .character-sheet ul {
     padding-left: 1.5em;
   }
-  
-  .game-dialogue {
-    margin-bottom: 1em;
-  }
-  
-  .mj-message, .player-message {
-    margin: 0.5em 0;
-    padding: 0.5em;
-    background: #f0f0f0;
-    border-left: 4px solid #333;
-  }
-  
-  .mj-message {
-    background: #ffe4e1;
-  }
-  
-  .player-message {
-    background: #e1f5fe;
-  }
-  
+    
   form {
     display: flex;
     flex-direction: column;
@@ -182,3 +163,83 @@
 .stats_equipment::before{ content: "Equipement: "; font-weight: bold; }
 .stats_traits::before{ content: "Traits: "; font-weight: bold; }
 .stats_description::before{ content: "Description: "; font-weight: bold; }
+
+
+#gamedialogs{
+  display: grid;
+  grid-template-areas:
+    "global global global global"
+    "player player player player"
+    "reponse reponse reponse reponse"
+    "dicelogo test test test"
+    "first previous next last";
+    grid-template-columns: repeat(4, 1fr); 
+
+}
+.mjglobal{
+  grid-area: global;
+  margin: 0.5em 0;
+  padding: 0.5em;
+  background: #ffe4e1;
+}
+.mjglobal::before{
+  content: "MJ (à tous les aventuriers): ";
+  font-weight: bold;
+}
+.mjpersonalized{
+   grid-area: player;
+   font-style: italic;
+   margin: 0.5em 0;
+   padding: 0.5em;
+   background: #ffe4e1;
+}
+.mjpersonalized::before{
+    font-style: normal;
+    content: "MJ (à toi seulement): ";
+    font-weight: bold;
+}
+.pplayerresponse{
+  grid-area: reponse;
+  background: #e1f5fe;
+}
+.formresponse{
+  grid-area: reponse;
+  margin-bottom: 0.5em;
+}
+.pplayerresponse::before{
+    font-style: normal;
+    content: "Toi: ";
+    font-weight: bold;
+}
+.previousbutton{
+  grid-area: previous;
+}
+.firstbutton{
+  grid-area: first;
+}
+.nextbutton{
+  grid-area: next;
+}
+.lastbutton{
+  grid-area: last;
+}
+.diceimg{
+  grid-area: dicelogo;
+  width: 100%;
+}
+.test{
+  grid-area: test;
+}
+.pcompetances::before{
+    font-style: normal;
+    content: "Compétences testées: ";
+}
+.pbonus::before{
+    font-style: normal;
+    content: "Bonus accordé par le MJ: ";
+}
+
+.pjets::before{
+    font-style: normal;
+    content: "jet de dé: ";
+}
