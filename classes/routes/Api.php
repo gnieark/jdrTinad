@@ -94,6 +94,7 @@ class Api extends Route{
             $board = Board::loadBoard($boardUid);
             $turn = $board->get_PlayTurnByUid( $turnUId );
             echo json_encode( $turn->__toArrayToPlay( BoardPlayer::get_uid_from_cookie() ),true );
+            die();
 
         }else{
             C404::send_content_json();
