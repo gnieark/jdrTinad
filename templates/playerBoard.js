@@ -236,10 +236,8 @@ function submitAnwser(awnser, turnuid) {
     .catch(error => {
       console.error("Erreur lors de la vérification de la version :", error);
     });
-
-    
-
   }
+  
 document.addEventListener('DOMContentLoaded', function () {
     // Accordéon
     document.querySelectorAll('.accordion-title').forEach(button => {

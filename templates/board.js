@@ -63,6 +63,7 @@ async function sendPrompt(prompt) {
     document.getElementById('loading-overlay').style.display = 'none';
   }
 }
+
 function createLinkAndQR(urlPart) {
   const container = document.getElementById('linkandqrcontainer');
   const fullUrl = window.location.protocol + '//' + window.location.host + '/' + urlPart.trim();
@@ -103,7 +104,11 @@ function createLinkAndQR(urlPart) {
   }
 }
 
+
 async function fillTurnDiv(turnuid) {
+
+  //to rewrite
+
   const urlapi = '/API/board/' + boarduid + '/turnMJ/' + turnuid;
   try {
     const response = await fetch(urlapi);
@@ -177,7 +182,200 @@ async function fillTurnDiv(turnuid) {
   }
 }
 
+
+async function refreshTurnList(){
+  fetch(`/API/board/${boarduid}/turnslist`)
+  .then(response => {
+    if (!response.ok) throw new Error("Erreur réseau");
+    return response.json();
+  })
+  .then(data => {
+
+    turnsUids = data["turns"];
+    if(turnsUids.length == 0 ){
+      //do nothing
+      return;
+    }
+    //turnsUids.at(-1)
+    if( currentTurnUid == "" ){
+      lastTurnUid = turnsUids.at(-1);
+      displayTurn(lastTurnUid );
+
+    }else if( turnsUids.at(-1)!== lastTurnUid ){
+      lastTurnUid = turnsUids.at(-1);
+      displayTurn(lastTurnUid );
+
+    }
+  })
+  .catch(error => {
+    console.error("Erreur lors de la vérification de la version :", error);
+  });
+}
+
+
+
+async function displayTurn(turnUid){
+  /*
+  * To do
+  * la modifier pour l'adapter au MJ
+  */
+
+  fetch(`/API/board/${boarduid}/turnMJ/${turnUid}`)
+      .then(response => {
+    if (!response.ok) throw new Error("Erreur réseau");
+    return response.json();
+  })
+  .then(data => {
+    currentTurnUid = data["turnuid"];
+    const container = document.getElementById("gamedialogs");
+    container.innerHTML = "";
+
+    let pmjglobal = createElem("p",{"class": "mjglobal"});
+    pmjglobal.innerText = data["allAwnser"];
+    container.appendChild(pmjglobal);
+
+    let pmjpersonalized = createElem("p",{"class": "mjpersonalized"});
+    pmjpersonalized.innerText = data["personalisedAwnsers"];
+    container.appendChild(pmjpersonalized);
+  
+    if(data["playersResponses"]["player_response"]){
+      let pPlayerresponse = createElem("p",{"class": "pplayerresponse"});
+      pPlayerresponse.innerText = data["playersResponses"]["player_response"];
+      container.appendChild(pPlayerresponse);
+    }
+
+    if(( data["playersResponses"]["tested_skills"] ) && (data["playersResponses"]["tested_skills"].length > 0 )){
+
+      let imgDices = createElem("img",{"src" :"/imgs/dé20.png", "alt": "dé 20", "class":"diceimg"});
+      container.appendChild(imgDices);
+
+      let divTests = createElem("div", {"class": "test"});
+      //compétances testees lancer de dé bonusmalus 
+      let pcompetances = createElem("p",{"class": "pcompetances"});
+      pcompetances.innerText = data["playersResponses"]["tested_skills"].toString();
+      divTests.appendChild(pcompetances);
+      
+      let pbonus = createElem("p",{"class": "pbonus"});
+      pbonus.innerText = data["playersResponses"]["dices_bonus"].toString();
+      divTests.appendChild(pbonus);
+
+      let pjets = createElem("p",{"class":"pjets"});
+      //pjets.innerText = data
+      pjets.innerText = data["playersResponses"]["dices_scores"].toString();
+      divTests.appendChild(pjets);
+
+      let presult = createElem("p", {"class":"presult"});
+      if( data["playersResponses"]["dices_succes"] == true ){
+        presult.innerText = "Succès";
+      }else{
+        presult.innerText = "Echec";
+      }
+
+      if( data["playersResponses"]["dices_critical"] == true ){
+        presult.innerText += " critique!";
+      }
+      divTests.appendChild(presult);
+    
+      container.appendChild(divTests);
+    }
+   
+    if( data["closedTurn"] == false && !data["playersResponses"]["player_response"]  && currentTurnUid == turnsUids.at(-1) ){
+
+      let divreponse = createElem("div",{"class": "formresponse"});
+      let reponseTextarea = createElem("textarea", {"id":"playerresponsetextarea","placeholder":"Votre réponse...","rows":3} )
+      divreponse.appendChild(reponseTextarea);
+      let theButton = createElem("button",{"type":"button","class":"submitButton"});
+      theButton.innerText = "Envoyer";
+      theButton.addEventListener('click', () => { submitAnwser( document.getElementById("playerresponsetextarea").value,currentTurnUid ); });
+      divreponse.appendChild(theButton);
+      container.appendChild(divreponse);
+    }
+
+    //nav buttons
+    if( turnsUids.indexOf(currentTurnUid ) > 0 ){
+      //previous page
+      let buttonprevious = createElem("button", {"type":"button","class":"navturnsbutton previousbutton","title":"Voir le tour précédent"});
+      buttonprevious.innerText = "◀";
+      buttonprevious.addEventListener("click",(event)=>{
+        let currentIndex = turnsUids.indexOf( currentTurnUid );
+        displayTurn(turnsUids[ currentIndex - 1  ]);
+      });
+      container.appendChild(buttonprevious);
+
+      //first page
+      let buttonfirst = createElem("button", {"type":"button","class":"navturnsbutton firstbutton","title":"Voir le premier tour"});
+      buttonfirst.innerText = "⏮";
+      buttonfirst.addEventListener("click",(event)=>{
+        displayTurn(turnsUids[0]);
+      });
+      container.appendChild(buttonfirst);
+    }
+
+    if( turnsUids.indexOf(currentTurnUid ) < turnsUids.length - 1 ){    
+      //next page
+      let buttonnext =  createElem("button", {"type":"button","class":"navturnsbutton nextbutton","title":"Voir le tour suivant"});
+      buttonnext.innerText = "▶";
+      buttonnext.addEventListener("click",(event)=>{
+        let currentIndex = turnsUids.indexOf( currentTurnUid );
+        displayTurn(turnsUids[ currentIndex + 1]);
+      });
+      container.appendChild(buttonnext);
+
+      //last page
+      let buttonlast = createElem("button",{"type":"button","class":"navturnsbutton lastbutton","title":"Voir le dernier tour"});
+      buttonlast.innerText = "⏭";
+      buttonlast.addEventListener("click",(event)=>{
+        displayTurn(turnsUids.at(-1));
+      });
+      container.appendChild(buttonlast);
+    }
+  })
+  .catch(error => {
+    console.error("Erreur lors de la vérification de la version :", error);
+  });
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 async function placeTurnsDivs(){
+
+
+  //to rewrite
+
   let urlapi = '/API/board/' + boarduid + '/turnslist';
 
   const response = await fetch(urlapi);
@@ -295,8 +493,15 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       fetchPlayers(); // Chargement initial
       setInterval(fetchPlayers, 3000); // Mise à jour toutes les 3 secondes
-      setInterval(placeTurnsDivs,3000);
+
+
+     
+      //setInterval(placeTurnsDivs,3000); //to rewrite
+      setInterval( refreshTurnList, 3000 );
     }
 });
 
 let playersByUid = {};
+let turnsUids = [];
+let currentTurnUid = "";
+let lastTurnUid = "";
