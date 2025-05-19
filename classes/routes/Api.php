@@ -66,14 +66,6 @@ class Api extends Route{
             die();
         }elseif( preg_match ( "'^/API/board/(.+)/turnslist$'" , $_SERVER["REQUEST_URI"], $matches) ){
             $boardUid = $matches[1];
-            //retourne la liste des tours avec leur UID
-            if( !$user->is_in_group("mj") ){
-                return C403::send_content_json();
-            }
-            if(!$user->does_own_board($boardUid)){
-                return C403::send_content_json();
-            }
-
             $board = Board::loadBoard($boardUid);
             $turns = $board->get_playTurns();
             $turnsArr = array();

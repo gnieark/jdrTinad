@@ -1,5 +1,5 @@
 const boarduid = "{{boarduid}}";
-let boardversion = "";
+
 let turnsUids = [];
 let currentTurnUid = "";
 let lastTurnUid = "";
@@ -82,113 +82,16 @@ function submitAnwser(awnser, turnuid) {
     return response.json(); // ou .text() selon ce que l'API retourne
   })
   .then(data => {
-    console.log("Réponse envoyée avec succès :", data);
-    updateGame(); // Recharger les dialogues après l'envoi
+    displayTurn(currentTurnUid);
+    document.getElementById('loading-overlay').style.display = 'none';
+    //updateGame(); // Recharger les dialogues après l'envoi
+
   })
   .catch(error => {
     console.error("Erreur lors de l'envoi de la réponse :", error);
     alert("Une erreur est survenue lors de l'envoi de votre réponse.");
   });
 }
-
-
-function updateGame(){
-  const endpointApi = '/API/board/' + boarduid + '/turns';
-  const gamedialogsDiv = document.getElementById('gamedialogs');
-  gamedialogsDiv.innerHTML = ''; // Vide les dialogues
-
-  fetch(endpointApi)
-    .then(response => {
-      if (!response.ok) throw new Error("Erreur réseau");
-      return response.json();
-    })
-    .then(data => {
-      if (!Array.isArray(data)) throw new Error("Format de réponse inattendu");
-      if(data.length == 0 ){
-        const mjMessage = document.createElement('div');
-        mjMessage.classList.add('mj-message');
-        mjMessage.innerHTML = `<strong>MJ :</strong> La partie va bientot commencer, veuillez patienter.`;
-        gamedialogsDiv.appendChild(mjMessage);
-      }
-      data.forEach((turn, index) => {
-        const mjMessage = document.createElement('div');
-        mjMessage.classList.add('mj-message');
-        mjMessage.innerHTML = `<strong>MJ :</strong> ${turn.allAwnser}<br><em>${turn.personalisedAwnsers}</em>`;
-        gamedialogsDiv.appendChild(mjMessage);
-
-        if (turn.playersResponses.playerUID) {
-          const playerMessage = document.createElement('div');
-          playerMessage.classList.add('player-message');
-          playerMessage.innerHTML = `<strong>Vous :</strong> ${turn.playersResponses.player_response}`;
-          gamedialogsDiv.appendChild(playerMessage);
-
-          if (Array.isArray(turn.playersResponses.tested_skills) && turn.playersResponses.tested_skills.length > 0) {
-            const resultsMessage = document.createElement('div');
-            resultsMessage.classList.add('dice-results');
-      
-            const bonus = turn.playersResponses.dices_bonus;
-            const skills = turn.playersResponses.tested_skills;
-            const scores = turn.playersResponses.dices_scores || [];
-            const success = turn.playersResponses.dices_succes ? "Oui" : "Non";
-            const critical = turn.playersResponses.dices_critical ? "Oui" : "Non";
-      
-            let resultHtml = `<strong>Jet de compétences (bonus/malus: ${bonus.toString()} ):</strong><br><ul>`;
-            skills.forEach((skill, i) => {
-              const score = scores[i] !== undefined ? scores[i] : "n/a";
-              resultHtml += `<li>${skill} : ${score}</li>`;
-            });
-            resultHtml += `</ul>`;
-            resultHtml += `<strong>Succès :</strong> ${success}<br>`;
-            resultHtml += `<strong>Critique :</strong> ${critical}`;
-            resultsMessage.innerHTML = resultHtml;
-      
-            gamedialogsDiv.appendChild(resultsMessage);
-          }
-
-        }
-
-        // Si c'est le dernier tour
-        if (index === data.length - 1) {
-          let thetextarea = createElem("textarea",{"id":"playerresponsetextarea","placeholder":"Votre réponse...","rows":3});
-          let theButton = createElem("button",{"type":"button","class":"submitButton"});
-          theButton.textContent = 'Envoyer';
-          theButton.addEventListener('click', () => { submitAnwser( document.getElementById("playerresponsetextarea").value,turn.turnuid ); });
-          if (turn.closedTurn || turn.playersResponses.playerUID) {
-            thetextarea.disabled = true;
-            theButton .disabled = true;
-          }
-          gamedialogsDiv.appendChild(thetextarea);
-          gamedialogsDiv.appendChild(theButton);
-
-        }
-        document.getElementById('loading-overlay').style.display = 'none';
-      });
-    })
-    .catch(error => {
-      console.error("Erreur lors de la mise à jour des dialogues :", error);
-      gamedialogsDiv.innerHTML = '<p style="color:red;">Erreur lors du chargement des dialogues.</p>';
-    });
-
-}
-  function checkBoardVersion() {
-    fetch(`/API/board/${boarduid}/version-uid`)
-      .then(response => {
-        if (!response.ok) throw new Error("Erreur réseau");
-        return response.json();
-      })
-      .then(data => {
-        if (data["version-uid"] && data["version-uid"] !== boardversion) {
-          boardversion = data["version-uid"];
-          updateGame();
-        }
-      })
-      .catch(error => {
-        console.error("Erreur lors de la vérification de la version :", error);
-      });
-  }
-  function thereisANewTurn(){
-
-  }
   async function displayTurn(turnUid){
     fetch(`/API/board/${boarduid}/turnPLAYER/${turnUid}`)
         .then(response => {
@@ -208,7 +111,60 @@ function updateGame(){
       pmjpersonalized.innerText = data["personalisedAwnsers"];
       container.appendChild(pmjpersonalized);
     
+      if(data["playersResponses"]["player_response"]){
+        let pPlayerresponse = createElem("p",{"class": "pplayerresponse"});
+        pPlayerresponse.innerText = data["playersResponses"]["player_response"];
+        container.appendChild(pPlayerresponse);
+      }
+
+      if(( data["playersResponses"]["tested_skills"] ) && (data["playersResponses"]["tested_skills"].length > 0 )){
+
+        let imgDices = createElem("img",{"src" :"/imgs/dé20.png", "alt": "dé 20", "class":"diceimg"});
+        container.appendChild(imgDices);
+
+        let divTests = createElem("div", {"class": "test"});
+        //compétances testees lancer de dé bonusmalus 
+        let pcompetances = createElem("p",{"class": "pcompetances"});
+        pcompetances.innerText = data["playersResponses"]["tested_skills"].toString();
+        divTests.appendChild(pcompetances);
+        
+        let pbonus = createElem("p",{"class": "pbonus"});
+        pbonus.innerText = data["playersResponses"]["dices_bonus"].toString();
+        divTests.appendChild(pbonus);
+
+        let pjets = createElem("p",{"class":"pjets"});
+        //pjets.innerText = data
+        pjets.innerText = data["playersResponses"]["dices_scores"].toString();
+        divTests.appendChild(pjets);
+
+        let presult = createElem("p", {"class":"presult"});
+        if( data["playersResponses"]["dices_succes"] == true ){
+          presult.innerText = "Succès";
+        }else{
+          presult.innerText = "Echec";
+        }
+
+        if( data["playersResponses"]["dices_critical"] == true ){
+          presult.innerText += " critique!";
+        }
+        divTests.appendChild(presult);
       
+        container.appendChild(divTests);
+      }
+     
+      if( data["closedTurn"] == false && !data["playersResponses"]["player_response"]  && currentTurnUid == turnsUids.at(-1) ){
+
+        let divreponse = createElem("div",{"class": "formresponse"});
+        let reponseTextarea = createElem("textarea", {"id":"playerresponsetextarea","placeholder":"Votre réponse...","rows":3} )
+        divreponse.appendChild(reponseTextarea);
+        let theButton = createElem("button",{"type":"button","class":"submitButton"});
+        theButton.innerText = "Envoyer";
+        theButton.addEventListener('click', () => { submitAnwser( document.getElementById("playerresponsetextarea").value,currentTurnUid ); });
+        divreponse.appendChild(theButton);
+        container.appendChild(divreponse);
+      }
+
+      //nav buttons
       if( turnsUids.indexOf(currentTurnUid ) > 0 ){
         //previous page
         let buttonprevious = createElem("button", {"type":"button","class":"navturnsbutton previousbutton","title":"Voir le tour précédent"});
@@ -246,12 +202,6 @@ function updateGame(){
         });
         container.appendChild(buttonlast);
       }
-
-      
-
-      console.log(data);
-
- 
     })
     .catch(error => {
       console.error("Erreur lors de la vérification de la version :", error);
@@ -279,7 +229,7 @@ function updateGame(){
 
       }else if( turnsUids.at(-1)!== lastTurnUid ){
         lastTurnUid = turnsUids.at(-1);
-        thereisANewTurn();
+        displayTurn(lastTurnUid );
 
       }
     })
@@ -301,10 +251,7 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
 
-    ///API/board/(.+)/turnslist
     setInterval( refreshTurnList, 3000 );
-
-    //setInterval(checkBoardVersion, 3000);
     refresh_character_sheet();
 
   });
