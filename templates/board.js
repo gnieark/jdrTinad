@@ -234,6 +234,77 @@ async function displayTurn(turnUid){
     pmjglobal.innerText = data["allAwnser"];
     container.appendChild(pmjglobal);
 
+    // Narations personnalisées des joueurs
+    const playersAnswers = data.personalisedAwnsers;
+    for (const playerUid in playersAnswers) {
+      let divplayerAnswer = createElem("div",{"class": "playeranswer"});
+      let title =createElem("h3",{"class":"playeranswerTitle"});
+
+      if( playersByUid[ playerUid ]){
+        playerCaption = playersByUid[ playerUid ];
+      }else{
+        playerCaption = playerUid 
+      }
+      title.textContent = `${playerCaption}`;
+      divplayerAnswer.appendChild(title);
+
+      let pPlayerresponse = createElem("p",{"class": "pmjtoone"});
+      pPlayerresponse.innerText = playersAnswers[playerUid];
+      divplayerAnswer.appendChild(pPlayerresponse);
+
+      data.playersResponses.forEach(function (reponse) {
+        if( reponse.playerUID == playerUid ){
+          let preponse = createElem("p",{"class":"preponse"});
+          preponse.innerText = reponse.player_response;
+          divplayerAnswer.appendChild(preponse);
+
+          if( reponse.tested_skills.length > 0 ){
+            let ptestedskills = createElem("p",{"class": "pcompetences"});
+            ptestedskills.innerText = reponse.tested_skills.toString();
+            divplayerAnswer.appendChild(ptestedskills);
+            
+            let pbonusmalus = createElem("p",{"class": "pbonus"});
+            pbonusmalus.innerText = reponse.dices_bonus.toString();
+            divplayerAnswer.appendChild(pbonusmalus);
+
+            let pjet = createElem("p",{"class":"pjets" });
+            pjet.innerText = reponse.dices_scores.toString();
+            divplayerAnswer.appendChild(pjet);
+
+            let pdiceResultConclusion = createElem("p",{"class":"pdicesconclusion"});
+            if( reponse.dices_succes == false ){
+              pdiceResultConclusion.innerText = "Echec";
+            }else{
+              pdiceResultConclusion.innerText = "Succès";
+            }
+            if( reponse.dices_critical == true){
+              pdiceResultConclusion.innerText += " critique!";
+            }
+            divplayerAnswer.appendChild(pdiceResultConclusion);
+
+     
+            let piaanalyse = createElem("p",{"class":"panalyse"});
+            piaanalyse.innerText = reponse.responseanalysis;
+            divplayerAnswer.appendChild(piaanalyse);
+            
+
+          }
+          //tested_skills
+
+        }
+      });
+
+
+
+      container.appendChild(divplayerAnswer);
+    }
+
+
+
+
+
+
+
     let pmjpersonalized = createElem("p",{"class": "mjpersonalized"});
     pmjpersonalized.innerText = data["personalisedAwnsers"];
     container.appendChild(pmjpersonalized);

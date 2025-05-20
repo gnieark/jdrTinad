@@ -230,7 +230,7 @@
 .test{
   grid-area: test;
 }
-.pcompetances::before{
+.pcompetences::before{
     font-style: normal;
     content: "Compétences testées: ";
 }

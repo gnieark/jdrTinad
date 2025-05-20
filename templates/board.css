@@ -137,8 +137,21 @@ h1 {
   #gameboard button:hover {
     background-color: #555;
   }
-
-  .playerresponse {
+  .playeranswer {
+    border: 1px solid #ccc;               /* Bordure fine grise */
+    border-left: 4px solid #0077cc;       /* Accent visuel sur la gauche */
+    background-color: #fdfdfd;            /* Fond très clair */
+    border-radius: 6px;                   /* Coins arrondis doux */
+    margin: 1em 0;                        /* Espacement entre les blocs */
+    padding: 1em;                         /* Respiration intérieure */
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05); /* Légère ombre */
+    transition: background-color 0.3s ease;
+  }
+  
+  .playeranswer:hover {
+    background-color: #f7faff;           /* Légère surbrillance au survol */
+  }
+  .preponse {
     background-color: #f4f8ff; /* bleu très pâle pour évoquer une réponse "joueur" */
     border-left: 4px solid #0077cc; /* bleu plus franc pour les différencier du MJ */
     padding: 0.75em 1em;
@@ -150,23 +163,16 @@ h1 {
     box-shadow: 0 1px 3px rgba(0,0,0,0.05);
   }
 
- .mjglobalmessage{
-  font-weight: bold;
-  margin-bottom: 1em;
- }
- .diceresults {
-  background-color: #eef2f7;
-  box-shadow: 0 1px 3px rgba(0,0,0,0.1);
-  padding: 0.5em 1em;
-  margin: 0.5em 0;
-  border-radius: 4px;
-  font-family: "Segoe UI", sans-serif;
-  font-size: 0.95em;
-  color: #333;
-}
-.stats_pv::before{ content: "Points de vie: "; font-weight: bold; }
-.stats_fortune::before{ content: "Fortune: "; font-weight: bold; }
-.stats_competences::before{ content: "Compétences: "; font-weight: bold; }
-.stats_equipment::before{ content: "Equipement: "; font-weight: bold; }
-.stats_traits::before{ content: "Traits: "; font-weight: bold; }
-.stats_description::before{ content: "Description: "; font-weight: bold; }
+  .pcompetences::before{
+    font-style: normal;
+    content: "Compétences testées: ";
+  }
+  .pbonus::before{
+    font-style: normal;
+    content: "Bonus accordé par le MJ: ";
+  }
+
+  .pjets::before{
+    font-style: normal;
+    content: "jet de dé: ";
+  }

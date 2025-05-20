@@ -38,9 +38,9 @@ async function refresh_character_sheet(){
   pfortune.innerText = `${player.fortune} pièces d'or`;
   divdetails.appendChild(pfortune);
   
-  let pcompetances = createElem("p",{"class":"player_stats_elem stats_competences","id":"pcompetences" + player.uid });
-  pcompetances.innerText = `COU: ${player.courage}, INT: ${player.intelligence}, CHA: ${player.charisma}, DEXT: ${player.dexterity}, FO: ${player.strength}`;
-  divdetails.appendChild(pcompetances);
+  let pcompetences = createElem("p",{"class":"player_stats_elem stats_competences","id":"pcompetences" + player.uid });
+  pcompetences.innerText = `COU: ${player.courage}, INT: ${player.intelligence}, CHA: ${player.charisma}, DEXT: ${player.dexterity}, FO: ${player.strength}`;
+  divdetails.appendChild(pcompetences);
 
   let pequipment = createElem("p",{"class":"player_stats_elem stats_equipment","id":"pequipment" + player.uid });
   let ulequipment = createElem("ul",{});
@@ -124,9 +124,9 @@ function submitAnwser(awnser, turnuid) {
 
         let divTests = createElem("div", {"class": "test"});
         //compétances testees lancer de dé bonusmalus 
-        let pcompetances = createElem("p",{"class": "pcompetances"});
-        pcompetances.innerText = data["playersResponses"]["tested_skills"].toString();
-        divTests.appendChild(pcompetances);
+        let pcompetences = createElem("p",{"class": "pcompetences"});
+        pcompetences.innerText = data["playersResponses"]["tested_skills"].toString();
+        divTests.appendChild(pcompetences);
         
         let pbonus = createElem("p",{"class": "pbonus"});
         pbonus.innerText = data["playersResponses"]["dices_bonus"].toString();
