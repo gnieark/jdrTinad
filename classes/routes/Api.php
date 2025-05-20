@@ -9,7 +9,7 @@ class Api extends Route{
 
         header('Content-Type: application/json; charset=utf-8');
 
-        if(preg_match ( "'^/API/board/(.+)/players$'" , $_SERVER["REQUEST_URI"], $matches)){
+        if(preg_match ( "'^/API/board/([\w]+)/players$'" , $_SERVER["REQUEST_URI"], $matches)){
             
             $boardUid = $matches[1];
             if(!Board::boardFileExists($boardUid)){
@@ -24,7 +24,7 @@ class Api extends Route{
             }
             echo json_encode($playersArr,true);
             die();
-        }elseif( preg_match ( "'^/API/board/(.+)/player/myperso$'" , $_SERVER["REQUEST_URI"], $matches) ){
+        }elseif( preg_match ( "'^/API/board/([\w]+)/player/myperso$'" , $_SERVER["REQUEST_URI"], $matches) ){
             //juste un player
             $boardUid = $matches[1];
             $playerUID = BoardPlayer::get_uid_from_cookie();
@@ -36,7 +36,7 @@ class Api extends Route{
             echo json_encode($player->__toArray(),true);
 
             die();
-        }elseif( preg_match ( "'^/API/board/(.+)/version-uid$'" , $_SERVER["REQUEST_URI"], $matches) ){
+        }elseif( preg_match ( "'^/API/board/([\w]+)/version-uid$'" , $_SERVER["REQUEST_URI"], $matches) ){
             $boardUid = $matches[1];
             if(!Board::boardFileExists($boardUid)){
                  C404::send_content_json();
@@ -49,7 +49,7 @@ class Api extends Route{
             ),true);
             die();
             
-        }elseif( preg_match ( "'^/API/board/(.+)/turns$'" , $_SERVER["REQUEST_URI"], $matches) ){
+        }elseif( preg_match ( "'^/API/board/([\w]+)/turns$'" , $_SERVER["REQUEST_URI"], $matches) ){
             $boardUid = $matches[1];
             if(!Board::boardFileExists($boardUid)){
                  C404::send_content_json();
@@ -64,7 +64,7 @@ class Api extends Route{
             echo (json_encode($arr, true ));
 
             die();
-        }elseif( preg_match ( "'^/API/board/(.+)/turnslist$'" , $_SERVER["REQUEST_URI"], $matches) ){
+        }elseif( preg_match ( "'^/API/board/([\w]+)/turnslist$'" , $_SERVER["REQUEST_URI"], $matches) ){
             $boardUid = $matches[1];
             $board = Board::loadBoard($boardUid);
             $turns = $board->get_playTurns();
@@ -80,14 +80,28 @@ class Api extends Route{
             );
             
             die();
-        }elseif( preg_match ( "'^/API/board/(.+)/turnMJ/(.+)$'" , $_SERVER["REQUEST_URI"], $matches) ){
+        }elseif( preg_match ( "'^/API/board/([\w]+)/turnMJ/([\w]+)/playerresponse/([\w]+)$'" , $_SERVER["REQUEST_URI"], $matches) ){
+            $boardUid = $matches[1];
+            $turnUId = $matches[2];
+            $playerUID = $matches[3];
+            $playerResponsePath = realpath("../gamesdatas/" . $boardUid . "/turn-" . $turnUId . "/" . $playerUID . ".txt") ;
+           
+            if(!file_exists($playerResponsePath )){
+                echo "hey";
+                C404::send_content_json(); die();
+            } 
+            $reponse = PlayerResponse::load($playerResponsePath);
+            echo json_encode($reponse->_toArrayToPlay());
+            die();
+
+        }elseif( preg_match ( "'^/API/board/([\w]+)/turnMJ/([\w]+)$'" , $_SERVER["REQUEST_URI"], $matches) ){
             $boardUid = $matches[1];
             $turnUId = $matches[2];
             $board = Board::loadBoard($boardUid);
             $turn = $board->get_PlayTurnByUid( $turnUId );
             echo json_encode( $turn->__toArrayToPlay(null),true );
             die();
-        }elseif( preg_match ( "'^/API/board/(.+)/turnPLAYER/(.+)$'" , $_SERVER["REQUEST_URI"], $matches) ){
+        }elseif( preg_match ( "'^/API/board/([\w]+)/turnPLAYER/([\w]+)$'" , $_SERVER["REQUEST_URI"], $matches) ){
             //same as previous but give only the current player awnser
             $boardUid = $matches[1];
             $turnUId = $matches[2];
@@ -108,7 +122,7 @@ class Api extends Route{
     static public function apply_post(User $user):string{
         header('Content-Type: application/json; charset=utf-8');
         
-        if(preg_match ( "'^/API/board/(.+)/mjprompt$'" , $_SERVER["REQUEST_URI"], $matches)){
+        if(preg_match ( "'^/API/board/([\w]+)/mjprompt$'" , $_SERVER["REQUEST_URI"], $matches)){
 
 
             //nouveau tour de jeu déclenché par le MJ
@@ -153,7 +167,7 @@ class Api extends Route{
             echo '{}'; die();
 
 
-        }elseif( preg_match ( "'^/API/board/(.+)/turn/(.+)$'" , $_SERVER["REQUEST_URI"], $matches)   ){
+        }elseif( preg_match ( "'^/API/board/([\w]+)/turn/([\w]+)$'" , $_SERVER["REQUEST_URI"], $matches)   ){
 
             //Un joueur apporte une réponse
         

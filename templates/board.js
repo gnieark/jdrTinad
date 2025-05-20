@@ -63,6 +63,23 @@ async function sendPrompt(prompt) {
     document.getElementById('loading-overlay').style.display = 'none';
   }
 }
+
+function getDivPrompt(){
+      let divPromptNextRun = createElem("div",{"class":"promptnextrun"});
+
+      let textareaGprompt = createElem("textarea",{"id":"game-prompt","name":"prompt","rows":"4"});
+      divPromptNextRun.appendChild(textareaGprompt);
+
+      let buttonNextPrompt = createElem("button",{"id":"butonSendPrompt", "type":"button", "placeholder":"Indications à donner pour orienter l'IA au tour suivant"});
+      buttonNextPrompt.innerText = "Lancer le tour suivant."
+      buttonNextPrompt .addEventListener("click", function () {
+        const promptText = document.getElementById("game-prompt").value.trim();
+        sendPrompt(promptText);
+      });
+      divPromptNextRun.appendChild(buttonNextPrompt);
+      return divPromptNextRun;
+
+}
 function createLinkAndQR(urlPart) {
   const container = document.getElementById('linkandqrcontainer');
   const fullUrl = window.location.protocol + '//' + window.location.host + '/' + urlPart.trim();
@@ -103,106 +120,237 @@ function createLinkAndQR(urlPart) {
   }
 }
 
-async function fillTurnDiv(turnuid) {
-  const urlapi = '/API/board/' + boarduid + '/turnMJ/' + turnuid;
-  try {
-    const response = await fetch(urlapi);
-    if (!response.ok) throw new Error("Erreur de récupération du tour");
 
-    const data = await response.json();
-    const container = document.getElementById("div-gameturns-t" + turnuid);
-    if (!container) return;
+async function refreshTurnList(){
+  fetch(`/API/board/${boarduid}/turnslist`)
+  .then(response => {
+    if (!response.ok) throw new Error("Erreur réseau");
+    return response.json();
+  })
+  .then(data => {
 
-    // Nettoyer la div avant d’ajouter du contenu
+    turnsUids = data["turns"];
+    if(turnsUids.length == 0 ){
+      if(! document.getElementById("game-prompt") ){
+        document.getElementById("gameboard").appendChild( getDivPrompt() );
+      }
+      return;
+    }
+    //turnsUids.at(-1)
+    if( currentTurnUid == "" ){
+      lastTurnUid = turnsUids.at(-1);
+      displayTurn(lastTurnUid );
+
+    }else if( turnsUids.at(-1)!== lastTurnUid ){
+      lastTurnUid = turnsUids.at(-1);
+      displayTurn(lastTurnUid );
+
+    }
+  })
+  .catch(error => {
+    console.error("Erreur lors de la vérification de la version :", error);
+  });
+}
+async function checkPlayerResponse(boarduid,turnUid,playerUid){
+ 
+        const response = await fetch(`/API/board/${boarduid}/turnMJ/${turnUid}/playerresponse/${playerUid}`);
+
+        if (response.status === 200) {
+            const reponse = await response.json();
+            const container = document.getElementById("divplayeranswer" + playerUid);
+
+          let preponse = createElem("p",{"class":"preponse"});
+          preponse.innerText = reponse.player_response;
+          container.appendChild(preponse);
+
+          if( reponse.tested_skills.length > 0 ){
+            let ptestedskills = createElem("p",{"class": "pcompetences"});
+            ptestedskills.innerText = reponse.tested_skills.toString();
+            container.appendChild(ptestedskills);
+            
+            let pbonusmalus = createElem("p",{"class": "pbonus"});
+            pbonusmalus.innerText = reponse.dices_bonus.toString();
+            container.appendChild(pbonusmalus);
+
+            let pjet = createElem("p",{"class":"pjets" });
+            pjet.innerText = reponse.dices_scores.toString();
+            container.appendChild(pjet);
+
+            let img = createElem("img", {"src": "/imgs/dé20.png", "class": "pdicelogo"});
+            container.appendChild(img);
+
+            let pdiceResultConclusion = createElem("p",{"class":"pdicesconclusion"});
+            if( reponse.dices_succes == false ){
+              pdiceResultConclusion.innerText = "Echec";
+            }else{
+              pdiceResultConclusion.innerText = "Succès";
+            }
+            if( reponse.dices_critical == true){
+              pdiceResultConclusion.innerText += " critique!";
+            }
+            container.appendChild(pdiceResultConclusion);
+          }
+          
+          let piaanalyse = createElem("p",{"class":"panalyse"});
+          piaanalyse.innerText = reponse.responseanalysis;
+          container.appendChild(piaanalyse);
+    
+          clearInterval(checksresponsesintervals[playerUid]);
+
+        } else if (response.status === 404) {
+            // Ne rien faire
+        } else {
+            console.warn(`Requête échouée avec le statut ${response.status}`);
+        }
+
+}
+async function displayTurn(turnUid){
+
+  for (const playerUid in checksresponsesintervals) {
+   clearInterval(checksresponsesintervals[playerUid]);
+  }
+  
+
+  fetch(`/API/board/${boarduid}/turnMJ/${turnUid}`)
+      .then(response => {
+    if (!response.ok) throw new Error("Erreur réseau");
+    return response.json();
+  })
+  .then(data => {
+    currentTurnUid = data["turnuid"];
+    const container = document.getElementById("gamedialogs");
     container.innerHTML = "";
 
-    // Créer l’élément pour la narration du MJ
-    const mjDesc = createElem("div",{"class":"mjglobalmessage"});
-    mjDesc.textContent = "MJ (message global) : " + data.allAwnser;
-    container.appendChild(mjDesc);
+    let pmjglobal = createElem("p",{"class": "mjglobal"});
+    pmjglobal.innerText = data["allAwnser"];
+    container.appendChild(pmjglobal);
 
     // Narations personnalisées des joueurs
     const playersAnswers = data.personalisedAwnsers;
     for (const playerUid in playersAnswers) {
-      
-      const playerDiv = document.createElement("div");
-      playerDiv.style.marginBottom = "0.5em";
-      let playerCaption = "";
+      let divplayerAnswer = createElem("div",{"class": "playeranswer", "id": "divplayeranswer" + playerUid});
+
+
+
+      let title =createElem("h3",{"class":"playeranswerTitle"});
+
       if( playersByUid[ playerUid ]){
         playerCaption = playersByUid[ playerUid ];
       }else{
         playerCaption = playerUid 
       }
-      
-      playerDiv.textContent = `MJ - message à ${playerCaption} - : ${playersAnswers[playerUid]}`;
-      container.appendChild(playerDiv);
+      title.textContent = `${playerCaption}`;
+      divplayerAnswer.appendChild(title);
 
+      let pPlayerresponse = createElem("p",{"class": "pmjtoone"});
+      pPlayerresponse.innerText = playersAnswers[playerUid];
+      divplayerAnswer.appendChild(pPlayerresponse);
 
-      //réponses des joueurs:
-      let currentplayeruid = playerUid;
+      let noresponse = true;
       data.playersResponses.forEach(function (reponse) {
-        if(reponse.playerUID == playerUid ){
-          const playerResponse = createElem("div",{"class": "playerresponse"});
-          playerResponse.textContent = reponse.player_response;
-          container.appendChild(playerResponse );
 
-          if(reponse.tested_skills.length > 0 ){
-            const diceResults = createElem("div",{"class":"diceresults"});
-            let plistcompetances = createElem("p",{});
-            plistcompetances.innerText = "Compétances testées :" + reponse.tested_skills.toString()+ " bonus: " + reponse.dices_bonus.toString();
-            diceResults.appendChild(plistcompetances);
+        if( reponse.playerUID == playerUid ){
+          noresponse = false;
+          let preponse = createElem("p",{"class":"preponse"});
+          preponse.innerText = reponse.player_response;
+          divplayerAnswer.appendChild(preponse);
+
+          if( reponse.tested_skills.length > 0 ){
+            let ptestedskills = createElem("p",{"class": "pcompetences"});
+            ptestedskills.innerText = reponse.tested_skills.toString();
+            divplayerAnswer.appendChild(ptestedskills);
             
-            let pdiceresult = createElem("p",{});
-            let result = "Jets de dés: " + reponse.dices_scores.toString();
-            if( reponse.dices_succes){
-              result += ' succès';
-            }else{
-              result += ' échec';
-            }
-            if(reponse.dices_critical){
-              result += ' critique!'
-            }
-            pdiceresult.innerText = result;
-            diceResults.appendChild(pdiceresult);
+            let pbonusmalus = createElem("p",{"class": "pbonus"});
+            pbonusmalus.innerText = reponse.dices_bonus.toString();
+            divplayerAnswer.appendChild(pbonusmalus);
 
-            container.appendChild(diceResults);
+            let pjet = createElem("p",{"class":"pjets" });
+            pjet.innerText = reponse.dices_scores.toString();
+            divplayerAnswer.appendChild(pjet);
+
+            let img = createElem("img", {"src": "/imgs/dé20.png", "class": "pdicelogo"});
+            divplayerAnswer.appendChild(img);
+
+            let pdiceResultConclusion = createElem("p",{"class":"pdicesconclusion"});
+            if( reponse.dices_succes == false ){
+              pdiceResultConclusion.innerText = "Echec";
+            }else{
+              pdiceResultConclusion.innerText = "Succès";
+            }
+            if( reponse.dices_critical == true){
+              pdiceResultConclusion.innerText += " critique!";
+            }
+            divplayerAnswer.appendChild(pdiceResultConclusion);
           }
+
+          let piaanalyse = createElem("p",{"class":"panalyse"});
+          piaanalyse.innerText = reponse.responseanalysis;
+          divplayerAnswer.appendChild(piaanalyse);
+    
 
         }
       });
+      container.appendChild(divplayerAnswer);
+      if(noresponse && currentTurnUid == turnsUids.at(-1)){
+        //le joueur n'a pas répondu, on va checker réguilièrement
+        checksresponsesintervals[playerUid] = setInterval(  checkPlayerResponse , 3000, boarduid,currentTurnUid, playerUid );
+      }
+
     }
     
-  } catch (err) {
-    console.error("Erreur dans fillTurnDiv :", err);
-  }
-}
-
-async function placeTurnsDivs(){
-  let urlapi = '/API/board/' + boarduid + '/turnslist';
-
-  const response = await fetch(urlapi);
-  if (!response.ok) throw new Error('Erreur de chargement');
-  const rep = await response.json();
-
-  const container = document.getElementById('gameturns');
-  
-  rep.turns.forEach((turnuid, index) => {
-    
-    if( document.getElementById("div-gameturns-t" + turnuid )){
-      //already exists
-    }else{
-      let divturn = createElem("div",{"class": "turn-entry", "id": "div-gameturns-t" + turnuid });
-      divturn.innerText = turnuid;
-      container.appendChild( divturn );
-      fillTurnDiv( turnuid );
+    if( data["closedTurn"] == false  && currentTurnUid == turnsUids.at(-1) ){
+      container.appendChild( getDivPrompt() );
     }
-    if (index === rep.turns.length - 1) {
-      var timeoutturndiv = setTimeout(fillTurnDiv,3000,turnuid);
+
+
+    //nav buttons
+    let navs = createElem("div",{"class":"navdiv"});
+    if( turnsUids.indexOf(currentTurnUid ) > 0 ){
+      //previous page
+      let buttonprevious = createElem("button", {"type":"button","class":"navturnsbutton previousbutton","title":"Voir le tour précédent"});
+      buttonprevious.innerText = "◀";
+      buttonprevious.addEventListener("click",(event)=>{
+        let currentIndex = turnsUids.indexOf( currentTurnUid );
+        displayTurn(turnsUids[ currentIndex - 1  ]);
+      });
+      navs.appendChild(buttonprevious);
+
+      //first page
+      let buttonfirst = createElem("button", {"type":"button","class":"navturnsbutton firstbutton","title":"Voir le premier tour"});
+      buttonfirst.innerText = "⏮";
+      buttonfirst.addEventListener("click",(event)=>{
+        displayTurn(turnsUids[0]);
+      });
+      navs.appendChild(buttonfirst);
     }
+
+    if( turnsUids.indexOf(currentTurnUid ) < turnsUids.length - 1 ){    
+      //next page
+      let buttonnext =  createElem("button", {"type":"button","class":"navturnsbutton nextbutton","title":"Voir le tour suivant"});
+      buttonnext.innerText = "▶";
+      buttonnext.addEventListener("click",(event)=>{
+        let currentIndex = turnsUids.indexOf( currentTurnUid );
+        displayTurn(turnsUids[ currentIndex + 1]);
+      });
+      navs.appendChild(buttonnext);
+
+      //last page
+      let buttonlast = createElem("button",{"type":"button","class":"navturnsbutton lastbutton","title":"Voir le dernier tour"});
+      buttonlast.innerText = "⏭";
+      buttonlast.addEventListener("click",(event)=>{
+        displayTurn(turnsUids.at(-1));
+      });
+      navs.appendChild(buttonlast);
+    }
+    container.appendChild(navs);
+
+  })
+  .catch(error => {
+    console.error("Erreur lors de la vérification de la version :", error);
   });
 
-
 }
+
 document.addEventListener('DOMContentLoaded', function () {
     // Accordéon
     document.querySelectorAll('.accordion-title').forEach(button => {
@@ -213,14 +361,6 @@ document.addEventListener('DOMContentLoaded', function () {
         content.style.display = expanded ? 'none' : 'block';
       });
     });
-
-    const sendPromptButton = document.getElementById("butonSendPrompt");
-    if (sendPromptButton) {
-      sendPromptButton.addEventListener("click", function () {
-        const promptText = document.getElementById("game-prompt").value.trim();
-        sendPrompt(promptText);
-      });
-    }
 
     if (boarduid !== "") {
       async function fetchPlayers() {
@@ -295,8 +435,16 @@ document.addEventListener('DOMContentLoaded', function () {
       }
       fetchPlayers(); // Chargement initial
       setInterval(fetchPlayers, 3000); // Mise à jour toutes les 3 secondes
-      setInterval(placeTurnsDivs,3000);
+
+
+     
+      //setInterval(placeTurnsDivs,3000); //to rewrite
+      setInterval( refreshTurnList, 3000 );
     }
 });
 
+let checksresponsesintervals = [];
 let playersByUid = {};
+let turnsUids = [];
+let currentTurnUid = "";
+let lastTurnUid = "";

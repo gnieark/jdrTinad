@@ -225,12 +225,17 @@
 }
 .diceimg{
   grid-area: dicelogo;
-  width: 100%;
+  max-width: 120px;
+  max-height: 120px;
+  width: auto;
+  height: auto;
+  margin: auto; 
+  display: block;
 }
 .test{
   grid-area: test;
 }
-.pcompetances::before{
+.pcompetences::before{
     font-style: normal;
     content: "Compétences testées: ";
 }
