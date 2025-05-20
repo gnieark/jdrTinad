@@ -64,6 +64,22 @@ async function sendPrompt(prompt) {
   }
 }
 
+function getDivPrompt(){
+      let divPromptNextRun = createElem("div",{"class":"promptnextrun"});
+
+      let textareaGprompt = createElem("textarea",{"id":"game-prompt","name":"prompt","rows":"4"});
+      divPromptNextRun.appendChild(textareaGprompt);
+
+      let buttonNextPrompt = createElem("button",{"id":"butonSendPrompt", "type":"button", "placeholder":"Indications à donner pour orienter l'IA au tour suivant"});
+      buttonNextPrompt.innerText = "Lancer le tour suivant."
+      buttonNextPrompt .addEventListener("click", function () {
+        const promptText = document.getElementById("game-prompt").value.trim();
+        sendPrompt(promptText);
+      });
+      divPromptNextRun.appendChild(buttonNextPrompt);
+      return divPromptNextRun;
+
+}
 function createLinkAndQR(urlPart) {
   const container = document.getElementById('linkandqrcontainer');
   const fullUrl = window.location.protocol + '//' + window.location.host + '/' + urlPart.trim();
@@ -115,7 +131,9 @@ async function refreshTurnList(){
 
     turnsUids = data["turns"];
     if(turnsUids.length == 0 ){
-      //do nothing
+      if(! document.getElementById("game-prompt") ){
+        document.getElementById("gameboard").appendChild( getDivPrompt() );
+      }
       return;
     }
     //turnsUids.at(-1)
@@ -133,14 +151,68 @@ async function refreshTurnList(){
     console.error("Erreur lors de la vérification de la version :", error);
   });
 }
+async function checkPlayerResponse(boarduid,turnUid,playerUid){
+ 
+        const response = await fetch(`/API/board/${boarduid}/turnMJ/${turnUid}/playerresponse/${playerUid}`);
+
+        if (response.status === 200) {
+            const reponse = await response.json();
+            const container = document.getElementById("divplayeranswer" + playerUid);
 
 
 
+
+          let preponse = createElem("p",{"class":"preponse"});
+          preponse.innerText = reponse.player_response;
+          container.appendChild(preponse);
+
+          if( reponse.tested_skills.length > 0 ){
+            let ptestedskills = createElem("p",{"class": "pcompetences"});
+            ptestedskills.innerText = reponse.tested_skills.toString();
+            container.appendChild(ptestedskills);
+            
+            let pbonusmalus = createElem("p",{"class": "pbonus"});
+            pbonusmalus.innerText = reponse.dices_bonus.toString();
+            container.appendChild(pbonusmalus);
+
+            let pjet = createElem("p",{"class":"pjets" });
+            pjet.innerText = reponse.dices_scores.toString();
+            container.appendChild(pjet);
+
+            let img = createElem("img", {"src": "/imgs/dé20.png", "class": "pdicelogo"});
+            container.appendChild(img);
+
+            let pdiceResultConclusion = createElem("p",{"class":"pdicesconclusion"});
+            if( reponse.dices_succes == false ){
+              pdiceResultConclusion.innerText = "Echec";
+            }else{
+              pdiceResultConclusion.innerText = "Succès";
+            }
+            if( reponse.dices_critical == true){
+              pdiceResultConclusion.innerText += " critique!";
+            }
+            container.appendChild(pdiceResultConclusion);
+          }
+          
+          let piaanalyse = createElem("p",{"class":"panalyse"});
+          piaanalyse.innerText = reponse.responseanalysis;
+          container.appendChild(piaanalyse);
+    
+          clearInterval(checksresponsesintervals[playerUid]);
+
+        } else if (response.status === 404) {
+            // Ne rien faire
+        } else {
+            console.warn(`Requête échouée avec le statut ${response.status}`);
+        }
+
+}
 async function displayTurn(turnUid){
-  /*
-  * To do
-  * la modifier pour l'adapter au MJ
-  */
+
+  for (const playerUid in checksresponsesintervals) {
+   clearInterval(checksresponsesintervals[playerUid]);
+  }
+  
 
   fetch(`/API/board/${boarduid}/turnMJ/${turnUid}`)
       .then(response => {
@@ -159,7 +231,10 @@ async function displayTurn(turnUid){
     // Narations personnalisées des joueurs
     const playersAnswers = data.personalisedAwnsers;
     for (const playerUid in playersAnswers) {
-      let divplayerAnswer = createElem("div",{"class": "playeranswer"});
+      let divplayerAnswer = createElem("div",{"class": "playeranswer", "id": "divplayeranswer" + playerUid});
+
+
+
       let title =createElem("h3",{"class":"playeranswerTitle"});
 
       if( playersByUid[ playerUid ]){
@@ -174,8 +249,11 @@ async function displayTurn(turnUid){
       pPlayerresponse.innerText = playersAnswers[playerUid];
       divplayerAnswer.appendChild(pPlayerresponse);
 
+      let noresponse = true;
       data.playersResponses.forEach(function (reponse) {
+
         if( reponse.playerUID == playerUid ){
+          noresponse = false;
           let preponse = createElem("p",{"class":"preponse"});
           preponse.innerText = reponse.player_response;
           divplayerAnswer.appendChild(preponse);
@@ -206,39 +284,27 @@ async function displayTurn(turnUid){
               pdiceResultConclusion.innerText += " critique!";
             }
             divplayerAnswer.appendChild(pdiceResultConclusion);
-
-     
-            let piaanalyse = createElem("p",{"class":"panalyse"});
-            piaanalyse.innerText = reponse.responseanalysis;
-            divplayerAnswer.appendChild(piaanalyse);
-            
-
           }
-          //tested_skills
+
+          let piaanalyse = createElem("p",{"class":"panalyse"});
+          piaanalyse.innerText = reponse.responseanalysis;
+          divplayerAnswer.appendChild(piaanalyse);
+    
 
         }
       });
-
       container.appendChild(divplayerAnswer);
+      if(noresponse && currentTurnUid == turnsUids.at(-1)){
+        //le joueur n'a pas répondu, on va checker réguilièrement
+        checksresponsesintervals[playerUid] = setInterval(  checkPlayerResponse , 3000, boarduid,currentTurnUid, playerUid );
+      }
+
     }
     
-
     if( data["closedTurn"] == false  && currentTurnUid == turnsUids.at(-1) ){
-      let divPromptNextRun = createElem("div",{"class":"promptnextrun"});
-
-      let textareaGprompt = createElem("textarea",{"id":"game-prompt","name":"prompt","rows":"4"});
-      divPromptNextRun.appendChild(textareaGprompt);
-
-      let buttonNextPrompt = createElem("button",{"id":"butonSendPrompt", "type":"button", "placeholder":"Indications à donner pour orienter l'IA au tour suivant"});
-      buttonNextPrompt.innerText = "Lancer le tour suivant."
-      buttonNextPrompt .addEventListener("click", function () {
-        const promptText = document.getElementById("game-prompt").value.trim();
-        sendPrompt(promptText);
-      });
-      divPromptNextRun.appendChild(buttonNextPrompt);
-
-      container.appendChild(divPromptNextRun);
+      container.appendChild( getDivPrompt() );
     }
+
 
     //nav buttons
     let navs = createElem("div",{"class":"navdiv"});
@@ -380,6 +446,7 @@ document.addEventListener('DOMContentLoaded', function () {
     }
 });
 
+let checksresponsesintervals = [];
 let playersByUid = {};
 let turnsUids = [];
 let currentTurnUid = "";
