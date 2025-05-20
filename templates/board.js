@@ -159,9 +159,6 @@ async function checkPlayerResponse(boarduid,turnUid,playerUid){
             const reponse = await response.json();
             const container = document.getElementById("divplayeranswer" + playerUid);
 
-
-
-
           let preponse = createElem("p",{"class":"preponse"});
           preponse.innerText = reponse.player_response;
           container.appendChild(preponse);
