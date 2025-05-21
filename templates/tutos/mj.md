@@ -78,7 +78,7 @@ Attendez que quelques fiches soient créées avant de lancer le premier tour. Il
 
 Lorsque le tour est lancé :
 
-- L'IA génère une **description globale** et un **message personnalisé** pour chaque joueur (visibles uniquement par le MJ).
+- L'IA génère une **description globale** et un **message personnalisé** pour chaque joueur (visibles uniquement par le MJ et le joueur concerné).
 
 - Demandez aux joueurs de **décrire ce qu'ils souhaitent faire**.
 
@@ -96,7 +96,7 @@ Exemple (vous pouvez le taper directement) :
 
 N'hésitez pas à jouer avec ces possibilités !
 
-### Règles dse santé
+### Règles de santé
 Le système s'inspire de Donjon de Naheulbeuk :
 - 0 PV : joueur inconscient
 - -1 à -9 PV : joueur mourant, il perd 1 PV supplémentaire par tour

@@ -15,6 +15,9 @@ class Tutos extends Route{
             return $converter->convertToHtml( file_get_contents("../templates/tutos/aventurier.md")   );
         }
 
+        if($_SERVER["REQUEST_URI"] == "/tutos/mecaniques"){
+            return $converter->convertToHtml( file_get_contents("../templates/tutos/mecaniques.md")   );
+        }
 
         return C404::get_content_html($user);
     }
