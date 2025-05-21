@@ -53,6 +53,15 @@
         "default_one":false,
         "uriPattern": "'^/godfatherlink(/.*|$)'"
     },
+    "Tutos":{
+        "name":"Tutos",
+        "default_level_needed": "guest",
+        "groups_allowed": [],
+        "display_on_nav": false,
+        "CRUDclass": "Tutos",
+        "default_one":false,
+        "uriPattern": "'^/tutos(/.*|$)'"
+    },
     "MyAccount":{
         "name":"Mon compte",
         "default_level_needed": "user",
