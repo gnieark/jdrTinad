@@ -5,7 +5,8 @@
       "league/oauth2-client": "^2.6",
       "league/oauth2-google": "^4.0",
       "psr/http-message": "^1.0",
-        "wohali/oauth2-discord-new": "^1.2"
+        "wohali/oauth2-discord-new": "^1.2",
+        "league/commonmark": "^2.7"
     },
     "autoload": {
       "psr-4": {
