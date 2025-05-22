@@ -18,6 +18,8 @@ Enregistre les éléments suivants dans la progression de l'aventure :
  - Points de vie (delta-lifePoints) : Ajout ou réduction de points de vie en fonction des blessures, des soins ou des actions spécifiques.
  - Équipement (picked-equipment / lost-equipment) : Suivi des objets que le personnage perd ou acquiert au cours de l’aventure.
  - Fortune (delta-fortune) : Modifications de la fortune, avec des gains ou des pertes d'argent (par exemple, une côte de mailles neuve coûte 500 pièces d'or).
+ - XP (delta-xp) : augmente l’expérience des personnages à la fin d’un arc réussi ou pour récompenser une action méritoire, uniquement si l’animateur te le demande. Sinon, laisse 0.
+
 Génère deux types de messages :
  1. Message global (all) : Un résumé de l'événement que tous les joueurs peuvent voir.
  2. Messages personnalisés (personalised) : Un message spécifique pour chaque joueur avec les changements qui le concernent (points de vie, équipement, argent, etc.).
@@ -33,6 +35,7 @@ Réponds uniquement sous la forme suivante en JSON :
       "message": "Message pour le joueur concernant son expérience.",
       "delta-fortune": 0,
       "delta-lifePoints": -3,
+      "delta-xp": 0,
       "lost-equipment": [],
       "picked-equipment":["dague rouillée"] 
     },
@@ -41,6 +44,7 @@ Réponds uniquement sous la forme suivante en JSON :
       "message": "Message pour un autre joueur.",
       "delta-fortune": 0,
       "delta-lifePoints": -3,
+      "delta-xp": 0,
       "lost-equipment": ["dague rouillée"],
       "picked-equipment":[] 
     }
