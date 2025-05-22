@@ -15,10 +15,64 @@ class Player
     private array $equipment;
     private string $specialFeatures;
     private string $description;
-
-    public function __construct() {
+    private int $xp = 0;
+    
+        public function __construct() {
     }
 
+    public function getXp():int{
+        return $this->xp;
+    }
+    public function setXp( int $xp ):self{
+        $this->xp = $xp;
+        return $this;
+    }
+    public function addXP (int $xpToAdd ):self{
+        $this->xp = $this->xp + $xpToAdd;
+        return $this;
+    }
+    public function getLevel(): int{
+        $xp = $this->xp;
+        // Tableau XP -> Niveau
+        $levels = [
+            1 => 0,
+            2 => 100,
+            3 => 300,
+            4 => 600,
+            5 => 1000,
+            6 => 1500,
+            7 => 2100,
+            8 => 2800,
+            9 => 3600,
+            10 => 4500,
+            11 => 5500,
+            12 => 6600,
+            13 => 7800,
+            14 => 9100,
+            15 => 10500,
+            16 => 12000,
+            17 => 13600,
+            18 => 15300,
+            19 => 17100,
+            20 => 19000,
+            21 => 21000,
+            22 => 24000,
+            23 => 29000,
+            24 => 35000,
+            25 => 45000,
+            26 => 60000,
+        ];
+
+        $level = 1;
+        foreach ($levels as $lvl => $threshold) {
+            if ($xp >= $threshold) {
+                $level = $lvl;
+            } else {
+                break;
+            }
+        }
+        return $level;
+    }
     public function getUid(): string
     {
         return $this->uid;
@@ -61,6 +115,9 @@ class Player
     }
     public function setPv(int $pv):self{
         $this->pv = $pv;
+        if( $this->pv > static::$maxPV ){
+            $this->pv = static::$maxPV;
+        }
         return $this;
     }
     public function getPv():int{
@@ -68,9 +125,11 @@ class Player
     }
     public function applyDeltaPv(int $delta):self{
         $this->pv = $this->pv + $delta;
+        if( $this->pv > static::$maxPV ){
+            $this->pv = static::$maxPV;
+        }
         return $this;
     }
-
 
     public function getMaxPv():int{
         return static::$maxPV;
@@ -232,6 +291,8 @@ class Player
             'name'              => isset($this->name) ? $this->name : "",
             'job'               => $this->getJob(),
             'origine'           => $this->getOrigine(),
+            'xp'                => $this->xp,
+            'level'             => $this->getlevel(),
             'lifePoints'        => $this->getPv(),
             'lifePointsMax'     => $this->getMaxPv(),
             'fortune'           => $this->getFortune(),

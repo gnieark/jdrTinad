@@ -152,7 +152,8 @@ class PlayTurn{
             //enregister les modifications de chaque player
             $player = $board->get_player_by_uid($r["player-uid"]);
             $player->applyDeltaPv($r["delta-lifePoints"])
-                   ->applyDeltaFortune($r["delta-fortune"]);
+                   ->applyDeltaFortune($r["delta-fortune"])
+                   ->addXP( $r["delta-xp"] );
 
             foreach($r["lost-equipment"] as $lostEquipment){
                 $player->removeEquipment($lostEquipment);
@@ -160,6 +161,7 @@ class PlayTurn{
             foreach($r["picked-equipment"] as $pickedEquipment){
                 $player->addEquipment($pickedEquipment);
             }
+     
             $player->save(  $board->get_save_real_path()."/player-" . $player->getUid()   );
 
         }

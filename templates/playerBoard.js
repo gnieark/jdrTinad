@@ -26,13 +26,17 @@ async function refresh_character_sheet(){
 
 
   let divtitle = createElem("div", {"class":"player-header"} );
-  divtitle.innerText = `${player.name} (${player.origine} ${player.job})`;
+  divtitle.innerText = `${player.name} (${player.origine} ${player.job}, Niveau ${player.level})`;
 
   let divdetails = createElem("div",{"class":"player-details", "id":"div-listplayers-details" + player.uid });
 
   let ppointsDeVie = createElem("p",{"class":"player_stats_elem stats_pv","id":"pointsdevie" + player.uid });
   ppointsDeVie.innerText = `${player.lifePoints}/${player.lifePointsMax}`;
   divdetails.appendChild(ppointsDeVie);
+
+  let pexperience =createElem("p",{"class":"player_stats_elem stats_xp", "id":"xp" + + player.uid});
+  pexperience.innerText = `${player.xp}`;
+  divdetails.appendChild(pexperience);
 
   let pfortune = createElem("p",{"class":"player_stats_elem stats_fortune","id":"pfortune" + player.uid });
   pfortune.innerText = `${player.fortune} pièces d'or`;
@@ -226,11 +230,12 @@ function submitAnwser(awnser, turnuid) {
       if( currentTurnUid == "" ){
         lastTurnUid = turnsUids.at(-1);
         displayTurn(lastTurnUid );
+        refresh_character_sheet();
 
       }else if( turnsUids.at(-1)!== lastTurnUid ){
         lastTurnUid = turnsUids.at(-1);
         displayTurn(lastTurnUid );
-
+        refresh_character_sheet();
       }
     })
     .catch(error => {

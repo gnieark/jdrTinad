@@ -132,7 +132,7 @@ async function refreshTurnList(){
     turnsUids = data["turns"];
     if(turnsUids.length == 0 ){
       if(! document.getElementById("game-prompt") ){
-        document.getElementById("gameboard").appendChild( getDivPrompt() );
+        document.getElementById("gamedialogs").appendChild( getDivPrompt() );
       }
       return;
     }
@@ -373,12 +373,13 @@ document.addEventListener('DOMContentLoaded', function () {
           
           players.forEach(player => {
             
-            playersByUid[ player.uid ] = `${player.name} (${player.origine} ${player.job})`;
+            playersByUid[ player.uid ] = `${player.name} (${player.origine} ${player.job}, Niveau ${player.level})`;
 
             if( document.getElementById("div-listplayers-" + player.uid)){
               //already exists just update pv, fortune and equipment
-              document.getElementById("pointsdevie" + player.uid).innerText = `${player.lifePoints}/${player.lifePointsMax}`;
-              document.getElementById("pfortune" + player.uid).innerText = `${player.fortune} pièces d'or`;
+              document.getElementById("pointsdevie" + player.uid).innerText = `Points de vie: ${player.lifePoints}/${player.lifePointsMax}`;
+              document.getElementById("pfortune" + player.uid).innerText = `Fortune: ${player.fortune} pièces d'or`;
+              document.getElementById( "pxp" + player.uid ).innerText = `XP: ${player.xp}`;
               let ulequipment = createElem("ul",{});
               ulequipment.innerHTML = player.equipment.map(eq => `<li>${eq}</li>`).join('');
               document.getElementById("pequipment" + player.uid ).innerHTML = "";
@@ -390,13 +391,17 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
               let divtitle = createElem("div", {"class":"player-header"} );
-              divtitle.innerText = `${player.name} (${player.origine} ${player.job})`;
+              divtitle.innerText = `${player.name} (${player.origine} ${player.job}, Niveau ${player.level})`;
               divtitle.addEventListener('click', () => {
                 document.getElementById("div-listplayers-details" + player.uid).style.display = (document.getElementById("div-listplayers-details" + player.uid).style.display === 'none') ? 'block' : 'none';
               });
 
               let divdetails = createElem("div",{"class":"player-details", "id":"div-listplayers-details" + player.uid });
               divdetails.style.display = 'none';
+
+              let pxp =createElem("p",{"class":"player_stats_elem stats_xp","id":"pxp" + player.uid });
+              pxp.innerText = `XP: ${player.xp}`;
+              divdetails.appendChild(pxp);
 
               let ppointsDeVie = createElem("p",{"class":"player_stats_elem stats_pv","id":"pointsdevie" + player.uid });
               ppointsDeVie.innerText = `${player.lifePoints}/${player.lifePointsMax}`;

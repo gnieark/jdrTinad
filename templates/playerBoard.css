@@ -163,6 +163,7 @@
 .stats_equipment::before{ content: "Equipement: "; font-weight: bold; }
 .stats_traits::before{ content: "Traits: "; font-weight: bold; }
 .stats_description::before{ content: "Description: "; font-weight: bold; }
+.stats_xp::before{ content: "Points d'expérience: "; font-weight: bold; }
 
 
 #gamedialogs{
