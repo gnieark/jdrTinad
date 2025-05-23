@@ -177,70 +177,22 @@ class BoardPlayer extends Route{
             );
 
 
+            $rep = PlayTurn::sendMessageToIa($promptIa->applyTplFile("../templates/prompts/promptIA-creerpersonnage.txt") );
 
-
-
-            $apiKeyF = json_decode(file_get_contents("../config/mistralapikey.json"),true);
-            $apiKey = $apiKeyF["key"];
-            $url = 'https://api.mistral.ai/v1/chat/completions';
-            
-            $data = array(
-                'model' => 'mistral-large-latest',
-                'messages' => array(array(
-                        'role' => 'user',
-                        'content' => $promptIa->applyTplFile("../templates/prompts/promptIA-creerpersonnage.txt")
-                )),
-                'response_format' => array("type" => "json_object")
-            )
-            ;
-            
-            $options = [
-                CURLOPT_URL => $url,
-                CURLOPT_RETURNTRANSFER => true,
-                CURLOPT_POST => true,
-                CURLOPT_HTTPHEADER => [
-                    'Content-Type: application/json',
-                    'Accept: application/json',
-                    'Authorization: Bearer ' . $apiKey
-                ],
-                CURLOPT_POSTFIELDS => json_encode($data)
-            ];
-            
-            $ch = curl_init();
-            curl_setopt_array($ch, $options);
-            $response = curl_exec($ch);
-    
-            if (curl_errno($ch)) {
-    
-                echo 'Erreur cURL : ' . curl_error($ch);
-    
-            } else {
-    
-                $responseArr = json_decode($response,true);
-
-                // To do gérer le cas d'erreur
-                $onlyTheResponse = $responseArr["choices"][0]["message"]["content"];
-
-                $rep = json_decode($onlyTheResponse,true);
-
-
-                $player ->setUid( SELF::get_uid_from_cookie() )
-                        ->setName( $rep["nom"] )
-                        ->setCourage( $rep["courage"] )
-                        ->setIntelligence( $rep["intelligence"] )
-                        ->setCharisma( $rep["charisme"] )
-                        ->setDexterity( $rep["adresse"] )
-                        ->setStrength( $rep["force"] )
-                        ->setEquipment( $rep["equipement"] )
-                        ->setDescription( $rep["description"])
-                        ->setPv( $player->getMaxPv() )
-                        ->setFortune( random_int(0, 120)  );
+            $player ->setUid( SELF::get_uid_from_cookie() )
+                ->setName( $rep["nom"] )
+                ->setCourage( $rep["courage"] )
+                ->setIntelligence( $rep["intelligence"] )
+                ->setCharisma( $rep["charisme"] )
+                ->setDexterity( $rep["adresse"] )
+                ->setStrength( $rep["force"] )
+                ->setEquipment( $rep["equipement"] )
+                ->setDescription( $rep["description"])
+                ->setPv( $player->getMaxPv() )
+                ->setFortune( random_int(0, 120)  );
                         
+            $player->save( $board->get_save_real_path()."/player-" . self::get_uid_from_cookie() );   
 
-                $player->save( $board->get_save_real_path()."/player-" . self::get_uid_from_cookie() );     
-            }
-            
-            curl_close($ch);
             header('Location: /' . $board->get_urlpart() );
             die();
             
