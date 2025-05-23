@@ -121,19 +121,19 @@ class PlayTurn{
             ));
         }else{
             $tplBlock->addVars(
-                array("summary"    => "La partie vient de commencer."
+                array("summary"    => "Début partie."
             ));
         }
 
-
-        $lastPlayTurn = end($playsTurns);
-        $lastPlayTurn->loadPlayersResponses( $board->get_urlpart() );
-        $tplBlock->addVars(
-            array(
-                "lastturn" => json_encode($lastPlayTurn->_toArrayToPlay(),true)
-            )
-        );
-
+        if(!empty($playsTurns)){
+            $lastPlayTurn = end($playsTurns);
+            $lastPlayTurn->loadPlayersResponses( $board->get_urlpart() );
+            $tplBlock->addVars(
+                array(
+                    "lastturn" => json_encode($lastPlayTurn->__toArrayToPlay(),true)
+                )
+            );
+        }
         if(!empty($this->mjPrompt)){
             $tplcustomInstructs = new TplBlock("customInstructs");
             $tplcustomInstructs->addVars(
@@ -149,7 +149,7 @@ class PlayTurn{
 
         $rep = self::sendMessageToIa($promptToSend, $board);
 
-        
+
         if(count($playsTurns) > 2 ){
             $board  ->set_gameSummary( $rep["storyState"] )
                     ->save();
