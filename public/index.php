@@ -87,7 +87,8 @@ $tpl->addVars(
         "customCSS" => $currentMenu->get_custom_css($currentUser),
         "content"   => $currentMenu->get_content_html($currentUser),
         "customElemsOnHeader"   => $currentMenu->get_custom_elems_on_header($currentUser),
-        "after_body_tag" => $currentMenu->get_custom_after_body_tag($currentUser)
+        "after_body_tag" => $currentMenu->get_custom_after_body_tag($currentUser),
+        "trackercode" => file_exists("../config/tracker.txt")? file_get_contents("../config/tracker.txt"): ""
     )
 );
 

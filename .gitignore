@@ -1,5 +1,6 @@
 /config/mistralapikey.txt
 /config/mistralapikey.json
+/config/tracker.txt
 /config/oauth.json
 /db
 /test.db
