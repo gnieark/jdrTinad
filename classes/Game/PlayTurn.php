@@ -100,6 +100,7 @@ class PlayTurn{
 
         $players = $board->get_players();
 
+
         //players
         $playersArr = array();
         foreach ($players as $player){
@@ -113,15 +114,23 @@ class PlayTurn{
         );
 
 
-        //history
-        $historyArr = array();
-        foreach($playsTurns as $playTurn){
-            $playTurn->loadPlayersResponses( $board->get_urlpart() );
-            $historyArr[] = $playTurn->__toArrayToPlay();
+        if(count($playsTurns) > 2 ){
+            //summary
+            $tplBlock->addVars(
+                array("summary"    => $board->get_gameSummary() 
+            ));
+        }else{
+            $tplBlock->addVars(
+                array("summary"    => "La partie vient de commencer."
+            ));
         }
+
+
+        $lastPlayTurn = end($playsTurns);
+        $lastPlayTurn->loadPlayersResponses( $board->get_urlpart() );
         $tplBlock->addVars(
             array(
-                "history" => json_encode($historyArr,true)
+                "lastturn" => json_encode($lastPlayTurn->_toArrayToPlay(),true)
             )
         );
 
@@ -135,16 +144,16 @@ class PlayTurn{
             $tplBlock->addSubBlock($tplcustomInstructs);
         }
 
-        
-
         $promptToSend =  $tplBlock->applyTplFile($tplFile );
-
-        //debog
-        //file_put_contents("out.txt",$promptToSend); //die();
-        
 
 
         $rep = self::sendMessageToIa($promptToSend, $board);
+
+        
+        if(count($playsTurns) > 2 ){
+            $board  ->set_gameSummary( $rep["storyState"] )
+                    ->save();
+        }
         $this->allAwnser = $rep["all"];
         foreach($rep["personalised"] as $r){
             $this->personalisedAwnsers[ $r["player-uid"] ] = $r["message"];
