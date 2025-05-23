@@ -144,7 +144,7 @@ class PlayTurn{
         
 
 
-        $rep = self::sendMessageToIa($promptToSend );
+        $rep = self::sendMessageToIa($promptToSend, $board);
         $this->allAwnser = $rep["all"];
         foreach($rep["personalised"] as $r){
             $this->personalisedAwnsers[ $r["player-uid"] ] = $r["message"];
@@ -169,7 +169,11 @@ class PlayTurn{
 
     }
 
-    static public function sendMessageToIa($message){
+    static public function sendMessageToIa(string $message, Board $board = null ){
+        $traceDir = null;
+        if( !is_null( $board ) && is_dir( $board->get_save_real_path(). "/apitraces") ){
+            $traceDir = rtrim($board->get_save_real_path(), '/') . "/apitraces";
+        }
 
         $apiKeyF = json_decode(file_get_contents("../config/mistralapikey.json"),true);
         $apiKey = $apiKeyF["key"];
@@ -200,6 +204,21 @@ class PlayTurn{
         $ch = curl_init();
         curl_setopt_array($ch, $options);
         $response = curl_exec($ch);
+
+        //debog mode only if path exists
+        $trace = [
+            'request' => $data,
+            'raw_response' => $response
+        ];
+
+        if ($traceDir) {
+            $now = microtime(true);
+            $dt = DateTime::createFromFormat('U.u', sprintf('%.6f', $now));
+            $timestamp = $dt->format("Ymd-His-u"); 
+            $uuid = bin2hex(random_bytes(4));
+            $filename = "$traceDir/$timestamp-$uuid.json";
+            file_put_contents($filename, json_encode($trace, JSON_PRETTY_PRINT));
+        }
 
         if (curl_errno($ch)) {
 

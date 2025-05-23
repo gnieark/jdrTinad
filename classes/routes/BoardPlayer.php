@@ -177,7 +177,7 @@ class BoardPlayer extends Route{
             );
 
 
-            $rep = PlayTurn::sendMessageToIa($promptIa->applyTplFile("../templates/prompts/promptIA-creerpersonnage.txt") );
+            $rep = PlayTurn::sendMessageToIa($promptIa->applyTplFile("../templates/prompts/promptIA-creerpersonnage.txt"), $board );
 
             $player ->setUid( SELF::get_uid_from_cookie() )
                 ->setName( $rep["nom"] )

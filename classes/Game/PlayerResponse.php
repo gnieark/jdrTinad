@@ -103,7 +103,7 @@ class  PlayerResponse{
 
 
         $promptIa = $tpl->applyTplFile("../templates/prompts/promptIA-Analyseawnser.txt");
-        $repIA = PlayTurn::sendMessageToIa( $promptIa );
+        $repIA = PlayTurn::sendMessageToIa( $promptIa, $board );
 
         $player = $board->get_player_by_uid( $this->get_playerUID() );
 
