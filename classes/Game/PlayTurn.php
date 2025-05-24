@@ -9,7 +9,7 @@ class PlayTurn{
     private string $turnUID;
     
 
-    public function __toArrayToPlay( $filterawnsersbyuid = null ): array {
+    public function __toArrayToPlay( $filterawnsersbyuid = null, bool $withResponses = true ): array {
         
         $playerResponsesArr = array();
         if(is_null($filterawnsersbyuid)){
@@ -33,14 +33,20 @@ class PlayTurn{
         }else{
             $personalisedAwnsers = isset($this->personalisedAwnsers[$filterawnsersbyuid])?$this->personalisedAwnsers[$filterawnsersbyuid]:"";
         }
-        
-        $arr = [
-            'allAwnser' => $this->allAwnser ?? null,
-            'personalisedAwnsers' => $personalisedAwnsers,
-            'playersResponses'  =>  $playerResponsesArr,
-            'closedTurn' => $this->is_closed($filterawnsersbyuid),
-            'turnuid'   => $this->turnUID
-        ];
+        if($withResponses){
+            $arr = [
+                'allAwnser' => $this->allAwnser ?? null,
+                'personalisedAwnsers' => $personalisedAwnsers,
+                'playersResponses'  =>  $playerResponsesArr,
+                'closedTurn' => $this->is_closed($filterawnsersbyuid),
+                'turnuid'   => $this->turnUID
+            ];
+        }else{
+            $arr = [
+                'allAwnser' => $this->allAwnser ?? null,
+                'personalisedAwnsers' => $personalisedAwnsers
+            ];
+        }
 
         return $arr;
     }
@@ -95,7 +101,7 @@ class PlayTurn{
     public function playPrompt( Board $board ): PlayTurn{
 
         $playsTurns = $board->get_playTurns();
-        $tplFile = empty($playsTurns)? "../templates/prompts/promptIA-firstTurn.txt" : "../templates/prompts/promptIA-newTurn.txt";
+        $tplFile = "../templates/prompts/promptIA-newTurn.txt";
         $tplBlock = new TplBlock();
 
         $players = $board->get_players();
@@ -113,18 +119,10 @@ class PlayTurn{
             )
         );
 
-
-        if(count($playsTurns) > 2 ){
-            //summary
-            $tplBlock->addVars(
-                array("summary"    => $board->get_gameSummary() 
-            ));
-        }else{
-            $tplBlock->addVars(
-                array("summary"    => "Début partie."
-            ));
-        }
-
+        $tplBlock->addVars(
+            array("summary"    => $board->get_gameSummary() 
+        ));
+        
         if(!empty($playsTurns)){
             $lastPlayTurn = end($playsTurns);
             $lastPlayTurn->loadPlayersResponses( $board->get_urlpart() );
@@ -133,7 +131,16 @@ class PlayTurn{
                     "lastturn" => json_encode($lastPlayTurn->__toArrayToPlay(),true)
                 )
             );
+        }else{
+            $tplBlock->addVars(
+                array(
+                    "lastturn" => '[]'
+                )
+            );
         }
+
+
+
         if(!empty($this->mjPrompt)){
             $tplcustomInstructs = new TplBlock("customInstructs");
             $tplcustomInstructs->addVars(
@@ -150,10 +157,10 @@ class PlayTurn{
         $rep = self::sendMessageToIa($promptToSend, $board);
 
 
-        if(count($playsTurns) > 2 ){
-            $board  ->set_gameSummary( $rep["storyState"] )
-                    ->save();
-        }
+       
+        $board->set_gameSummary( $rep["storyState"] )
+                ->save();
+        
         $this->allAwnser = $rep["all"];
         foreach($rep["personalised"] as $r){
             $this->personalisedAwnsers[ $r["player-uid"] ] = $r["message"];

@@ -3,10 +3,14 @@ Les joueurs participant à la partie sont :
 
 {{players}}
 
-Voici l’historique des échanges jusqu’à présent, sous forme de JSON :
+Voici le résumé des échanges et évènement jusqu’à présent:
 
+```txt
+{{summary}}
+```
+Au dernier tour de jeu contient le MJ a donné les indications suivantes aux joueurs:
 ```json
-{{historyJson}}
+{{lastturn}}
 ```
 
 Le joueur identifié par {{playeruid}} a soumis la réponse suivante à la dernière étape :
@@ -41,7 +45,7 @@ Réponds uniquement sous la forme d’un JSON strictement conforme à cet exempl
 ```json
 {
     "reponse_coherente": true, 
-    "competances_a_tester": ["adresse","force"],
+    "competences_a_tester": ["adresse","force"],
     "bonus": -4
     "categories": ["combat", "heroique"]
 }

@@ -5,7 +5,7 @@ class Board{
     private array $allowedCreatures = array();
     private string $urlpart;
     private array $playTurns = array();
-    private string $gameSummary = "";
+    private string $gameSummary = "Début de partie.";
     private string $saveUid;
 
     private int $step;
