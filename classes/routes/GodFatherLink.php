@@ -5,6 +5,7 @@ use Wohali\OAuth2\Client\Provider\Discord;
 class GodFatherLink extends Route{
 
     static public function get_content_html(User $user):string{
+        header('X-Robots-Tag: noindex, nofollow', true);
         if (preg_match ( '~^/godfatherlink/callback/([^/?]+)~', $_SERVER["REQUEST_URI"], $matches)){
 
             $providername = $matches[1];

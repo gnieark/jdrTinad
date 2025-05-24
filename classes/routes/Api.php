@@ -6,7 +6,7 @@ class Api extends Route{
 
     static public function send_content(User $user):string{
 
-
+        header('X-Robots-Tag: noindex, nofollow', true);
         header('Content-Type: application/json; charset=utf-8');
 
         if(preg_match ( "'^/API/board/([\w]+)/players$'" , $_SERVER["REQUEST_URI"], $matches)){

@@ -33,6 +33,44 @@ class Board{
         $this->gameSummary = $summary;
         return $this;
     }
+
+    public function regen_gameSummary():self{
+        error_log("hey");
+        $tplPrompt = new TplBlock();
+
+        $players = $this->get_players();
+        $playersArr = array();
+        foreach($players as $player){
+            $playersArr[] = $player->__toArray();
+        }
+        $tplPrompt->addVars(
+            array("players" => json_encode($playersArr,true))
+        );
+
+
+        //turns
+        $turnsArr = array();
+        $turns = $this-> get_playTurns();
+        foreach($turns as $turn){
+            $turn->loadPlayersResponses( $this->get_urlpart() );
+            $turnsArr[] = $turn;
+        }
+
+        $tplPrompt->addVars(
+            array("historyJSON" => json_encode($turnsArr,true))
+        );
+
+
+        $promptToSend = $tplPrompt->applyTplFile( "../templates/prompts/promptIA-RegenSummary.txt");
+
+        //make the resquest to IA
+        $rep = self::sendMessageToIa($promptToSend, $this);
+
+        $this->set_gameSummary($rep);
+        return $this->save();
+
+    }
+
     public function get_saveUid():string{
         return $this->saveUid;
     }

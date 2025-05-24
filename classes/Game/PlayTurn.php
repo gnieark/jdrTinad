@@ -139,8 +139,6 @@ class PlayTurn{
             );
         }
 
-
-
         if(!empty($this->mjPrompt)){
             $tplcustomInstructs = new TplBlock("customInstructs");
             $tplcustomInstructs->addVars(
@@ -153,10 +151,8 @@ class PlayTurn{
 
         $promptToSend =  $tplBlock->applyTplFile($tplFile );
 
-
+        //make the resquest to IA
         $rep = self::sendMessageToIa($promptToSend, $board);
-
-
        
         $board->set_gameSummary( $rep["storyState"] )
                 ->save();
@@ -181,6 +177,10 @@ class PlayTurn{
             $player->save(  $board->get_save_real_path()."/player-" . $player->getUid()   );
 
         }
+
+        //if(( count($playsTurns) % 5 === 0 ) && !empty($playsTurns)) {
+        //    $board -> regen_gameSummary();
+        //}
         return $this;
 
     }
