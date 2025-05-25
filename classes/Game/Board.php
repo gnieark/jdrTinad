@@ -5,7 +5,7 @@ class Board{
     private array $allowedCreatures = array();
     private string $urlpart;
     private array $playTurns = array();
-
+    private string $gameSummary = "Début de partie.";
     private string $saveUid;
 
     private int $step;
@@ -26,10 +26,52 @@ class Board{
             }
         }
     }
+    public function get_gameSummary(): string{
+        return $this->gameSummary;
+    }
+    public function set_gameSummary(string $summary):self{
+        $this->gameSummary = $summary;
+        return $this;
+    }
+
+    public function regen_gameSummary():self{
+
+        $tplPrompt = new TplBlock();
+
+        $players = $this->get_players();
+        $playersArr = array();
+        foreach($players as $player){
+            $playersArr[] = $player->__toArray();
+        }
+        $tplPrompt->addVars(
+            array("players" => json_encode($playersArr,true))
+        );
+
+
+        //turns
+        $turnsArr = array();
+        $turns = $this-> get_playTurns();
+        foreach($turns as $turn){
+            $turn->loadPlayersResponses( $this->get_urlpart() );
+            $turnsArr[] = $turn->__toArrayToPlay();
+        }
+
+        $tplPrompt->addVars(
+            array("historyJSON" => json_encode($turnsArr,true))
+        );
+        $promptToSend = $tplPrompt->applyTplFile( "../templates/prompts/promptIA-RegenSummary.txt");
+
+        //make the resquest to IA
+        $rep = PlayTurn::sendMessageToIa($promptToSend, $this);
+        $this->set_gameSummary($rep["storyState"]);
+        return $this->save();
+
+    }
 
     public function get_saveUid():string{
         return $this->saveUid;
     }
+    
     public function add_playTurn ( PlayTurn $playTurn): Board{
         $this->playTurns[] = $playTurn;
         return $this;
@@ -39,6 +81,10 @@ class Board{
         return $this->playTurns;
     }
 
+    public function get_lastPlayTurn():PlayTurn{
+        return end($this->playTurns);
+    }
+    
     public function get_PlayTurnByUid(string $turnUid):PlayTurn{
         foreach($this->playTurns as $playTurn){
             if($playTurn->get_turnUID() ==  $turnUid ){

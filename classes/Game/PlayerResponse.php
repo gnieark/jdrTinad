@@ -70,30 +70,12 @@ class  PlayerResponse{
             $playersArr[] = $player->__toArray();
         }
 
-        $historyArr = array();
-        foreach( $board->get_playTurns() as $playTurn) {
-            $personalizedMessages = array();
-           
-            foreach($playTurn->get_personalisedAwnsers() as $playerUid => $message ){
-                $personalizedMessages[] = array(
-                    "player_uid"    => $playerUid,
-                    "message"       => $message
-                );
-            }
-            $playerResponsesArr = array();  //to do
-           
-
-            $historyArr[] = array(
-                "MJ-GlobalMessage"  => $playTurn->get_allAwnser(),
-                "MJ-PersonnalizedMessages"  => $personalizedMessages ,
-                "PlayersResponses"    => array() //to do
-            );
-        }
-
+        $lastTurn = $board->get_lastPlayTurn();
         $tpl->addVars(
             array(
                 'players'       => json_encode( $playersArr, true ),
-                'historyJson'   => json_encode( $historyArr, true ),
+                'summary'       => $board->get_gameSummary(),
+                'lastturn'      => json_encode( $lastTurn->__toArrayToPlay(null,false), true),
                 'playerResponse' => $this->get_playerresponse(),
                 'playeruid'     => $this->get_playerUID()
 
@@ -109,12 +91,12 @@ class  PlayerResponse{
 
         //jet de dé
 
-        if( !empty( $repIA["competances_a_tester"] ) ){
+        if( !empty( $repIA["competences_a_tester"] ) ){
             //have to test dices
             //$this->diceBonus = $repIA["bonus"];
             $this->diceRollSuccess = true;
             $this->diceResultCritical = false;
-            foreach( $repIA["competances_a_tester"] as $competence){
+            foreach( $repIA["competences_a_tester"] as $competence){
                 //jet de dé
                 $diceScore = random_int(0, 20);
                 $this->diceScores[] = $diceScore;
