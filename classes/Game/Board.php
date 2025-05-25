@@ -35,7 +35,7 @@ class Board{
     }
 
     public function regen_gameSummary():self{
-        error_log("hey");
+
         $tplPrompt = new TplBlock();
 
         $players = $this->get_players();
@@ -53,20 +53,17 @@ class Board{
         $turns = $this-> get_playTurns();
         foreach($turns as $turn){
             $turn->loadPlayersResponses( $this->get_urlpart() );
-            $turnsArr[] = $turn;
+            $turnsArr[] = $turn->__toArrayToPlay();
         }
 
         $tplPrompt->addVars(
             array("historyJSON" => json_encode($turnsArr,true))
         );
-
-
         $promptToSend = $tplPrompt->applyTplFile( "../templates/prompts/promptIA-RegenSummary.txt");
 
         //make the resquest to IA
-        $rep = self::sendMessageToIa($promptToSend, $this);
-
-        $this->set_gameSummary($rep);
+        $rep = PlayTurn::sendMessageToIa($promptToSend, $this);
+        $this->set_gameSummary($rep["storyState"]);
         return $this->save();
 
     }

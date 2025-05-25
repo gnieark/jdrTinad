@@ -178,9 +178,6 @@ class PlayTurn{
 
         }
 
-        //if(( count($playsTurns) % 5 === 0 ) && !empty($playsTurns)) {
-        //    $board -> regen_gameSummary();
-        //}
         return $this;
 
     }

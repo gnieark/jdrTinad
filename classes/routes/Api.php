@@ -167,6 +167,25 @@ class Api extends Route{
             echo '{}'; die();
 
 
+        }elseif(preg_match ( "'^/API/board/([\w]+)/regengameSummary$'" , $_SERVER["REQUEST_URI"], $matches)){
+
+            if( !$user->is_in_group("mj") ){
+                return C403::send_content_json();
+            }
+    
+
+            $boardUid = $matches[1];
+            if(!Board::boardFileExists($boardUid)){
+                 C404::send_content_json();
+            }
+            if(!$user->does_own_board($boardUid)){
+                return C403::send_content_json();
+            }
+
+            $board = Board::loadBoard($boardUid);
+            $board->regen_gameSummary();
+            echo '{}'; die();
+
         }elseif( preg_match ( "'^/API/board/([\w]+)/turn/([\w]+)$'" , $_SERVER["REQUEST_URI"], $matches)   ){
 
             //Un joueur apporte une réponse

@@ -61,6 +61,48 @@ async function sendPrompt(prompt) {
   } finally {
     // Masquer l'overlay de chargement
     document.getElementById('loading-overlay').style.display = 'none';
+
+    if (turnsUids.length !== 0 && turnsUids.length % 5 === 0) {
+      //every 5 turns
+      regengameSummary();
+    }
+
+  }
+}
+
+async function regengameSummary() {
+  let url = "/API/board/" + boarduid + "/regengameSummary";
+  const button = document.getElementById("butonSendPrompt");
+
+  if (button) {
+    button.disabled = true;
+    button.textContent = "Patientez quelques secondes...";
+  }
+
+  try {
+    const response = await fetch(url, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json"
+      }
+    });
+
+    if (!response.ok) {
+      throw new Error("Erreur HTTP : " + response.status);
+    }
+
+    const data = await response.json();
+    return data;
+
+  } catch (error) {
+    console.error("Erreur lors de la requête POST :", error);
+    return null;
+
+  } finally {
+    if (button) {
+      button.disabled = false;
+      button.textContent = "Lancer le tour suivant";
+    }
   }
 }
 
