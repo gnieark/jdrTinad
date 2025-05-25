@@ -53,6 +53,24 @@
         "default_one":false,
         "uriPattern": "'^/godfatherlink(/.*|$)'"
     },
+    "About":{
+        "name":"A propos",
+        "default_level_needed": "guest",
+        "groups_allowed": [],
+        "display_on_nav": false,
+        "CRUDclass": "About",
+        "default_one":false,
+        "uriPattern": "'^/about$'"
+    },
+    "Cookies":{
+        "name":"Cookies",
+        "default_level_needed": "guest",
+        "groups_allowed": [],
+        "display_on_nav": false,
+        "CRUDclass": "Cookies",
+        "default_one":false,
+        "uriPattern": "'^/cookies$'"
+    },
     "Tutos":{
         "name":"Tutos",
         "default_level_needed": "guest",
