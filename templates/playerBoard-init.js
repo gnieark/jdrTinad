@@ -73,6 +73,7 @@ document.addEventListener('DOMContentLoaded', function () {
 
   raceSelect.addEventListener('change', function () {
     const selectedRace = raceSelect.value;
+    magicSpecialtyContainer.style.display = 'none';
     const availableJobs = jobsavailabled[selectedRace] || [];
 
     // Vider les anciennes options
@@ -124,6 +125,54 @@ document.addEventListener('DOMContentLoaded', function () {
 
   // Initialement désactivé
   jobSelect.disabled = true;
+
+  const magicSpecialtyContainer = document.getElementById('magic-specialty-container');
+  const magicSpecialtySelect = document.getElementById('magic-specialty');
   
+  const commonMagic = [
+    "magie de l'Air",
+    "magie Eau et Glace",
+    "magie thermodynamique"
+  ];
+  
+  const mageMagic = [
+    "mage de la Terre",
+    "Mage de Combat",
+    "Mage du Feu",
+    "Mage Invocateur",
+    "Nécromancien",
+    "mage Métamorphe"
+  ];
+  
+  const sorcererMagic = [
+    "sorcier noir de Tzinntch"
+  ];
+  
+  jobSelect.addEventListener('change', function () {
+    const selectedJob = jobSelect.value;
+    magicSpecialtySelect.innerHTML = '<option value="">-- Choisir --</option>';
+  
+    if (selectedJob === 'mage') {
+      const allMageOptions = commonMagic.concat(mageMagic);
+      allMageOptions.forEach(optionText => {
+        const option = document.createElement('option');
+        option.value = optionText;
+        option.textContent = optionText;
+        magicSpecialtySelect.appendChild(option);
+      });
+      magicSpecialtyContainer.style.display = 'block';
+    } else if (selectedJob === 'sorcier') {
+      const allSorcererOptions = commonMagic.concat(sorcererMagic);
+      allSorcererOptions.forEach(optionText => {
+        const option = document.createElement('option');
+        option.value = optionText;
+        option.textContent = optionText;
+        magicSpecialtySelect.appendChild(option);
+      });
+      magicSpecialtyContainer.style.display = 'block';
+    } else {
+      magicSpecialtyContainer.style.display = 'none';
+    }
+  });
 
 });

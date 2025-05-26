@@ -16,8 +16,8 @@ class Player
     private string $specialFeatures;
     private string $description;
     private int $xp = 0;
-    
-        public function __construct() {
+
+    public function __construct() {
     }
 
     public function getXp():int{

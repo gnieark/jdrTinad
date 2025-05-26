@@ -249,3 +249,7 @@
     font-style: normal;
     content: "jet de dé: ";
 }
+
+#magic-specialty-container {
+  margin-top: 1.5em;
+}
