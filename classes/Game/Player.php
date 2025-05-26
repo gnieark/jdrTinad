@@ -1,5 +1,5 @@
 <?php
-
+use League\CommonMark\CommonMarkConverter;
 class Player
 {
     private string $uid;
@@ -305,5 +305,29 @@ class Player
             'specialFeatures'   => isset($this->specialFeatures) ? $this->specialFeatures : "",
             'description'       => isset($this->description) ? $this->description : "",
         ];
+    }
+    public static function get_all_origine_desc(bool $convert_as_html = false):array{
+        $descriptions = [];
+        
+        foreach (glob(__DIR__ . "/Player_*.php") as $filename) {
+            require_once $filename;      
+            $basename = basename($filename, ".php");
+            if (class_exists($basename) && is_subclass_of($basename, Player::class)) {
+                $origine = $basename::getOrigineStatic();
+            
+                if($convert_as_html){
+                    $converter = new CommonMarkConverter();
+                    $descriptions[$origine] = (string)$converter->convertToHtml( $basename::get_origine_desc() );
+                }else{
+                    $descriptions[$origine] = $basename::get_origine_desc();
+                }
+               
+            }
+        }
+       
+        return $descriptions;
+    }
+    public static function getOrigineStatic(): string {
+        return static::$origine_title ?? 'inconnue';
     }
 }
