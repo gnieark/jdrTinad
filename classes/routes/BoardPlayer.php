@@ -14,7 +14,10 @@ class BoardPlayer extends Route{
             $tpl->addVars(array("boarduid" => $urlpart ));
             return $tpl->applyTplFile ("../templates/playerBoard.js");
         }else{
-            return file_get_contents ("../templates/playerBoard-init.js");
+
+            $tpl = new TplBlock();
+            $tpl->addVars(array("origineDescriptions"   => json_encode( Player::get_all_origine_desc(true),true) ));
+            return $tpl->applyTplFile("../templates/playerBoard-init.js");
 
         }
 

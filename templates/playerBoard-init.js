@@ -66,6 +66,8 @@ document.addEventListener('DOMContentLoaded', function () {
     ]
   };
 
+  const origineDescriptions = {{origineDescriptions}};
+  
   const raceSelect = document.getElementById('race');
   const jobSelect = document.getElementById('job');
 
@@ -86,6 +88,38 @@ document.addEventListener('DOMContentLoaded', function () {
 
     // Désactiver le select si aucune race choisie
     jobSelect.disabled = availableJobs.length === 0;
+
+
+
+    const descriptionZone = document.getElementById('racedescription');
+    descriptionZone.innerHTML = '';
+    
+    if (origineDescriptions[selectedRace]) {
+      const fullHTML = origineDescriptions[selectedRace];
+    
+      // On crée un élément temporaire pour extraire le premier paragraphe
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = fullHTML;
+      const firstParagraph = tempDiv.querySelector('p');
+      const preview = firstParagraph ? firstParagraph.outerHTML : fullHTML.substring(0, 300) + '...';
+    
+      // Lien pour afficher la suite
+      const moreLink = document.createElement('a');
+      moreLink.href = '#';
+      moreLink.textContent = ' [Voir plus]';
+      moreLink.style.cursor = 'pointer';
+      moreLink.addEventListener('click', function (e) {
+        e.preventDefault();
+        descriptionZone.innerHTML = fullHTML;
+      });
+    
+      // Affichage de l'extrait avec lien
+      const container = document.createElement('div');
+      container.innerHTML = preview;
+      container.appendChild(moreLink);
+      descriptionZone.appendChild(container);
+    }
+
   });
 
   // Initialement désactivé
