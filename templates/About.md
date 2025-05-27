@@ -32,4 +32,11 @@ Si vous vous sentez lésé·e, concerné·e, ou simplement curieux·se au sujet 
 
 ---
 
+## Remerciements
+
+Un grand merci à **PenOfChaos** (John Lang) et à tous les contributeurs du **Jeu de Rôle Donjon de Naheulbeuk** pour avoir créé et partagé cet univers déjanté, riche et inspirant.  
+Ce site n’existerait pas sans leur travail, leur humour, et leur générosité.
+
+---
+
 Bon jeu et bon jet de dé(s) !
