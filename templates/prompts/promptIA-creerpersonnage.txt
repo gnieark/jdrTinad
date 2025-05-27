@@ -13,6 +13,13 @@ Voici le descriptif de l'origine {{playerOrigine}} donnée par l'animateur du je
 ```markdown
 {{origineDesc}}
 ```
+<!-- BEGIN magical -->
+Le personnage exerce la magie, il a choisi pour spécialité: {{magical.speciality}}.
+Voici la description de cette spécialité:
+```text
+  {{magical.specialitydescription}}
+```
+<!-- END magical -->
 
 Ta tâche :
 Génère une fiche de personnage complète avec :

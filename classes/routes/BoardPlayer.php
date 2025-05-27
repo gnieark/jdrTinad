@@ -166,6 +166,13 @@ class BoardPlayer extends Route{
 
 
             $player->setJob($_POST["job"]);
+            if( $_POST["job"] == "mage" || $_POST["job"] == "sorcier" ){
+                $player->setMagicSpeciality( $_POST["magic_specialty"] );
+            }
+
+
+
+
 
             $promptIa = new TplBlock();
             $promptIa->addVars(

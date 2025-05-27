@@ -147,7 +147,7 @@ class Player
         return $this;
     }
     public function setEaMax(int $eaMax): self { $this->eaMax = $eaMax; return $this; }
-
+    public function getEaMax():int{return $this->eaMax; }
     // === Autres méthodes ===
     public function getLevel(): int {
         $xp = $this->xp;
@@ -200,7 +200,11 @@ class Player
             'description' => $this->description ?? "",
         ];
 
-
+        if(($this->job == "mage") || ($this->job == "sorcer")){
+            $arr["specialiteMagie"]     = $this->getMagicSpeciality();
+            $arr["energieAstrale"]      = $this->getEa();
+            $arr["energieAstraleMax"]   = $this->getEaMax();
+        }
         return $arr;
     }
 
