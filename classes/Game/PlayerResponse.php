@@ -1,206 +1,147 @@
 <?php
-class  PlayerResponse{
+class PlayerResponse {
     private string $playerUID;
     private string $playTurnUID;
     private string $playerresponse;
     private bool $needDiceRoll;
     private array $testedSkills = array();
-    private array $diceBonus = array(); //should be nagative for a bonus 
+    private array $diceBonus = array(); // should be negative for a bonus
     private bool $diceRollSuccess;
     private bool $diceResultCritical;
     private array $diceScores = array();
     private array $playerResponsesCategories = array();
     private string $responseanalysis = "";
 
-    public function _toArrayToPlay(){
-        $arr = array(
-            "playerUID"         => $this->playerUID,
-            "playTurnUID"       => $this->playTurnUID,
-            "player_response"   => $this->playerresponse,
-            "tested_skills"     => $this->testedSkills,
-            "responseanalysis"  => $this->responseanalysis
-        );
-        if(!empty($this->testedSkills)){
-            $arr["dices_bonus"]     = $this->diceBonus;
-            $arr["dices_scores"]    = $this->diceScores;
-            $arr["dices_succes"]    = $this->diceRollSuccess;
-            $arr["dices_critical"]  = $this->diceResultCritical;
-
-        }
-        return $arr;
-    }
-    public function __Construct(string $playTurnUID, string $playerUID){
+    public function __construct(string $playTurnUID, string $playerUID) {
         $this->set_playerUID($playerUID)
-              ->set_playTurnUID($playTurnUID);
+             ->set_playTurnUID($playTurnUID);
     }
-    public function set_playerUID( string $uid ) :PlayerResponse{
+
+    // === Getters / Setters ===
+    public function get_playerUID(): string { return $this->playerUID; }
+    public function set_playerUID(string $uid): PlayerResponse {
         $this->playerUID = $uid;
         return $this;
     }
-    public function get_playerUID():string{
-        return $this->playerUID;
-    }
-    public function set_playTurnUID(string $playTurnUID ):PlayerResponse{
+
+    public function get_playTurnUID(): string { return $this->playTurnUID; }
+    public function set_playTurnUID(string $playTurnUID): PlayerResponse {
         $this->playTurnUID = $playTurnUID;
         return $this;
     }
-    public function get_playTurnUID(): string{
-        return $this->playTurnUID;
-    }
-    public function set_playerresponse(string $playerresponse):PlayerResponse{
+
+    public function get_playerresponse(): string { return $this->playerresponse; }
+    public function set_playerresponse(string $playerresponse): PlayerResponse {
         $this->playerresponse = $playerresponse;
         return $this;
     }
-    public function get_playerresponse():string{
-        return $this->playerresponse;
+
+    // === Méthodes métiers ===
+    public function _toArrayToPlay() {
+        $arr = [
+            "playerUID" => $this->playerUID,
+            "playTurnUID" => $this->playTurnUID,
+            "player_response" => $this->playerresponse,
+            "tested_skills" => $this->testedSkills,
+            "responseanalysis" => $this->responseanalysis
+        ];
+        if (!empty($this->testedSkills)) {
+            $arr["dices_bonus"] = $this->diceBonus;
+            $arr["dices_scores"] = $this->diceScores;
+            $arr["dices_succes"] = $this->diceRollSuccess;
+            $arr["dices_critical"] = $this->diceResultCritical;
+        }
+        return $arr;
     }
-    /*
-    * Parent Board is needed to have more context
-    */
-    public function analyseResponse(Board $board){
+
+    public function analyseResponse(Board $board) {
         if (!isset($this->playerresponse) || trim($this->playerresponse) === '') {
             throw new \LogicException("La réponse du joueur n'a pas été définie avant l'analyse.");
         }
 
         $tpl = new TplBlock();
-
-
-        $playersArr = array();
-        foreach($board->get_players() as $player){
-            $playersArr[] = $player->__toArray();
-        }
-
+        $playersArr = array_map(fn($player) => $player->__toArray(), $board->get_players());
         $lastTurn = $board->get_lastPlayTurn();
-        $tpl->addVars(
-            array(
-                'players'       => json_encode( $playersArr, true ),
-                'summary'       => $board->get_gameSummary(),
-                'lastturn'      => json_encode( $lastTurn->__toArrayToPlay(null,false), true),
-                'playerResponse' => $this->get_playerresponse(),
-                'playeruid'     => $this->get_playerUID()
 
-            )
-
-        );
-
+        $tpl->addVars([
+            'players' => json_encode($playersArr, true),
+            'summary' => $board->get_gameSummary(),
+            'lastturn' => json_encode($lastTurn->__toArrayToPlay(null, false), true),
+            'playerResponse' => $this->get_playerresponse(),
+            'playeruid' => $this->get_playerUID()
+        ]);
 
         $promptIa = $tpl->applyTplFile("../templates/prompts/promptIA-Analyseawnser.txt");
-        $repIA = PlayTurn::sendMessageToIa( $promptIa, $board );
+        $repIA = PlayTurn::sendMessageToIa($promptIa, $board);
+        $player = $board->get_player_by_uid($this->get_playerUID());
 
-        $player = $board->get_player_by_uid( $this->get_playerUID() );
-
-        //jet de dé
-
-        if( !empty( $repIA["competences_a_tester"] ) ){
-            //have to test dices
-            //$this->diceBonus = $repIA["bonus"];
+        if (!empty($repIA["competences_a_tester"])) {
             $this->diceRollSuccess = true;
             $this->diceResultCritical = false;
-            foreach( $repIA["competences_a_tester"] as $competence){
-                //jet de dé
+
+            foreach ($repIA["competences_a_tester"] as $competence) {
                 $diceScore = random_int(0, 20);
                 $this->diceScores[] = $diceScore;
                 $this->testedSkills[] = $competence;
-                switch($competence){
-                    case "courage":
-                        $competanceValue = $player->getCourage();
-                        break;
-                    case "intelligence":
-                        $competanceValue = $player->getIntelligence();
-                        break;
-                    case "charisme":
-                        $competanceValue = $player->getCharisma();
-                        break;
-                    case "dexterite":
-                        $competanceValue = $player->getDexterity();
-                        break;
-                    case "force":
-                        $competanceValue = $player->getStrength();
-                        break;
 
-                    default:
-                        $competanceValue = 10; 
-                        //should never happen
-                        error_log("L'IA demande de tester une compétance inconnue" . $competence );
-                        break;
+                $competanceValue = match($competence) {
+                    "courage" => $player->getCourage(),
+                    "intelligence" => $player->getIntelligence(),
+                    "charisme" => $player->getCharisma(),
+                    "dexterite" => $player->getDexterity(),
+                    "force" => $player->getStrength(),
+                    default => 10
+                };
+                if (!in_array($competence, ["courage", "intelligence", "charisme", "dexterite", "force"])) {
+                    error_log("L'IA demande de tester une compétence inconnue: $competence");
+                }
 
-                }
-                //$this->$diceBonus
-                if($repIA["bonus"] > 0){
-                    $bonus = intval((( 19 - $competanceValue ) * $repIA["bonus"] ) / 10);
-                    //bonus positif
-                }else{
-                    //bonus negatif
-                    $bonus = intval((( $competanceValue +1 ) * $repIA["bonus"] ) / 10);
-                }
+                $bonus = ($repIA["bonus"] > 0)
+                    ? intval(((19 - $competanceValue) * $repIA["bonus"]) / 10)
+                    : intval((($competanceValue + 1) * $repIA["bonus"]) / 10);
+
                 $this->diceBonus[] = $bonus;
 
-                if( $diceScore > $competanceValue + $bonus ){
-                    $this->diceRollSuccess = false;
-                }
-                if ($diceScore  == 0){
-                    $this->diceResultCritical = true;
-                }
-                if ($diceScore  == 20){
-                    $this->diceResultCritical= true;
-                }
+                if ($diceScore > $competanceValue + $bonus) $this->diceRollSuccess = false;
+                if (in_array($diceScore, [0, 20])) $this->diceResultCritical = true;
             }
 
-            //categories
-            foreach( $repIA["categories"] as $cat ){
-                $playerResponsesCategories[] = $cat;
+            foreach ($repIA["categories"] as $cat) {
+                $this->playerResponsesCategories[] = $cat;
             }
-           
-            //analyse:
 
-            if( !$repIA["reponse_coherente"] ){
+            if (!$repIA["reponse_coherente"]) {
                 $this->responseanalysis = file_get_contents("../templates/prompts/promptIA-Unconsistent.txt");
-            }elseif( ( isset($this->diceRollSuccess) ) ){
-                if( $this->diceRollSuccess ){
-                    //succes
-                    if($this->diceResultCritical){
-                        $this->responseanalysis = file_get_contents("../templates/prompts/promptIA-Success-critical.txt");
-                    }else{
-                        $this->responseanalysis = file_get_contents("../templates/prompts/promptIA-Success-normal.txt");
-                    }
-
-                }else{
-                    //echec
-                    if($this->diceResultCritical){
-                        $this->responseanalysis = file_get_contents("../templates/prompts/promptIA-Fail-critical.txt");
-                    }else{
-                        $this->responseanalysis = file_get_contents("../templates/prompts/promptIA-Fail-normal.txt");
-                    }
-
-                }
-
-            }else{
-                //réponse cohérente qui ne nécessite pas de jet de dé.
+            } elseif (isset($this->diceRollSuccess)) {
+                $this->responseanalysis = match(true) {
+                    $this->diceRollSuccess && $this->diceResultCritical => file_get_contents("../templates/prompts/promptIA-Success-critical.txt"),
+                    $this->diceRollSuccess => file_get_contents("../templates/prompts/promptIA-Success-normal.txt"),
+                    !$this->diceRollSuccess && $this->diceResultCritical => file_get_contents("../templates/prompts/promptIA-Fail-critical.txt"),
+                    default => file_get_contents("../templates/prompts/promptIA-Fail-normal.txt")
+                };
+            } else {
                 $this->responseanalysis = "L'animateur du jeu autorise le joueur à faire cette action sans jet de dés. Elle est considérée comme réussie.";
-
             }
 
-            //Points de vie
-            if( $player->getPv() == 0 ){
+            if ($player->getPv() == 0) {
                 $this->responseanalysis .= file_get_contents("../templates/prompts/promptIA-Playeurunconscious.txt");
-            }
-            if( $player->getPv() < 0 && $player->getPv() > -10 ){
+            } elseif ($player->getPv() < 0 && $player->getPv() > -10) {
                 $this->responseanalysis .= file_get_contents("../templates/prompts/promptIA-Playerdying.txt");
-            }
-            if( $player->getPv() < -9 ){
+            } elseif ($player->getPv() < -9) {
                 $this->responseanalysis .= file_get_contents("../templates/prompts/promptIA-PlayerDied.txt");
             }
         }
     }
 
-    public function save( string $file) :self{
-        file_put_contents( $file, serialize($this) );
+    // === Sauvegarde ===
+    public function save(string $file): self {
+        file_put_contents($file, serialize($this));
         return $this;
     }
 
-    public static function load($file):self{
-            $data = file_get_contents($file);
-            return unserialize($data); 
+    // === Méthodes statiques ===
+    public static function load($file): self {
+        $data = file_get_contents($file);
+        return unserialize($data);
     }
-
 }
