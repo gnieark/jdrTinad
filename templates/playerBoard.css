@@ -164,6 +164,7 @@
 .stats_traits::before{ content: "Traits: "; font-weight: bold; }
 .stats_description::before{ content: "Description: "; font-weight: bold; }
 .stats_xp::before{ content: "Points d'expérience: "; font-weight: bold; }
+.stats_ea::before{ content: "Energie astrale: "; font-weight: bold; }
 
 
 #gamedialogs{

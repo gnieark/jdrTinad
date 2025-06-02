@@ -61,6 +61,5 @@ class CheckDbStructure {
             $version = 4;
             $this->setVersion($version);
         }
-        //idem version suivante, 
     }
 }

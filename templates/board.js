@@ -426,11 +426,13 @@ document.addEventListener('DOMContentLoaded', function () {
               ulequipment.innerHTML = player.equipment.map(eq => `<li>${eq}</li>`).join('');
               document.getElementById("pequipment" + player.uid ).innerHTML = "";
               document.getElementById("pequipment" + player.uid ).appendChild(ulequipment);
+              if(player.specialiteMagie){
+                document.getElementById("pea" + player.uid).innerText = `EA: ${player.energieAstrale}/${player.energieAstraleMax}`;
+              }
               
 
             }else{
               let divplayer = createElem("div",{"class": "player-entry", "id": "div-listplayers-" + player.uid});
-
 
               let divtitle = createElem("div", {"class":"player-header"} );
               divtitle.innerText = `${player.name} (${player.origine} ${player.job}, Niveau ${player.level})`;
@@ -444,6 +446,18 @@ document.addEventListener('DOMContentLoaded', function () {
               let pxp =createElem("p",{"class":"player_stats_elem stats_xp","id":"pxp" + player.uid });
               pxp.innerText = `XP: ${player.xp}`;
               divdetails.appendChild(pxp);
+
+              //specialiteMagie
+              if(player.specialiteMagie){
+
+                let pspeciality = createElem("p",{"class":"player_stats_elem"});
+                pspeciality.innerText = `${player.specialiteMagie}`;
+                divdetails.appendChild(pspeciality);
+
+                let pea = createElem("p",{"class":"player_stats_elem player_stats_elem stats_ea","id":"pea" + player.uid});
+                pea.innerText = `EA ${player.energieAstrale}/${player.energieAstraleMax}`;
+                divdetails.appendChild(pea);
+              }
 
               let ppointsDeVie = createElem("p",{"class":"player_stats_elem stats_pv","id":"pointsdevie" + player.uid });
               ppointsDeVie.innerText = `${player.lifePoints}/${player.lifePointsMax}`;

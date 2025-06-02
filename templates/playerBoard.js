@@ -30,6 +30,18 @@ async function refresh_character_sheet(){
 
   let divdetails = createElem("div",{"class":"player-details", "id":"div-listplayers-details" + player.uid });
 
+  //specialiteMagie
+  if(player.specialiteMagie){
+
+    let pspeciality = createElem("p",{"class":"player_stats_elem"});
+    pspeciality.innerText = `${player.specialiteMagie}`;
+    divdetails.appendChild(pspeciality);
+
+    let pea = createElem("p",{"class":"player_stats_elem player_stats_elem stats_ea"});
+    pea.innerText = `${player.energieAstrale}/${player.energieAstraleMax}`;
+    divdetails.appendChild(pea);
+  }
+
   let ppointsDeVie = createElem("p",{"class":"player_stats_elem stats_pv","id":"pointsdevie" + player.uid });
   ppointsDeVie.innerText = `${player.lifePoints}/${player.lifePointsMax}`;
   divdetails.appendChild(ppointsDeVie);
