@@ -1,3 +1,12 @@
 {
-    
+  "magie de l'Air": "Discipline avec peu de sorts offensifs mais beaucoup de sorts d’assistance et de protection, souvent agaçants pour les ennemis. Très utile pour les aventuriers prudents et rusés.",
+  "magie Eau et Glace": "Magie élémentaire puissante incluant sorts offensifs, de protection, et invocations. Moins dangereuse que le feu au début, mais redoutable à haut niveau.",
+  "magie thermodynamique": "Spécialité complexe nécessitant des bases théoriques en physique. Peu utile au début, mais ses sorts de haut niveau sont très puissants.",
+  "mage de la Terre": "Magie polyvalente souvent sous-estimée. Propose camouflage, pièges, malédictions, sorts offensifs et défensifs, et invocations.",
+  "Mage de Combat": "Spécialisé dans les sorts violents jusqu’au niveau 14. Propose des sorts ciblés, de masse ou d’amélioration. Très prisé par les aventuriers.",
+  "Mage du Feu": "Magie offensive destructrice, efficace dès les bas niveaux. Peu sélective, elle peut blesser les alliés. Rarement résistée par les ennemis.",
+  "Mage Invocateur": "Spécialiste de l’invocation de créatures étranges. Moins polyvalent, ne peut choisir que deux spécialités. Puissant mais instable.",
+  "Nécromancien": "Maître des morts et des rituels. Puissance croissante mais réputation exécrable. Attire les aventuriers ennemis comme des mouches.",
+  "mage Métamorphe": "Utilisateur de magie chaotique pour se transformer ou transformer autrui. Peu dangereuse, mais peu prisée en combat direct.",
+  "sorcier noir de Tzinntch": "Membre d’un culte interdit. Accès à des sorts puissants et économiques. Progression rapide mais au prix de la santé mentale."
 }

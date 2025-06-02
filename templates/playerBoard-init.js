@@ -1,3 +1,11 @@
+function createElem(type,attributes)
+{
+    var elem=document.createElement(type);
+    for (var i in attributes)
+    {elem.setAttribute(i,attributes[i]);}
+    return elem;
+}
+
 document.addEventListener('DOMContentLoaded', function () {
 
   document.getElementById('characterform').addEventListener('submit', function (e) {
@@ -67,7 +75,8 @@ document.addEventListener('DOMContentLoaded', function () {
   };
 
   const origineDescriptions = {{origineDescriptions}};
-  
+  const specialitysDescriptions = {{specialitysDescriptions}};
+
   const raceSelect = document.getElementById('race');
   const jobSelect = document.getElementById('job');
 
@@ -172,6 +181,20 @@ document.addEventListener('DOMContentLoaded', function () {
       magicSpecialtyContainer.style.display = 'block';
     } else {
       magicSpecialtyContainer.style.display = 'none';
+    }
+  });
+  magicSpecialtySelect.addEventListener('change', function () {
+    if(!document.getElementById("magicSpecialtyDescription")){
+      let magicSpecialtyDescriptionContainer = createElem("p", {"id": "magicSpecialtyDescription"});
+      magicSpecialtyContainer.appendChild(magicSpecialtyDescriptionContainer);
+    }
+
+    if(specialitysDescriptions[ magicSpecialtySelect.value ] ){
+      document.getElementById("magicSpecialtyDescription").innerText = specialitysDescriptions[ magicSpecialtySelect.value ];
+      document.getElementById("magicSpecialtyDescription").style.display = "block";
+    }else{
+      document.getElementById("magicSpecialtyDescription").innerText = "";
+      document.getElementById("magicSpecialtyDescription").style.display = "none";
     }
   });
 

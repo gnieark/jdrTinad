@@ -120,8 +120,10 @@ class Player
 
         switch ($this->job) {
             case "mage":
-            case "sorcier":
                 $availableSpecialities = array_merge($commonMagic, $mageMagic);
+                break;
+            case "sorcier":
+                $availableSpecialities = array_merge($commonMagic,$sorcererMagic);
                 break;
             default:
                 throw new Exception("job must be one of 'mage' or 'sorcier' to set magicSpeciality");

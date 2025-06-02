@@ -16,12 +16,16 @@ class BoardPlayer extends Route{
         }else{
 
             $tpl = new TplBlock();
-            $tpl->addVars(array("origineDescriptions"   => json_encode( Player::get_all_origine_desc(true),true) ));
+            $tpl->addVars(
+                array(
+                    "origineDescriptions"   => json_encode( Player::get_all_origine_desc(true),true), 
+                    "specialitysDescriptions" => json_encode( 
+                        json_decode(file_get_contents("../templates/magie/specialitys_descriptions.json")
+                        ), true )
+                ));
             return $tpl->applyTplFile("../templates/playerBoard-init.js");
 
         }
-
-
     }
 
     static public function get_uid_from_cookie():string{
@@ -166,15 +170,24 @@ class BoardPlayer extends Route{
 
 
             $player->setJob($_POST["job"]);
-            if( $_POST["job"] == "mage" || $_POST["job"] == "sorcier" ){
-                $player->setMagicSpeciality( $_POST["magic_specialty"] );
-            }
-
-
-
-
 
             $promptIa = new TplBlock();
+
+            if( $_POST["job"] == "mage" || $_POST["job"] == "sorcier" ){
+                $player->setMagicSpeciality( $_POST["magic_specialty"] );
+
+                $tplMagical = new TplBlock("magical");
+                $specialitiesDescriptions = json_decode( file_get_contents( "../templates/magie/specialitys_descriptions.json"),true );
+                $tplMagical->addVars(
+                    array(
+                        "speciality"    => $_POST["magic_specialty"],
+                        "specialitydescription" => $specialitiesDescriptions[ $_POST["magic_specialty"] ]
+                    )
+                );
+                $promptIa->addSubBlock( $tplMagical );
+
+            }
+            
             $promptIa->addVars(
                 array(
                     "playername"                => $_POST["name"],
@@ -186,7 +199,7 @@ class BoardPlayer extends Route{
                 )
             );
 
-
+            echo $promptIa->applyTplFile("../templates/prompts/promptIA-creerpersonnage.txt"); die();
             $rep = PlayTurn::sendMessageToIa($promptIa->applyTplFile("../templates/prompts/promptIA-creerpersonnage.txt"), $board );
 
             $player ->setUid( SELF::get_uid_from_cookie() )
@@ -205,8 +218,6 @@ class BoardPlayer extends Route{
 
             header('Location: /' . $board->get_urlpart() );
             die();
-            
-
         }
         return "";
     }
