@@ -243,6 +243,43 @@ function submitAnwser(awnser, turnuid) {
     });
   }
 
+function handleBoardEvent(event) {
+  const state = JSON.parse(event.data);
+  const previousState = lastBoardEventState;
+  lastBoardEventState = state;
+
+  const isFirstEvent = previousState === null;
+
+  if (isFirstEvent || previousState.playersHash !== state.playersHash) {
+    refresh_character_sheet();
+  }
+
+  if (isFirstEvent || previousState.boardHash !== state.boardHash) {
+    refreshTurnList();
+  }
+
+  if (!isFirstEvent && previousState.responsesHash !== state.responsesHash && currentTurnUid !== "") {
+    displayTurn(currentTurnUid);
+  }
+}
+
+function connectBoardEvents() {
+  if (!window.EventSource) {
+    refresh_character_sheet();
+    refreshTurnList();
+    return;
+  }
+
+  boardEvents = new EventSource(`/API/board/${boarduid}/events`);
+  boardEvents.addEventListener("board-updated", handleBoardEvent);
+  boardEvents.addEventListener("board-deleted", function () {
+    window.location.href = "/";
+  });
+  boardEvents.onerror = function (event) {
+    console.warn("Connexion SSE interrompue, reconnexion automatique en cours.", event);
+  };
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     // Accordéon
     document.querySelectorAll('.accordion-title').forEach(button => {
@@ -254,9 +291,9 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
 
-    refresh_character_sheet();
-    refreshTurnList();
-    setInterval(refreshTurnList, 3000);
-    setInterval(refresh_character_sheet, 3000);
+    connectBoardEvents();
 
   });
+
+let boardEvents = null;
+let lastBoardEventState = null;

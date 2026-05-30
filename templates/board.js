@@ -193,64 +193,7 @@ async function refreshTurnList(){
     console.error("Erreur lors de la vérification de la version :", error);
   });
 }
-async function checkPlayerResponse(boarduid,turnUid,playerUid){
- 
-        const response = await fetch(`/API/board/${boarduid}/turnMJ/${turnUid}/playerresponse/${playerUid}`);
-
-        if (response.status === 200) {
-            const reponse = await response.json();
-            const container = document.getElementById("divplayeranswer" + playerUid);
-
-          let preponse = createElem("p",{"class":"preponse"});
-          preponse.innerText = reponse.player_response;
-          container.appendChild(preponse);
-
-          if( reponse.tested_skills.length > 0 ){
-            let ptestedskills = createElem("p",{"class": "pcompetences"});
-            ptestedskills.innerText = reponse.tested_skills.toString();
-            container.appendChild(ptestedskills);
-            
-            let pbonusmalus = createElem("p",{"class": "pbonus"});
-            pbonusmalus.innerText = reponse.dices_bonus.toString();
-            container.appendChild(pbonusmalus);
-
-            let pjet = createElem("p",{"class":"pjets" });
-            pjet.innerText = reponse.dices_scores.toString();
-            container.appendChild(pjet);
-
-            let img = createElem("img", {"src": "/imgs/dé20.png", "class": "pdicelogo"});
-            container.appendChild(img);
-
-            let pdiceResultConclusion = createElem("p",{"class":"pdicesconclusion"});
-            if( reponse.dices_succes == false ){
-              pdiceResultConclusion.innerText = "Echec";
-            }else{
-              pdiceResultConclusion.innerText = "Succès";
-            }
-            if( reponse.dices_critical == true){
-              pdiceResultConclusion.innerText += " critique!";
-            }
-            container.appendChild(pdiceResultConclusion);
-          }
-          
-          let piaanalyse = createElem("p",{"class":"panalyse"});
-          piaanalyse.innerText = reponse.responseanalysis;
-          container.appendChild(piaanalyse);
-    
-          clearInterval(checksresponsesintervals[playerUid]);
-    
-        } else if (response.status === 404) {
-            // Ne rien faire
-        } else {
-            console.warn(`Requête échouée avec le statut ${response.status}`);
-        }
-
-}
 async function displayTurn(turnUid){
-  for (const playerUid in checksresponsesintervals) {
-   clearInterval(checksresponsesintervals[playerUid]);
-  }
-
   fetch(`/API/board/${boarduid}/turnMJ/${turnUid}`)
       .then(response => {
     if (!response.ok) throw new Error("Erreur réseau");
@@ -285,11 +228,9 @@ async function displayTurn(turnUid){
       pPlayerresponse.innerText = playersAnswers[playerUid];
       divplayerAnswer.appendChild(pPlayerresponse);
 
-      let noresponse = true;
       data.playersResponses.forEach(function (reponse) {
 
         if( reponse.playerUID == playerUid ){
-          noresponse = false;
           let preponse = createElem("p",{"class":"preponse"});
           preponse.innerText = reponse.player_response;
           divplayerAnswer.appendChild(preponse);
@@ -330,10 +271,6 @@ async function displayTurn(turnUid){
         }
       });
       container.appendChild(divplayerAnswer);
-      if(noresponse && currentTurnUid == turnsUids.at(-1)){
-        // Le joueur n'a pas répondu, on vérifie régulièrement.
-        checksresponsesintervals[playerUid] = setInterval(  checkPlayerResponse , 3000, boarduid,currentTurnUid, playerUid );
-      }
     }
     
     if( data["closedTurn"] == false  && currentTurnUid == turnsUids.at(-1) ){
@@ -465,6 +402,43 @@ async function fetchPlayers() {
   }
 }
 
+function handleBoardEvent(event) {
+  const state = JSON.parse(event.data);
+  const previousState = lastBoardEventState;
+  lastBoardEventState = state;
+
+  const isFirstEvent = previousState === null;
+
+  if (isFirstEvent || previousState.playersHash !== state.playersHash) {
+    fetchPlayers();
+  }
+
+  if (isFirstEvent || previousState.boardHash !== state.boardHash) {
+    refreshTurnList();
+  }
+
+  if (!isFirstEvent && previousState.responsesHash !== state.responsesHash && currentTurnUid !== "") {
+    displayTurn(currentTurnUid);
+  }
+}
+
+function connectBoardEvents() {
+  if (!window.EventSource) {
+    fetchPlayers();
+    refreshTurnList();
+    return;
+  }
+
+  boardEvents = new EventSource(`/API/board/${boarduid}/events`);
+  boardEvents.addEventListener("board-updated", handleBoardEvent);
+  boardEvents.addEventListener("board-deleted", function () {
+    window.location.href = "/board";
+  });
+  boardEvents.onerror = function (event) {
+    console.warn("Connexion SSE interrompue, reconnexion automatique en cours.", event);
+  };
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     // Accordéon
     document.querySelectorAll('.accordion-title').forEach(button => {
@@ -477,15 +451,13 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     if (boarduid !== "") {
-      fetchPlayers(); // Chargement initial
-      refreshTurnList();
-      setInterval(fetchPlayers, 3000);
-      setInterval(refreshTurnList, 3000);
+      connectBoardEvents();
     }
 });
 
-let checksresponsesintervals = [];
 let playersByUid = {};
 let turnsUids = [];
 let currentTurnUid = "";
 let lastTurnUid = "";
+let boardEvents = null;
+let lastBoardEventState = null;

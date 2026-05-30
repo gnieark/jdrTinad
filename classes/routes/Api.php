@@ -11,19 +11,128 @@ class Api extends Route{
         return Board::loadBoard($boardUid);
     }
 
+    private static function getFileSignature(string $filePath):array{
+        return array(
+            "name" => basename($filePath),
+            "hash" => hash_file("sha1", $filePath)
+        );
+    }
+
+    private static function getFilesSignature(array $filePaths):string{
+        sort($filePaths, SORT_STRING);
+
+        $files = array();
+        foreach($filePaths as $filePath){
+            if(is_file($filePath)){
+                $files[] = self::getFileSignature($filePath);
+            }
+        }
+
+        return sha1(json_encode($files));
+    }
+
+    private static function getBoardEventState(string $boardUid):array{
+        $boardPath = realpath("../gamesdatas/" . $boardUid);
+        if($boardPath === false || !is_file($boardPath . "/board.txt")){
+            return array(
+                "boarduid" => $boardUid,
+                "deleted" => true,
+                "boardHash" => "",
+                "playersHash" => "",
+                "responsesHash" => "",
+                "version" => sha1("deleted:" . $boardUid)
+            );
+        }
+
+        $playerFiles = glob($boardPath . "/player-*") ?: array();
+        $responseFiles = array();
+        $turnDirs = glob($boardPath . "/turn-*", GLOB_ONLYDIR) ?: array();
+        foreach($turnDirs as $turnDir){
+            $responseFiles = array_merge($responseFiles, glob($turnDir . "/*.txt") ?: array());
+        }
+
+        $state = array(
+            "boarduid" => $boardUid,
+            "deleted" => false,
+            "boardHash" => self::getFilesSignature(array($boardPath . "/board.txt")),
+            "playersHash" => self::getFilesSignature($playerFiles),
+            "responsesHash" => self::getFilesSignature($responseFiles)
+        );
+        $state["version"] = sha1(json_encode($state));
+
+        return $state;
+    }
+
+    private static function sendSseEvent(string $eventName, array $payload, ?string $id = null):void{
+        if($id !== null){
+            echo "id: " . $id . "\n";
+        }
+        echo "event: " . $eventName . "\n";
+
+        $json = json_encode($payload);
+        foreach(explode("\n", $json) as $line){
+            echo "data: " . $line . "\n";
+        }
+
+        echo "\n";
+        if(ob_get_level() > 0){
+            @ob_flush();
+        }
+        flush();
+    }
+
+    private static function sendBoardEvents(string $boardUid):void{
+        @ini_set("zlib.output_compression", "0");
+        @ini_set("output_buffering", "off");
+        while(ob_get_level() > 0){
+            @ob_end_flush();
+        }
+
+        header("Content-Type: text/event-stream; charset=utf-8");
+        header("Cache-Control: no-cache, no-transform");
+        header("Connection: keep-alive");
+        header("X-Accel-Buffering: no");
+
+        echo "retry: 3000\n\n";
+        flush();
+
+        $lastEventId = $_SERVER["HTTP_LAST_EVENT_ID"] ?? "";
+        $startedAt = time();
+        $lastPingAt = time();
+        $lastSentVersion = preg_match("/^[a-f0-9]{40}$/", $lastEventId) ? $lastEventId : "";
+        $maxConnectionSeconds = PHP_SAPI === "cli-server" ? 1 : 30;
+
+        while(!connection_aborted() && (time() - $startedAt) < $maxConnectionSeconds){
+            clearstatcache();
+            $state = self::getBoardEventState($boardUid);
+
+            if($state["version"] !== $lastSentVersion){
+                $eventName = $state["deleted"] ? "board-deleted" : "board-updated";
+                self::sendSseEvent($eventName, $state, $state["version"]);
+                $lastSentVersion = $state["version"];
+
+                if($state["deleted"]){
+                    die();
+                }
+            }elseif((time() - $lastPingAt) >= 10){
+                echo ": ping\n\n";
+                flush();
+                $lastPingAt = time();
+            }
+
+            sleep(1);
+        }
+
+        die();
+    }
+
     static public function send_content(User $user):string{
 
         header('X-Robots-Tag: noindex, nofollow', true);
         $requestPath = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
 
         if(preg_match ( "'^/API/board/([\w]+)/events$'" , $requestPath, $matches)){
-            header('Content-Type: application/json; charset=utf-8');
-            header("HTTP/1.1 410 Gone");
-            echo json_encode(array(
-                "code" => 410,
-                "error" => "Board events are disabled; clients must use polling."
-            ));
-            die();
+            self::sendBoardEvents($matches[1]);
         }
 
         header('Content-Type: application/json; charset=utf-8');
