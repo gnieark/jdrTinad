@@ -242,7 +242,7 @@ function submitAnwser(awnser, turnuid) {
       console.error("Erreur lors de la vérification de la version :", error);
     });
   }
-  
+
 document.addEventListener('DOMContentLoaded', function () {
     // Accordéon
     document.querySelectorAll('.accordion-title').forEach(button => {
@@ -254,7 +254,9 @@ document.addEventListener('DOMContentLoaded', function () {
       });
     });
 
-    setInterval( refreshTurnList, 3000 );
     refresh_character_sheet();
+    refreshTurnList();
+    setInterval(refreshTurnList, 3000);
+    setInterval(refresh_character_sheet, 3000);
 
   });

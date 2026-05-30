@@ -3,20 +3,35 @@ class Api extends Route{
 
     protected static $displayOnPage = false;
 
+    private static function loadBoardOr404(string $boardUid):Board{
+        if(!Board::boardFileExists($boardUid)){
+            C404::send_content_json();
+        }
+
+        return Board::loadBoard($boardUid);
+    }
 
     static public function send_content(User $user):string{
 
         header('X-Robots-Tag: noindex, nofollow', true);
+        $requestPath = parse_url($_SERVER["REQUEST_URI"], PHP_URL_PATH);
+
+        if(preg_match ( "'^/API/board/([\w]+)/events$'" , $requestPath, $matches)){
+            header('Content-Type: application/json; charset=utf-8');
+            header("HTTP/1.1 410 Gone");
+            echo json_encode(array(
+                "code" => 410,
+                "error" => "Board events are disabled; clients must use polling."
+            ));
+            die();
+        }
+
         header('Content-Type: application/json; charset=utf-8');
 
-        if(preg_match ( "'^/API/board/([\w]+)/players$'" , $_SERVER["REQUEST_URI"], $matches)){
+        if(preg_match ( "'^/API/board/([\w]+)/players$'" , $requestPath, $matches)){
             
             $boardUid = $matches[1];
-            if(!Board::boardFileExists($boardUid)){
-                 C404::send_content_json();
-            }
-
-            $board = Board::loadBoard($boardUid);
+            $board = self::loadBoardOr404($boardUid);
             $players = $board->get_players();
             $playersArr = array();
             foreach($players as $player){
@@ -24,38 +39,27 @@ class Api extends Route{
             }
             echo json_encode($playersArr,true);
             die();
-        }elseif( preg_match ( "'^/API/board/([\w]+)/player/myperso$'" , $_SERVER["REQUEST_URI"], $matches) ){
+        }elseif( preg_match ( "'^/API/board/([\w]+)/player/myperso$'" , $requestPath, $matches) ){
             //juste un player
             $boardUid = $matches[1];
             $playerUID = BoardPlayer::get_uid_from_cookie();
-            if(!Board::boardFileExists($boardUid)){
-                C404::send_content_json();
-            }            
-            $board = Board::loadBoard($boardUid);
+            $board = self::loadBoardOr404($boardUid);
             $player = $board->get_player_by_uid($playerUID);
             echo json_encode($player->__toArray(),true);
 
             die();
-        }elseif( preg_match ( "'^/API/board/([\w]+)/version-uid$'" , $_SERVER["REQUEST_URI"], $matches) ){
+        }elseif( preg_match ( "'^/API/board/([\w]+)/version-uid$'" , $requestPath, $matches) ){
             $boardUid = $matches[1];
-            if(!Board::boardFileExists($boardUid)){
-                 C404::send_content_json();
-            }
-
-            $board = Board::loadBoard($boardUid);
+            $board = self::loadBoardOr404($boardUid);
             echo json_encode(array(
                 "message"       => "OK",
                 "version-uid"   => $board->get_saveUid()
             ),true);
             die();
             
-        }elseif( preg_match ( "'^/API/board/([\w]+)/turns$'" , $_SERVER["REQUEST_URI"], $matches) ){
+        }elseif( preg_match ( "'^/API/board/([\w]+)/turns$'" , $requestPath, $matches) ){
             $boardUid = $matches[1];
-            if(!Board::boardFileExists($boardUid)){
-                 C404::send_content_json();
-            }
-
-            $board = Board::loadBoard($boardUid);
+            $board = self::loadBoardOr404($boardUid);
             $arr = array();
             foreach( $board->get_playTurns() as $turn){
                 $turn->loadPlayersResponses($boardUid);
@@ -64,9 +68,9 @@ class Api extends Route{
             echo (json_encode($arr, true ));
 
             die();
-        }elseif( preg_match ( "'^/API/board/([\w]+)/turnslist$'" , $_SERVER["REQUEST_URI"], $matches) ){
+        }elseif( preg_match ( "'^/API/board/([\w]+)/turnslist$'" , $requestPath, $matches) ){
             $boardUid = $matches[1];
-            $board = Board::loadBoard($boardUid);
+            $board = self::loadBoardOr404($boardUid);
             $turns = $board->get_playTurns();
             $turnsArr = array();
             foreach($turns as $turn){
@@ -80,32 +84,32 @@ class Api extends Route{
             );
             
             die();
-        }elseif( preg_match ( "'^/API/board/([\w]+)/turnMJ/([\w]+)/playerresponse/([\w]+)$'" , $_SERVER["REQUEST_URI"], $matches) ){
+        }elseif( preg_match ( "'^/API/board/([\w]+)/turnMJ/([\w]+)/playerresponse/([\w]+)$'" , $requestPath, $matches) ){
             $boardUid = $matches[1];
             $turnUId = $matches[2];
             $playerUID = $matches[3];
-            $playerResponsePath = realpath("../gamesdatas/" . $boardUid . "/turn-" . $turnUId . "/" . $playerUID . ".txt") ;
+            self::loadBoardOr404($boardUid);
+            $playerResponsePath = "../gamesdatas/" . $boardUid . "/turn-" . $turnUId . "/" . $playerUID . ".txt";
            
             if(!file_exists($playerResponsePath )){
-                echo "hey";
                 C404::send_content_json(); die();
             } 
             $reponse = PlayerResponse::load($playerResponsePath);
             echo json_encode($reponse->_toArrayToPlay());
             die();
 
-        }elseif( preg_match ( "'^/API/board/([\w]+)/turnMJ/([\w]+)$'" , $_SERVER["REQUEST_URI"], $matches) ){
+        }elseif( preg_match ( "'^/API/board/([\w]+)/turnMJ/([\w]+)$'" , $requestPath, $matches) ){
             $boardUid = $matches[1];
             $turnUId = $matches[2];
-            $board = Board::loadBoard($boardUid);
+            $board = self::loadBoardOr404($boardUid);
             $turn = $board->get_PlayTurnByUid( $turnUId );
             echo json_encode( $turn->__toArrayToPlay(null),true );
             die();
-        }elseif( preg_match ( "'^/API/board/([\w]+)/turnPLAYER/([\w]+)$'" , $_SERVER["REQUEST_URI"], $matches) ){
+        }elseif( preg_match ( "'^/API/board/([\w]+)/turnPLAYER/([\w]+)$'" , $requestPath, $matches) ){
             //same as previous but give only the current player awnser
             $boardUid = $matches[1];
             $turnUId = $matches[2];
-            $board = Board::loadBoard($boardUid);
+            $board = self::loadBoardOr404($boardUid);
             $turn = $board->get_PlayTurnByUid( $turnUId );
             echo json_encode( $turn->__toArrayToPlay( BoardPlayer::get_uid_from_cookie() ),true );
             die();
@@ -133,16 +137,11 @@ class Api extends Route{
     
 
             $boardUid = $matches[1];
-            if(!Board::boardFileExists($boardUid)){
-                 C404::send_content_json();
-            }
+            $board = self::loadBoardOr404($boardUid);
             if(!$user->does_own_board($boardUid)){
                 return C403::send_content_json();
             }
 
-            $board = Board::loadBoard($boardUid);
-
-            
             $arr = json_decode( file_get_contents('php://input'), true );
             $gameTurn = new PlayTurn();
             if(empty($board->get_playTurns())){
@@ -175,14 +174,11 @@ class Api extends Route{
     
 
             $boardUid = $matches[1];
-            if(!Board::boardFileExists($boardUid)){
-                 C404::send_content_json();
-            }
+            $board = self::loadBoardOr404($boardUid);
             if(!$user->does_own_board($boardUid)){
                 return C403::send_content_json();
             }
 
-            $board = Board::loadBoard($boardUid);
             $board->regen_gameSummary();
             echo '{}'; die();
 
@@ -193,7 +189,7 @@ class Api extends Route{
             $boardUid = $matches[1];
             $turnUid = $matches[2];
 
-            $board = Board::loadBoard($boardUid);
+            $board = self::loadBoardOr404($boardUid);
             $turns = $board->get_playTurns();
 
             $turn = end( $turns );

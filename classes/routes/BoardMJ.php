@@ -12,6 +12,9 @@ class BoardMJ extends Route{
             if(!$user->does_own_board($bordUid)){
                 return C403::get_content_html($user);
             }
+            if(!Board::boardFileExists($bordUid)){
+                return C404::get_content_html($user);
+            }
             $board = Board::loadBoard($bordUid);
             return self::get_content_html_initialized_board($user,$board);
 
@@ -91,6 +94,9 @@ class BoardMJ extends Route{
             $bordUid = $matches[1];
             if(!$user->does_own_board($bordUid)){
                 return C403::get_content_html($user);
+            }
+            if(!Board::boardFileExists($bordUid)){
+                return C404::send_content_json();
             }
             $board = Board::loadBoard($bordUid);
             $board->delete_board();

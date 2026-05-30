@@ -238,7 +238,7 @@ async function checkPlayerResponse(boarduid,turnUid,playerUid){
           container.appendChild(piaanalyse);
     
           clearInterval(checksresponsesintervals[playerUid]);
-
+    
         } else if (response.status === 404) {
             // Ne rien faire
         } else {
@@ -247,11 +247,9 @@ async function checkPlayerResponse(boarduid,turnUid,playerUid){
 
 }
 async function displayTurn(turnUid){
-
   for (const playerUid in checksresponsesintervals) {
    clearInterval(checksresponsesintervals[playerUid]);
   }
-  
 
   fetch(`/API/board/${boarduid}/turnMJ/${turnUid}`)
       .then(response => {
@@ -276,10 +274,9 @@ async function displayTurn(turnUid){
 
       let title =createElem("h3",{"class":"playeranswerTitle"});
 
+      let playerCaption = playerUid;
       if( playersByUid[ playerUid ]){
         playerCaption = playersByUid[ playerUid ];
-      }else{
-        playerCaption = playerUid 
       }
       title.textContent = `${playerCaption}`;
       divplayerAnswer.appendChild(title);
@@ -334,10 +331,9 @@ async function displayTurn(turnUid){
       });
       container.appendChild(divplayerAnswer);
       if(noresponse && currentTurnUid == turnsUids.at(-1)){
-        //le joueur n'a pas répondu, on va checker réguilièrement
+        // Le joueur n'a pas répondu, on vérifie régulièrement.
         checksresponsesintervals[playerUid] = setInterval(  checkPlayerResponse , 3000, boarduid,currentTurnUid, playerUid );
       }
-
     }
     
     if( data["closedTurn"] == false  && currentTurnUid == turnsUids.at(-1) ){
@@ -393,6 +389,82 @@ async function displayTurn(turnUid){
 
 }
 
+async function fetchPlayers() {
+  try {
+    const response = await fetch(`/API/board/${boarduid}/players`);
+    if (!response.ok) throw new Error('Erreur de chargement');
+    const players = await response.json();
+
+    const container = document.getElementById('players-list');
+
+    players.forEach(player => {
+
+      playersByUid[ player.uid ] = `${player.name} (${player.origine} ${player.job}, Niveau ${player.level})`;
+
+      if( document.getElementById("div-listplayers-" + player.uid)){
+        //already exists just update pv, fortune and equipment
+        document.getElementById("pointsdevie" + player.uid).innerText = `Points de vie: ${player.lifePoints}/${player.lifePointsMax}`;
+        document.getElementById("pfortune" + player.uid).innerText = `Fortune: ${player.fortune} pièces d'or`;
+        document.getElementById( "pxp" + player.uid ).innerText = `XP: ${player.xp}`;
+        let ulequipment = createElem("ul",{});
+        ulequipment.innerHTML = player.equipment.map(eq => `<li>${eq}</li>`).join('');
+        document.getElementById("pequipment" + player.uid ).innerHTML = "";
+        document.getElementById("pequipment" + player.uid ).appendChild(ulequipment);
+
+
+      }else{
+        let divplayer = createElem("div",{"class": "player-entry", "id": "div-listplayers-" + player.uid});
+
+
+        let divtitle = createElem("div", {"class":"player-header"} );
+        divtitle.innerText = `${player.name} (${player.origine} ${player.job}, Niveau ${player.level})`;
+        divtitle.addEventListener('click', () => {
+          document.getElementById("div-listplayers-details" + player.uid).style.display = (document.getElementById("div-listplayers-details" + player.uid).style.display === 'none') ? 'block' : 'none';
+        });
+
+        let divdetails = createElem("div",{"class":"player-details", "id":"div-listplayers-details" + player.uid });
+        divdetails.style.display = 'none';
+
+        let pxp =createElem("p",{"class":"player_stats_elem stats_xp","id":"pxp" + player.uid });
+        pxp.innerText = `XP: ${player.xp}`;
+        divdetails.appendChild(pxp);
+
+        let ppointsDeVie = createElem("p",{"class":"player_stats_elem stats_pv","id":"pointsdevie" + player.uid });
+        ppointsDeVie.innerText = `${player.lifePoints}/${player.lifePointsMax}`;
+        divdetails.appendChild(ppointsDeVie);
+
+        let pfortune = createElem("p",{"class":"player_stats_elem stats_fortune","id":"pfortune" + player.uid });
+        pfortune.innerText = `${player.fortune} pièces d'or`;
+        divdetails.appendChild(pfortune);
+
+        let pcompetances = createElem("p",{"class":"player_stats_elem stats_competences","id":"pcompetences" + player.uid });
+        pcompetances.innerText = `COU: ${player.courage}, INT: ${player.intelligence}, CHA: ${player.charisma}, DEXT: ${player.dexterity}, FO: ${player.strength}`;
+        divdetails.appendChild(pcompetances);
+
+        let pequipment = createElem("p",{"class":"player_stats_elem stats_equipment","id":"pequipment" + player.uid });
+        let ulequipment = createElem("ul",{});
+        ulequipment.innerHTML = player.equipment.map(eq => `<li>${eq}</li>`).join('');
+        pequipment.appendChild(ulequipment);
+        divdetails.appendChild(pequipment);
+
+        let ptraits = createElem("p",{"class":"player_stats_elem stats_traits","id":"ptraits" + player.uid });
+        ptraits.innerText = `${player.specialFeatures || 'Aucun'}`;
+        divdetails.appendChild(ptraits);
+
+        let pdescription = createElem("p",{"class":"player_stats_elem stats_description","id":"pdescription" + player.uid });
+        pdescription.innerText = `${player.description}`;
+        divdetails.appendChild(pdescription);
+
+        divplayer.appendChild(divtitle);
+        divplayer.appendChild(divdetails);
+        container.appendChild(divplayer);
+      }
+    });
+  } catch (err) {
+    console.error('Erreur lors du chargement des joueurs:', err);
+  }
+}
+
 document.addEventListener('DOMContentLoaded', function () {
     // Accordéon
     document.querySelectorAll('.accordion-title').forEach(button => {
@@ -405,88 +477,10 @@ document.addEventListener('DOMContentLoaded', function () {
     });
 
     if (boarduid !== "") {
-      async function fetchPlayers() {
-        try {
-          const response = await fetch(`/API/board/${boarduid}/players`);
-          if (!response.ok) throw new Error('Erreur de chargement');
-          const players = await response.json();
-  
-          const container = document.getElementById('players-list');
-          
-          players.forEach(player => {
-            
-            playersByUid[ player.uid ] = `${player.name} (${player.origine} ${player.job}, Niveau ${player.level})`;
-
-            if( document.getElementById("div-listplayers-" + player.uid)){
-              //already exists just update pv, fortune and equipment
-              document.getElementById("pointsdevie" + player.uid).innerText = `Points de vie: ${player.lifePoints}/${player.lifePointsMax}`;
-              document.getElementById("pfortune" + player.uid).innerText = `Fortune: ${player.fortune} pièces d'or`;
-              document.getElementById( "pxp" + player.uid ).innerText = `XP: ${player.xp}`;
-              let ulequipment = createElem("ul",{});
-              ulequipment.innerHTML = player.equipment.map(eq => `<li>${eq}</li>`).join('');
-              document.getElementById("pequipment" + player.uid ).innerHTML = "";
-              document.getElementById("pequipment" + player.uid ).appendChild(ulequipment);
-              
-
-            }else{
-              let divplayer = createElem("div",{"class": "player-entry", "id": "div-listplayers-" + player.uid});
-
-
-              let divtitle = createElem("div", {"class":"player-header"} );
-              divtitle.innerText = `${player.name} (${player.origine} ${player.job}, Niveau ${player.level})`;
-              divtitle.addEventListener('click', () => {
-                document.getElementById("div-listplayers-details" + player.uid).style.display = (document.getElementById("div-listplayers-details" + player.uid).style.display === 'none') ? 'block' : 'none';
-              });
-
-              let divdetails = createElem("div",{"class":"player-details", "id":"div-listplayers-details" + player.uid });
-              divdetails.style.display = 'none';
-
-              let pxp =createElem("p",{"class":"player_stats_elem stats_xp","id":"pxp" + player.uid });
-              pxp.innerText = `XP: ${player.xp}`;
-              divdetails.appendChild(pxp);
-
-              let ppointsDeVie = createElem("p",{"class":"player_stats_elem stats_pv","id":"pointsdevie" + player.uid });
-              ppointsDeVie.innerText = `${player.lifePoints}/${player.lifePointsMax}`;
-              divdetails.appendChild(ppointsDeVie);
-
-              let pfortune = createElem("p",{"class":"player_stats_elem stats_fortune","id":"pfortune" + player.uid });
-              pfortune.innerText = `${player.fortune} pièces d'or`;
-              divdetails.appendChild(pfortune);
-              
-              let pcompetances = createElem("p",{"class":"player_stats_elem stats_competences","id":"pcompetences" + player.uid });
-              pcompetances.innerText = `COU: ${player.courage}, INT: ${player.intelligence}, CHA: ${player.charisma}, DEXT: ${player.dexterity}, FO: ${player.strength}`;
-              divdetails.appendChild(pcompetances);
-
-              let pequipment = createElem("p",{"class":"player_stats_elem stats_equipment","id":"pequipment" + player.uid });
-              let ulequipment = createElem("ul",{});
-              ulequipment.innerHTML = player.equipment.map(eq => `<li>${eq}</li>`).join('');
-              pequipment.appendChild(ulequipment);
-              divdetails.appendChild(pequipment);
-
-              let ptraits = createElem("p",{"class":"player_stats_elem stats_traits","id":"ptraits" + player.uid });
-              ptraits.innerText = `${player.specialFeatures || 'Aucun'}`;
-              divdetails.appendChild(ptraits);
-
-              let pdescription = createElem("p",{"class":"player_stats_elem stats_description","id":"pdescription" + player.uid });
-              pdescription.innerText = `${player.description}`;
-              divdetails.appendChild(pdescription);
-
-              divplayer.appendChild(divtitle);
-              divplayer.appendChild(divdetails);
-              container.appendChild(divplayer);
-            }
-          });
-        } catch (err) {
-          console.error('Erreur lors du chargement des joueurs:', err);
-        }
-      }
       fetchPlayers(); // Chargement initial
-      setInterval(fetchPlayers, 3000); // Mise à jour toutes les 3 secondes
-
-
-     
-      //setInterval(placeTurnsDivs,3000); //to rewrite
-      setInterval( refreshTurnList, 3000 );
+      refreshTurnList();
+      setInterval(fetchPlayers, 3000);
+      setInterval(refreshTurnList, 3000);
     }
 });
 

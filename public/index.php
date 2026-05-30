@@ -57,18 +57,42 @@ $mManager->add_menus_items_from_json_file( realpath( __DIR__ . '/../') . '/confi
 $currentMenu = $mManager->get_current_menu();
 
 
-switch( $_SERVER['REQUEST_METHOD'] ){
-    case "POST":
-        $messages = $currentMenu->apply_post($currentUser);
-        break;
-    case "DELETE":
-        $messages = $currentMenu->apply_delete($currentUser);
-        break;
-    case "PATCH":
-        $messages = $currentMenu->apply_patch($currentUser);
-        break;
-    default:
-        $messages = "";
+try{
+    switch( $_SERVER['REQUEST_METHOD'] ){
+        case "POST":
+            $messages = $currentMenu->apply_post($currentUser);
+            break;
+        case "DELETE":
+            $messages = $currentMenu->apply_delete($currentUser);
+            break;
+        case "PATCH":
+            $messages = $currentMenu->apply_patch($currentUser);
+            break;
+        default:
+            $messages = "";
+    }
+}catch(RuntimeException $e){
+    if(!str_contains($e->getMessage(), 'IA')){
+        throw $e;
+    }
+
+    http_response_code(503);
+    if($currentMenu->scrudClass === "Api"){
+        header('Content-Type: application/json; charset=utf-8');
+        echo json_encode(array(
+            "code" => 503,
+            "error" => "Le service IA est temporairement indisponible. Réessayez dans quelques instants."
+        ));
+    }else{
+        header('Content-Type: text/html; charset=utf-8');
+        echo "<p>Le service IA est temporairement indisponible. Réessayez dans quelques instants.</p>";
+        echo "<p><a href=\"/\">Retour à l'accueil</a></p>";
+    }
+    die();
+}
+
+if($currentMenu->scrudClass !== "Auth"){
+    session_write_close();
 }
 
 if(!$currentMenu->display_on_page())
@@ -108,6 +132,10 @@ foreach($navMenus as $navItem){
 if( $currentUser->is_in_group("mj") ){
    // add his boards on menu
     foreach( $currentUser->get_boards() as $boardUid ){
+        if(!Board::boardFileExists($boardUid)){
+            $currentUser->remove_board($boardUid);
+            continue;
+        }
         $board = Board::loadBoard($boardUid);
         $tplNav = new TplBlock("navmenus");
         $tplNav ->addVars(

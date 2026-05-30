@@ -44,6 +44,39 @@ class BoardPlayer extends Route{
         }
     }
 
+    static public function get_board_urlpart_from_existing_cookie():?string{
+        if( !isset($_COOKIE["jdr_uid"]) ){
+            return null;
+        }
+
+        $uid = $_COOKIE["jdr_uid"];
+        if( !preg_match('/^[A-Za-z0-9._-]+$/', $uid) ){
+            return null;
+        }
+
+        $gamesDatasPath = realpath("../gamesdatas");
+        if($gamesDatasPath === false){
+            return null;
+        }
+
+        foreach(new DirectoryIterator($gamesDatasPath) as $gameDir){
+            if($gameDir->isDot() || !$gameDir->isDir()){
+                continue;
+            }
+
+            $urlpart = $gameDir->getFilename();
+            $gamePath = $gameDir->getPathname();
+            if(
+                file_exists($gamePath . "/board.txt")
+                && file_exists($gamePath . "/player-" . $uid)
+            ){
+                return $urlpart;
+            }
+        }
+
+        return null;
+    }
+
     static public function get_content_html_initialized_player(User $user, Board $board){
         $tpl = new TplBlock();
         $player = Player::loadPlayer(  $board->get_save_real_path()."/player-" . self::get_uid_from_cookie()  );
@@ -117,6 +150,10 @@ class BoardPlayer extends Route{
 
         if(preg_match ( "'^/(.+)/initpersonnage$'" , $_SERVER["REQUEST_URI"], $matches)){
             $urlPart = $matches[1];
+            if(!Board::boardFileExists($urlPart)){
+                echo C404::get_content_html($user);
+                die();
+            }
             $board = Board::loadBoard($urlPart);
 
 
